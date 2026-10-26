@@ -1,0 +1,1597 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 4500,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE 4th-Floor Main Corridor",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09943599,
+            14.57332258
+          ],
+          [
+            121.09948055,
+            14.57332258
+          ],
+          [
+            121.09950654,
+            14.57332258
+          ],
+          [
+            121.09953254,
+            14.57332258
+          ],
+          [
+            121.09956039,
+            14.57332258
+          ],
+          [
+            121.09961609,
+            14.57332258
+          ],
+          [
+            121.09970151,
+            14.57332258
+          ],
+          [
+            121.09978506,
+            14.57332258
+          ],
+          [
+            121.09986862,
+            14.57332258
+          ],
+          [
+            121.09995217,
+            14.57332258
+          ],
+          [
+            121.10003573,
+            14.57332258
+          ],
+          [
+            121.10011928,
+            14.57332258
+          ],
+          [
+            121.10019355,
+            14.57332258
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4501,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE West Stairs Link",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09943599,
+            14.57332258
+          ],
+          [
+            121.09943599,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4502,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE East Stairs Link",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10019355,
+            14.57332258
+          ],
+          [
+            121.10019355,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4503,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — FACULTY CR 1",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09948055,
+            14.57332258
+          ],
+          [
+            121.09948055,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4504,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — FACULTY CR 2",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09950654,
+            14.57332258
+          ],
+          [
+            121.09950654,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4505,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — GENT'S CR",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09953254,
+            14.57332258
+          ],
+          [
+            121.09953254,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4506,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — LADY'S CR",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09956039,
+            14.57332258
+          ],
+          [
+            121.09956039,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4507,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E402",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09961609,
+            14.57332258
+          ],
+          [
+            121.09961609,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4508,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E403",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09970151,
+            14.57332258
+          ],
+          [
+            121.09970151,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4509,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E404",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09978506,
+            14.57332258
+          ],
+          [
+            121.09978506,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4510,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E405",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09986862,
+            14.57332258
+          ],
+          [
+            121.09986862,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4511,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E406",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09995217,
+            14.57332258
+          ],
+          [
+            121.09995217,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4512,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E407",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10003573,
+            14.57332258
+          ],
+          [
+            121.10003573,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4513,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "MAE Entrance — E408",
+        "building": "M.A.E Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10011928,
+            14.57332258
+          ],
+          [
+            121.10011928,
+            14.57334274
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4514,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier 4th-Floor West Corridor",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.57273615
+          ],
+          [
+            121.09941554,
+            14.5727898
+          ],
+          [
+            121.09941554,
+            14.57289711
+          ],
+          [
+            121.09941554,
+            14.57292535
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4515,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier West Stairs Link",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.57273615
+          ],
+          [
+            121.09941554,
+            14.57271356
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4516,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 401",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.5727898
+          ],
+          [
+            121.09937115,
+            14.5727898
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4517,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 402",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.57289711
+          ],
+          [
+            121.09937115,
+            14.57289711
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4518,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 403",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.57292535
+          ],
+          [
+            121.09941554,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4519,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier 4th-Floor North Corridor",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941554,
+            14.57292535
+          ],
+          [
+            121.09950069,
+            14.57292535
+          ],
+          [
+            121.09958221,
+            14.57292535
+          ],
+          [
+            121.09966373,
+            14.57292535
+          ],
+          [
+            121.09974525,
+            14.57292535
+          ],
+          [
+            121.09982677,
+            14.57292535
+          ],
+          [
+            121.09992907,
+            14.57292535
+          ],
+          [
+            121.100035,
+            14.57292535
+          ],
+          [
+            121.10016918,
+            14.57292535
+          ],
+          [
+            121.10030387,
+            14.57292535
+          ],
+          [
+            121.10039366,
+            14.57292535
+          ],
+          [
+            121.10048295,
+            14.57292535
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4520,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 404",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09950069,
+            14.57292535
+          ],
+          [
+            121.09950069,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4521,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 405",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09958221,
+            14.57292535
+          ],
+          [
+            121.09958221,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4522,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 406",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09966373,
+            14.57292535
+          ],
+          [
+            121.09966373,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4523,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — PCCSC",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09974525,
+            14.57292535
+          ],
+          [
+            121.09974525,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4524,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — STUDENT COUNCIL OFFICE",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09982677,
+            14.57292535
+          ],
+          [
+            121.09982677,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4525,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 409",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.100035,
+            14.57292535
+          ],
+          [
+            121.100035,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4526,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — TRAINING HALL",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10016918,
+            14.57292535
+          ],
+          [
+            121.10016918,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4527,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 411",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10030387,
+            14.57292535
+          ],
+          [
+            121.10030387,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4528,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 412",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10039366,
+            14.57292535
+          ],
+          [
+            121.10039366,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4529,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier BFMU Central Stairs Runway",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09992907,
+            14.57292535
+          ],
+          [
+            121.09992907,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4530,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — ELECTRICAL ROOM",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09976664,
+            14.57292535
+          ],
+          [
+            121.09976664,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4531,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — FEMALE RESTROOM",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09980699,
+            14.57292535
+          ],
+          [
+            121.09980699,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4532,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — STOCKROOM (Left Flank)",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09984735,
+            14.57292535
+          ],
+          [
+            121.09984735,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4533,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — STOCKROOM (Right Flank)",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10001079,
+            14.57292535
+          ],
+          [
+            121.10001079,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4534,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — MALE RESTROOM",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10005114,
+            14.57292535
+          ],
+          [
+            121.10005114,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4535,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — ELECTRICAL OFFICE",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1000915,
+            14.57292535
+          ],
+          [
+            121.1000915,
+            14.57290276
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4536,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier 4th-Floor East Corridor",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10048295,
+            14.57292535
+          ],
+          [
+            121.10048295,
+            14.57295076
+          ],
+          [
+            121.10048295,
+            14.57280957
+          ],
+          [
+            121.10048295,
+            14.57273615
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4537,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — 413",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10048295,
+            14.57295076
+          ],
+          [
+            121.10043856,
+            14.57295076
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4538,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier Entrance — PEMU",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10048295,
+            14.57280957
+          ],
+          [
+            121.10043856,
+            14.57280957
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4539,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "Javier East Stairs Link",
+        "building": "Javier Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10048295,
+            14.57273615
+          ],
+          [
+            121.10048295,
+            14.57271356
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4540,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED 4th-Floor Main Corridor",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1002846,
+            14.57331707
+          ],
+          [
+            121.10030375,
+            14.57331707
+          ],
+          [
+            121.10033967,
+            14.57331707
+          ],
+          [
+            121.10037558,
+            14.57331707
+          ],
+          [
+            121.10044741,
+            14.57331707
+          ],
+          [
+            121.10048332,
+            14.57331707
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4541,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED 4th-Floor West Corridor to Restroom & Stairs",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1002846,
+            14.57331707
+          ],
+          [
+            121.1002846,
+            14.57327311
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4542,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Entrance — PCED 401",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10030375,
+            14.57331707
+          ],
+          [
+            121.10030375,
+            14.57333905
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4543,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Entrance — PCED 402",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10037558,
+            14.57331707
+          ],
+          [
+            121.10037558,
+            14.57333905
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4544,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Entrance — PCED 403",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10044741,
+            14.57331707
+          ],
+          [
+            121.10044741,
+            14.57333905
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4545,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Entrance — MALE RESTROOM",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1002846,
+            14.57327311
+          ],
+          [
+            121.10026784,
+            14.57327311
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4546,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Staircase Upper Flight Exit to Corridor",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10033967,
+            14.57328135
+          ],
+          [
+            121.10033967,
+            14.57331707
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4547,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CED Staircase Lower Flight Runway Link",
+        "building": "CED Building",
+        "color": "#BDC3C7"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1002846,
+            14.57327311
+          ],
+          [
+            121.10030136,
+            14.57327311
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4548,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS 4th-Floor Main Corridor",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57333905
+          ],
+          [
+            121.10053777,
+            14.57327715
+          ],
+          [
+            121.10053777,
+            14.57320862
+          ],
+          [
+            121.10053777,
+            14.57313788
+          ],
+          [
+            121.10053777,
+            14.5731025
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4549,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS Top Staircase Link",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57333905
+          ],
+          [
+            121.10054936,
+            14.57333905
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4550,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS Entrance — MALE CR",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57333905
+          ],
+          [
+            121.10058411,
+            14.57333905
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4551,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS Entrance — PCASMAB 401",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57327715
+          ],
+          [
+            121.10055515,
+            14.57327715
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4552,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS Entrance — PCASMAB 402",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57320862
+          ],
+          [
+            121.10055515,
+            14.57320862
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4553,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "indoor": "corridor",
+        "floor_level": 4,
+        "level": "4",
+        "name": "CAS Entrance — PCASMAB 403",
+        "building": "CAS Building",
+        "color": "#BDC3C7",
+        "aligned_to_floor3": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053777,
+            14.57313788
+          ],
+          [
+            121.10055515,
+            14.57313788
+          ]
+        ]
+      }
+    }
+  ]
+}

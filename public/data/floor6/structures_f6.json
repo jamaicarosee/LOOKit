@@ -1,0 +1,174 @@
+[
+ {
+  "id": "STAIRS-F6-MAE-WEST",
+  "type": "stairs",
+  "layout": "flat",
+  "name": "MAE West Downstairs",
+  "full_name": "M.A.E Building West Downstairs Exit Transit (Floor 6)",
+  "building": "M.A.E Building",
+  "floor_level": 6,
+    "label": "DOWNSTAIRS",
+    "height": 0.1,
+    "base_height": 0.0,
+  "bounds": [
+   121.09940442,
+   14.57334274,
+   121.09946755,
+   14.57342085
+  ],
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      121.09940442,
+      14.57342085
+     ],
+     [
+      121.09940442,
+      14.57334274
+     ],
+     [
+      121.09946755,
+      14.57334274
+     ],
+     [
+      121.09946755,
+      14.57342085
+     ],
+     [
+      121.09940442,
+      14.57342085
+     ]
+    ]
+   ]
+  },
+  "flights": [
+   {
+    "kind": "steps",
+    "bounds": [
+     121.09940442,
+     14.57334274,
+     121.09943599,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "north",
+    "start_step": 1,
+    "start_height": 0.0,
+    "target_height": 1.75
+   },
+   {
+    "kind": "landing",
+    "bounds": [
+     121.09940442,
+     14.57340825,
+     121.09946755,
+     14.57342085
+    ],
+    "step_number": 9,
+    "height": 1.75
+   },
+   {
+    "kind": "steps",
+    "bounds": [
+     121.09943599,
+     14.57334274,
+     121.09946755,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "south",
+    "start_step": 10,
+    "start_height": 1.75,
+    "target_height": 3.5
+   }
+  ]
+ },
+ {
+  "id": "STAIRS-F6-MAE-EAST",
+  "type": "stairs",
+  "layout": "flat",
+  "name": "MAE East Downstairs",
+  "full_name": "M.A.E Building East Downstairs Exit Transit (Floor 6)",
+  "building": "M.A.E Building",
+  "floor_level": 6,
+  "label": "DOWNSTAIRS",
+  "height": 0.1,
+  "base_height": 0.0,
+  "bounds": [
+   121.10016199,
+   14.57334274,
+   121.10022512,
+   14.57342085
+  ],
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      121.10016199,
+      14.57342085
+     ],
+     [
+      121.10016199,
+      14.57334274
+     ],
+     [
+      121.10022512,
+      14.57334274
+     ],
+     [
+      121.10022512,
+      14.57342085
+     ],
+     [
+      121.10016199,
+      14.57342085
+     ]
+    ]
+   ]
+  },
+  "flights": [
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10019355,
+     14.57334274,
+     121.10022512,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "north",
+    "start_step": 1,
+    "start_height": 0.0,
+    "target_height": 1.75
+   },
+   {
+    "kind": "landing",
+    "bounds": [
+     121.10016199,
+     14.57340825,
+     121.10022512,
+     14.57342085
+    ],
+    "step_number": 9,
+    "height": 1.75
+   },
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10016199,
+     14.57334274,
+     121.10019355,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "south",
+    "start_step": 10,
+    "start_height": 1.75,
+    "target_height": 3.5
+   }
+  ]
+ }
+]

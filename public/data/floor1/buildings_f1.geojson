@@ -1,0 +1,1657 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "bbox": [
+    121.09924638,
+    14.57244665,
+    121.10074638,
+    14.57374665
+  ],
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "code": "CANTEEN-AREA",
+        "label": "AREA",
+        "acronym": "AREA",
+        "name": "AREA",
+        "full_name": "Canteen Extension Dining and Activity Area",
+        "description": "Canteen Extension Dining and Activity Area",
+        "building": "Canteen Wing",
+        "category": "canteen",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10039991, 14.57257445],
+            [121.10039991, 14.57253149],
+            [121.10062002, 14.57253149],
+            [121.10062002, 14.57273109],
+            [121.10057368, 14.57273109],
+            [121.10057368, 14.57257445],
+            [121.10039991, 14.57257445]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "properties": {
+        "code": "MAE-NSTP",
+        "label": "NSTP FACULTY ROOM",
+        "acronym": "NSTP",
+        "name": "NSTP FACULTY ROOM",
+        "full_name": "National Service Training Program (NSTP) Faculty Room",
+        "description": "National Service Training Program (NSTP) Faculty Room",
+        "building": "M.A.E Building",
+        "category": "room",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09945224, 14.57342085],
+            [121.09945224, 14.57336274],
+            [121.09952639, 14.57336274],
+            [121.09952639, 14.57342085],
+            [121.09945224, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "properties": {
+        "code": "MAE-EELAB1",
+        "label": "EE LAB",
+        "acronym": "EE LAB",
+        "name": "EE LAB",
+        "full_name": "Electrical Engineering Laboratory 1",
+        "description": "Electrical Engineering Laboratory 1",
+        "building": "M.A.E Building",
+        "category": "laboratory",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09952871, 14.57342085],
+            [121.09952871, 14.57336274],
+            [121.09960053, 14.57336274],
+            [121.09960053, 14.57342085],
+            [121.09952871, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "code": "MAE-E103",
+        "label": "E103",
+        "acronym": "E103",
+        "name": "E103",
+        "full_name": "Engineering Lecture Room E103",
+        "description": "Engineering Lecture Room E103",
+        "building": "M.A.E Building",
+        "category": "classroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09960285, 14.57342085],
+            [121.09960285, 14.57336274],
+            [121.099677, 14.57336274],
+            [121.099677, 14.57342085],
+            [121.09960285, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
+        "code": "MAE-EELAB2",
+        "label": "EE LAB",
+        "acronym": "EE LAB",
+        "name": "EE LAB",
+        "full_name": "Electrical Engineering Laboratory 2",
+        "description": "Electrical Engineering Laboratory 2",
+        "building": "M.A.E Building",
+        "category": "laboratory",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09967931, 14.57342085],
+            [121.09967931, 14.57336274],
+            [121.09975346, 14.57336274],
+            [121.09975346, 14.57342085],
+            [121.09967931, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 6,
+      "properties": {
+        "code": "MAE-E105",
+        "label": "E105",
+        "acronym": "E105",
+        "name": "E105",
+        "full_name": "Engineering Lecture Room E105",
+        "description": "Engineering Lecture Room E105",
+        "building": "M.A.E Building",
+        "category": "classroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09975577, 14.57342085],
+            [121.09975577, 14.57336274],
+            [121.09982992, 14.57336274],
+            [121.09982992, 14.57342085],
+            [121.09975577, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
+      "properties": {
+        "code": "MAE-E106",
+        "label": "E106",
+        "acronym": "E106",
+        "name": "E106",
+        "full_name": "Engineering Lecture Room E106",
+        "description": "Engineering Lecture Room E106",
+        "building": "M.A.E Building",
+        "category": "classroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09983224, 14.57342085],
+            [121.09983224, 14.57336274],
+            [121.09990638, 14.57336274],
+            [121.09990638, 14.57342085],
+            [121.09983224, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "properties": {
+        "code": "MAE-E107",
+        "label": "E107",
+        "acronym": "E107",
+        "name": "E107",
+        "full_name": "Engineering Lecture Room E107",
+        "description": "Engineering Lecture Room E107",
+        "building": "M.A.E Building",
+        "category": "classroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.0999087, 14.57342085],
+            [121.0999087, 14.57336274],
+            [121.09998284, 14.57336274],
+            [121.09998284, 14.57342085],
+            [121.0999087, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "properties": {
+        "code": "MAE-ICSOFFICE",
+        "label": "ICS",
+        "acronym": "ICSPHO",
+        "name": "INSTITUTE OF COMPUTER STUDIES PROGRAM HEAD OFFICE",
+        "full_name": "Institute of Computer Studies (ICS) Program Head Office",
+        "description": "Institute of Computer Studies (ICS) Program Head Office",
+        "building": "M.A.E Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09998516, 14.57342085],
+            [121.09998516, 14.57336274],
+            [121.10002223, 14.57336274],
+            [121.10002223, 14.57342085],
+            [121.09998516, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "properties": {
+        "code": "MAE-ICSOFFICE",
+        "label": "ICS",
+        "acronym": "ICSOD",
+        "name": "INSTITUTE OF COMPUTER STUDIES OFFICE OF THE DIRECTOR",
+        "full_name": "Institute of Computer Studies Office of the Director",
+        "description": "Institute of Computer Studies Office of the Director",
+        "building": "M.A.E Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10002455, 14.57342085],
+            [121.10002455, 14.57336274],
+            [121.10005699, 14.57336274],
+            [121.10005699, 14.57342085],
+            [121.10002455, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "properties": {
+        "code": "MAE-FAC-CR",
+        "label": "FACULTY CR",
+        "acronym": "FAC CR",
+        "name": "Faculty CR",
+        "full_name": "M.A.E Building Faculty Comfort Room",
+        "description": "M.A.E Building Faculty Comfort Room",
+        "building": "M.A.E Building",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.1000593, 14.57342085],
+            [121.1000593, 14.573388],
+            [121.10013345, 14.573388],
+            [121.10013345, 14.57342085],
+            [121.1000593, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "properties": {
+        "code": "MAE-RESTROOM",
+        "label": "RESTROOM",
+        "acronym": "RESTROOM",
+        "name": "Restroom",
+        "full_name": "M.A.E Building Student Restroom",
+        "description": "M.A.E Building Student Restroom",
+        "building": "M.A.E Building",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#E67E22",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10013577, 14.57342085],
+            [121.10013577, 14.57336274],
+            [121.10017052, 14.57336274],
+            [121.10017052, 14.57342085],
+            [121.10013577, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "code": "CED-PCED",
+        "label": "PCED Activity Area",
+        "acronym": "PCED",
+        "name": "PCED ACTIVITY AREA",
+        "full_name": "Pasig College of Education (PCED) Activity Area",
+        "description": "Pasig College of Education (PCED) Activity Area",
+        "building": "CED Building",
+        "category": "activity_area",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#2980B9",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10026784, 14.57342085],
+            [121.10026784, 14.57325662],
+            [121.10036283, 14.57325662],
+            [121.10036283, 14.57330715],
+            [121.10048332, 14.57330715],
+            [121.10048332, 14.57342085],
+            [121.10026784, 14.57342085]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 14,
+      "properties": {
+        "code": "CAS-FEMALE-CR",
+        "label": "FEMALE CR",
+        "acronym": "FEM CR",
+        "name": "FEMALE CR",
+        "full_name": "CAS Building Female Comfort Room",
+        "description": "CAS Building Female Comfort Room",
+        "building": "CAS Building",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#27AE60",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.1005621, 14.57336779],
+            [121.1005621, 14.57333747],
+            [121.10059454, 14.57333747],
+            [121.10059454, 14.57336779],
+            [121.1005621, 14.57336779]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 15,
+      "properties": {
+        "code": "CAS-STORAGE",
+        "label": "STORAGE",
+        "acronym": "STORAGE",
+        "name": "STORAGE",
+        "full_name": "College of Arts and Sciences (CAS) Storage Room",
+        "description": "College of Arts and Sciences (CAS) Storage Room",
+        "building": "CAS Building",
+        "category": "storage",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#27AE60",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10055515, 14.57330715],
+            [121.10055515, 14.5731025],
+            [121.10061307, 14.5731025],
+            [121.10061307, 14.57330715],
+            [121.10055515, 14.57330715]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 16,
+      "properties": {
+        "code": "BFMU-FEMALE-CR",
+        "label": "FEMALE C.R.",
+        "acronym": "FEM C.R.",
+        "name": "FEMALE C.R.",
+        "full_name": "Central Courtyard Female Comfort Room (Flanking BFMU Stairs)",
+        "description": "Central Courtyard Female Comfort Room (Flanking BFMU Stairs)",
+        "building": "Javier Building",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#27AE60",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09987394, 14.57288016],
+            [121.09987394, 14.57282205],
+            [121.09988784, 14.57282205],
+            [121.09988784, 14.57288016],
+            [121.09987394, 14.57288016]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "properties": {
+        "code": "BFMU-MALE-CR",
+        "label": "MALE C.R.",
+        "acronym": "MALE C.R.",
+        "name": "MALE C.R.",
+        "full_name": "Central Courtyard Male Comfort Room (Flanking BFMU Stairs)",
+        "description": "Central Courtyard Male Comfort Room (Flanking BFMU Stairs)",
+        "building": "Javier Building",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#27AE60",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09999443, 14.57288016],
+            [121.09999443, 14.57282205],
+            [121.10000833, 14.57282205],
+            [121.10000833, 14.57288016],
+            [121.09999443, 14.57288016]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 18,
+      "properties": {
+        "code": "JAV-SAASU/SAO",
+        "label": "SAASU/SAO",
+        "acronym": "SAASU/SU",
+        "name": "SAASU/SAO",
+        "full_name": "Student Affairs and Services Unit / Student Affairs Office (SAASU/SAO)",
+        "description": "Student Affairs and Services Unit / Student Affairs Office (SAASU/SAO)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09937115, 14.57299386],
+            [121.09937115, 14.57288016],
+            [121.09946383, 14.57288016],
+            [121.09946383, 14.57293575],
+            [121.099487, 14.57293575],
+            [121.099487, 14.57299386],
+            [121.09937115, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 19,
+      "properties": {
+        "code": "JAV-COMPLAB",
+        "label": "COMP LAB",
+        "acronym": "COMP LAB",
+        "name": "COMPUTER LAB",
+        "full_name": "Javier Building Ground Floor Computer Laboratory",
+        "description": "Javier Building Ground Floor Computer Laboratory",
+        "building": "Javier Building",
+        "category": "laboratory",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09937115, 14.57287764],
+            [121.09937115, 14.57281952],
+            [121.09946383, 14.57281952],
+            [121.09946383, 14.57287764],
+            [121.09937115, 14.57287764]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 20,
+      "properties": {
+        "code": "JAV-DRRMU",
+        "label": "DRRMU",
+        "acronym": "DRRMU",
+        "name": "DRRMU",
+        "full_name": "Disaster Risk Reduction and Management Unit (DRRMU)",
+        "description": "Disaster Risk Reduction and Management Unit (DRRMU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09937115, 14.572817],
+            [121.09937115, 14.57275889],
+            [121.09946383, 14.57275889],
+            [121.09946383, 14.572817],
+            [121.09937115, 14.572817]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 21,
+      "properties": {
+        "code": "JAV-BARRACKS-SEC",
+        "label": "BARRACKS",
+        "acronym": "BARRACKS",
+        "name": "BARRACKS (SECURITY)",
+        "full_name": "Campus Security Unit Barracks",
+        "description": "Campus Security Unit Barracks",
+        "building": "Javier Building",
+        "category": "barracks",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09937115, 14.57269825],
+            [121.09937115, 14.57264014],
+            [121.09946383, 14.57264014],
+            [121.09946383, 14.57269825],
+            [121.09937115, 14.57269825]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 22,
+      "properties": {
+        "code": "JAV-PEMU",
+        "label": "PEMU",
+        "acronym": "PEMU",
+        "name": "PEMU",
+        "full_name": "Program Events Management Unit (PEMU)",
+        "description": "Program Events Management Unit (PEMU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09948932, 14.57299386],
+            [121.09948932, 14.57293575],
+            [121.09955651, 14.57293575],
+            [121.09955651, 14.57299386],
+            [121.09948932, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 23,
+      "properties": {
+        "code": "JAV-CASU",
+        "label": "CASU",
+        "acronym": "CASU",
+        "name": "CASU",
+        "full_name": "Counseling and Assesment Services Unit (CASU)",
+        "description": "Counseling and Assesment Services Unit (CASU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09955883, 14.57299386],
+            [121.09955883, 14.57293575],
+            [121.09962602, 14.57293575],
+            [121.09962602, 14.57299386],
+            [121.09955883, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 24,
+      "properties": {
+        "code": "JAV-TESTING",
+        "label": "TESTING ROOM",
+        "acronym": "TESTING",
+        "name": "TESTING ROOM",
+        "full_name": "University Testing Room",
+        "description": "University Testing Room",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09962834, 14.57299386],
+            [121.09962834, 14.57293575],
+            [121.09969553, 14.57293575],
+            [121.09969553, 14.57299386],
+            [121.09962834, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 25,
+      "properties": {
+        "code": "JAV-CHAPEL",
+        "label": "CHAPEL",
+        "acronym": "CHAPEL",
+        "name": "CHAPEL",
+        "full_name": "University Chapel",
+        "description": "University Chapel",
+        "building": "Javier Building",
+        "category": "chapel",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09969785, 14.57299386],
+            [121.09969785, 14.57293575],
+            [121.09976504, 14.57293575],
+            [121.09976504, 14.57299386],
+            [121.09969785, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 26,
+      "properties": {
+        "code": "JAV-SFAU",
+        "label": "SFAU",
+        "acronym": "SFAU",
+        "name": "SFAU",
+        "full_name": "Scholarship and Financial Assistance Unit (SFAU)",
+        "description": "Scholarship and Financial Assistance Unit (SFAU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09976736, 14.57299386],
+            [121.09976736, 14.57293575],
+            [121.09983455, 14.57293575],
+            [121.09983455, 14.57299386],
+            [121.09976736, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 27,
+      "properties": {
+        "code": "JAV-COAU",
+        "label": "CO/AU",
+        "acronym": "CO/AU",
+        "name": "CO/AU",
+        "full_name": "Accounting Unit/Cashier Office",
+        "description": "Accounting Unit/Cashier Office",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09983687, 14.57299386],
+            [121.09983687, 14.57293575],
+            [121.09990406, 14.57293575],
+            [121.09990406, 14.57299386],
+            [121.09983687, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 28,
+      "properties": {
+        "code": "JAV-LOBBY",
+        "label": "LOBBY",
+        "acronym": "LOBBY",
+        "name": "LOBBY AREA",
+        "full_name": "Javier Building Central Ground Lobby Area",
+        "description": "Javier Building Central Ground Lobby Area",
+        "building": "Javier Building",
+        "category": "lobby",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09990638, 14.57302418],
+            [121.09990638, 14.57293575],
+            [121.09999211, 14.57293575],
+            [121.09999211, 14.57302418],
+            [121.09990638, 14.57302418]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 29,
+      "properties": {
+        "code": "JAV-SRAU",
+        "label": "SRAU",
+        "acronym": "SRAU",
+        "name": "SRAU",
+        "full_name": "Student Records and Admission Unit (SRAU)",
+        "description": "Student Records and Admission Unit (SRAU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09999443, 14.57299386],
+            [121.09999443, 14.57293575],
+            [121.10013808, 14.57293575],
+            [121.10013808, 14.57299386],
+            [121.09999443, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 30,
+      "properties": {
+        "code": "JAV-SRAU-STK",
+        "label": "SRAU STK",
+        "acronym": "SRAU STK",
+        "name": "SRAU STOCKROOM",
+        "full_name": "Student Records and Admission Unit Stockroom",
+        "description": "Student Records and Admission Unit Stockroom",
+        "building": "Javier Building",
+        "category": "storage",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.1001404, 14.57299386],
+            [121.1001404, 14.57293575],
+            [121.10020759, 14.57293575],
+            [121.10020759, 14.57299386],
+            [121.1001404, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 31,
+      "properties": {
+        "code": "JAV-ADMISSION",
+        "label": "SRAU ADMISSION",
+        "acronym": "ADMISSION",
+        "name": "SRAU EVALUATION & ADMISSION ROOM",
+        "full_name": "SRAU Evaluation and Admission Room",
+        "description": "SRAU Evaluation and Admission Room",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10020991, 14.57299386],
+            [121.10020991, 14.57293575],
+            [121.1002771, 14.57293575],
+            [121.1002771, 14.57299386],
+            [121.10020991, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 32,
+      "properties": {
+        "code": "JAV-SPMU",
+        "label": "SPMU",
+        "acronym": "SPMU",
+        "name": "SPMU",
+        "full_name": "Supply and Property Management Unit (SPMU)",
+        "description": "Supply and Property Management Unit (SPMU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10027942, 14.57299386],
+            [121.10027942, 14.57293575],
+            [121.10034661, 14.57293575],
+            [121.10034661, 14.57299386],
+            [121.10027942, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 33,
+      "properties": {
+        "code": "JAV-HRMU",
+        "label": "HRMU",
+        "acronym": "HRMU",
+        "name": "HRMU",
+        "full_name": "Human Resource Management Unit (HRMU)",
+        "description": "Human Resource Management Unit (HRMU)",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10034893, 14.57299386],
+            [121.10034893, 14.57293575],
+            [121.10041612, 14.57293575],
+            [121.10041612, 14.57299386],
+            [121.10034893, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 34,
+      "properties": {
+        "code": "JAV-CLINIC",
+        "label": "UNIVERSITY CLINIC",
+        "acronym": "HSU",
+        "name": "UNIVERSITY CLINIC",
+        "full_name": "Health Services Unit",
+        "description": "Health Services Unit",
+        "building": "Javier Building",
+        "category": "clinic",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10041844, 14.57299386],
+            [121.10041844, 14.57293575],
+            [121.10043466, 14.57293575],
+            [121.10043466, 14.57288016],
+            [121.10052734, 14.57288016],
+            [121.10052734, 14.57299386],
+            [121.10041844, 14.57299386]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 35,
+      "properties": {
+        "code": "JAV-COEU",
+        "label": "COEU",
+        "acronym": "COEU",
+        "name": "COEU",
+        "full_name": "???",
+        "description": "???",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10043466, 14.57287764],
+            [121.10043466, 14.57281952],
+            [121.10052734, 14.57281952],
+            [121.10052734, 14.57287764],
+            [121.10043466, 14.57287764]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 36,
+      "properties": {
+        "code": "JAV-FSU",
+        "label": "FSU",
+        "acronym": "FSU",
+        "name": "FSU",
+        "full_name": "???",
+        "description": "???",
+        "building": "Javier Building",
+        "category": "office",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10043466, 14.572817],
+            [121.10043466, 14.57275889],
+            [121.10052734, 14.57275889],
+            [121.10052734, 14.572817],
+            [121.10043466, 14.572817]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 37,
+      "properties": {
+        "code": "JAV-BARRACKS-JAN",
+        "label": "BARRACKS (JANITORIAL)",
+        "acronym": "BARRACKS",
+        "name": "BARRACKS (JANITORIAL)",
+        "full_name": "Janitorial Services Barracks",
+        "description": "Janitorial Services Barracks",
+        "building": "Javier Building",
+        "category": "barracks",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10043466, 14.57269825],
+            [121.10043466, 14.57264014],
+            [121.10052734, 14.57264014],
+            [121.10052734, 14.57269825],
+            [121.10043466, 14.57269825]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 38,
+      "properties": {
+        "code": "JAV-109",
+        "label": "109",
+        "acronym": "109",
+        "name": "109",
+        "full_name": "Javier Courtyard Ground Room 109",
+        "description": "Javier Courtyard Ground Room 109",
+        "building": "Javier Building",
+        "category": "room",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09985772, 14.57288016],
+            [121.09985772, 14.57282205],
+            [121.09987163, 14.57282205],
+            [121.09987163, 14.57288016],
+            [121.09985772, 14.57288016]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 39,
+      "properties": {
+        "code": "JAV-STOCKROOM",
+        "label": "STOCK",
+        "acronym": "STOCK",
+        "name": "STOCKROOM",
+        "full_name": "Central Courtyard Utility Stockroom",
+        "description": "Central Courtyard Utility Stockroom",
+        "building": "Javier Building",
+        "category": "storage",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09989016, 14.57288016],
+            [121.09989016, 14.57282205],
+            [121.09990406, 14.57282205],
+            [121.09990406, 14.57288016],
+            [121.09989016, 14.57288016]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 40,
+      "properties": {
+        "code": "JAV-BFMU-PLUMBING",
+        "label": "BFMU I",
+        "acronym": "BFMU I",
+        "name": "BFMU I (PLUMBING)",
+        "full_name": "Building and Facilities Maintenance Unit I (Plumbing)",
+        "description": "Building and Facilities Maintenance Unit I (Plumbing)",
+        "building": "Javier Building",
+        "category": "utility",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09990638, 14.57280942],
+            [121.09990638, 14.57279173],
+            [121.09999211, 14.57279173],
+            [121.09999211, 14.57280942],
+            [121.09990638, 14.57280942]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 41,
+      "properties": {
+        "code": "JAV-114",
+        "label": "114",
+        "acronym": "114",
+        "name": "114",
+        "full_name": "Javier Courtyard Ground Room 114",
+        "description": "Javier Courtyard Ground Room 114",
+        "building": "Javier Building",
+        "category": "room",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#F1C40F",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10001065, 14.57288016],
+            [121.10001065, 14.57282205],
+            [121.10002455, 14.57282205],
+            [121.10002455, 14.57288016],
+            [121.10001065, 14.57288016]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 42,
+      "properties": {
+        "code": "FAC-GYM-COURT",
+        "label": "GYM",
+        "acronym": "GYM",
+        "name": "GYMNASIUM COURT",
+        "full_name": "University Indoor Gymnasium Basketball Court",
+        "description": "University Indoor Gymnasium Basketball Court",
+        "building": "Shared Facility",
+        "category": "facility",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09950554, 14.57288269],
+            [121.09950554, 14.5726553],
+            [121.09981833, 14.5726553],
+            [121.09981833, 14.57288269],
+            [121.09950554, 14.57288269]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 43,
+      "properties": {
+        "code": "FAC-STAGE",
+        "label": "STAGE",
+        "acronym": "STAGE",
+        "name": "STAGE AREA",
+        "full_name": "Gymnasium Amphitheater and Stage Area",
+        "description": "Gymnasium Amphitheater and Stage Area",
+        "building": "Shared Facility",
+        "category": "facility",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.09950554, 14.57265277],
+            [121.09950554, 14.57259466],
+            [121.09981833, 14.57259466],
+            [121.09981833, 14.57265277],
+            [121.09950554, 14.57265277]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 44,
+      "properties": {
+        "code": "FAC-GARDEN",
+        "label": "GARDEN",
+        "acronym": "GARDEN",
+        "name": "GARDEN AREA",
+        "full_name": "Central Campus Courtyard Garden Area",
+        "description": "Central Campus Courtyard Garden Area",
+        "building": "Shared Facility",
+        "category": "facility",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10006857, 14.57288269],
+            [121.10006857, 14.57264014],
+            [121.100386, 14.57264014],
+            [121.100386, 14.57288269],
+            [121.10006857, 14.57288269]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 45,
+      "properties": {
+        "code": "FAC-BASKETBALL",
+        "label": "COURT",
+        "acronym": "COURT",
+        "name": "BASKETBALL COURT",
+        "full_name": "Outdoor Campus Basketball Court",
+        "description": "Outdoor Campus Basketball Court",
+        "building": "Shared Facility",
+        "category": "facility",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10014272, 14.57321114],
+            [121.10014272, 14.57303428],
+            [121.10041149, 14.57303428],
+            [121.10041149, 14.57321114],
+            [121.10014272, 14.57321114]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 46,
+      "properties": {
+        "code": "CANTEEN-MAIN",
+        "label": "CANTEEN",
+        "acronym": "CANTEEN",
+        "name": "CANTEEN",
+        "full_name": "University Ground Floor Canteen",
+        "description": "University Ground Floor Canteen",
+        "building": "Canteen Wing",
+        "category": "canteen",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10020064, 14.57257445],
+            [121.10020064, 14.57253149],
+            [121.10032808, 14.57253149],
+            [121.10032808, 14.57257445],
+            [121.10020064, 14.57257445]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 47,
+      "properties": {
+        "code": "CANTEEN-CR-1",
+        "label": "CR",
+        "acronym": "CR",
+        "name": "RESTROOM",
+        "full_name": "Canteen Wing Internal Restroom 1",
+        "description": "Canteen Wing Internal Restroom 1",
+        "building": "Canteen Wing",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10033039, 14.57257445],
+            [121.10033039, 14.57253149],
+            [121.10035125, 14.57253149],
+            [121.10035125, 14.57257445],
+            [121.10033039, 14.57257445]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 48,
+      "properties": {
+        "code": "CANTEEN-CR-2",
+        "label": "CR",
+        "acronym": "CR",
+        "name": "RESTROOM",
+        "full_name": "Canteen Wing Internal Restroom 2",
+        "description": "Canteen Wing Internal Restroom 2",
+        "building": "Canteen Wing",
+        "category": "restroom",
+        "feature_type": "room",
+        "type": "indoor_room",
+        "floor_level": 1,
+        "level": "1",
+        "height": 3.5,
+        "color": "#BDC3C7",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.10035357, 14.57257445],
+            [121.10035357, 14.57253149],
+            [121.1003721, 14.57253149],
+            [121.1003721, 14.57257445],
+            [121.10035357, 14.57257445]
+          ]
+        ]
+      }
+    }
+  ]
+}

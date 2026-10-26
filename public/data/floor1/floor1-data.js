@@ -1,0 +1,868 @@
+[
+  {
+    "id": "STAIRS-MAE-WEST",
+    "type": "stairs",
+    "name": "MAE West Staircase",
+    "full_name": "M.A.E Building West Turn-Around Staircase (Mirrored Flip)",
+    "building": "M.A.E Building",
+    "direction": "north",
+    "layout": "u_turn",
+    "steps": 17,
+    "start_height": 0.2,
+    "target_height": 3.4,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09940359,
+      14.57336527,
+      121.09944993,
+      14.57342085
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09940359, 14.57342085],
+          [121.09940359, 14.57336527],
+          [121.09944993, 14.57336527],
+          [121.09944993, 14.57342085],
+          [121.09940359, 14.57342085]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09940359,
+          14.57336527,
+          121.09942676,
+          14.57341327
+        ],
+        "steps": 9,
+        "direction": "north",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09940359,
+          14.57341327,
+          121.09944993,
+          14.57342085
+        ],
+        "step_number": 10,
+        "height": 2
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09942676,
+          14.57338295,
+          121.09944993,
+          14.57341327
+        ],
+        "steps": 7,
+        "direction": "south",
+        "start_step": 11
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-MAE-EAST",
+    "type": "stairs",
+    "name": "MAE East Restroom Corner Staircase",
+    "full_name": "M.A.E Building East Turn-Around Staircase (Mirrored Flip)",
+    "building": "M.A.E Building",
+    "direction": "north",
+    "layout": "u_turn",
+    "steps": 17,
+    "start_height": 0.2,
+    "target_height": 3.4,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10017284,
+      14.57336527,
+      121.1002215,
+      14.57342085
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10017284, 14.57342085],
+          [121.10017284, 14.57336527],
+          [121.1002215, 14.57336527],
+          [121.1002215, 14.57342085],
+          [121.10017284, 14.57342085]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10019601,
+          14.57336527,
+          121.1002215,
+          14.57341327
+        ],
+        "steps": 9,
+        "direction": "north",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10017284,
+          14.57341327,
+          121.1002215,
+          14.57342085
+        ],
+        "step_number": 10,
+        "height": 2
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10017284,
+          14.57338295,
+          121.10019601,
+          14.57341327
+        ],
+        "steps": 7,
+        "direction": "south",
+        "start_step": 11
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-CAS-NORTH",
+    "type": "stairs",
+    "name": "CAS Female CR Staircase",
+    "full_name": "CAS Building North Turn-Around Staircase (Mirrored Flip)",
+    "building": "CAS Building",
+    "direction": "east",
+    "layout": "u_turn",
+    "steps": 16,
+    "start_height": 0.2,
+    "target_height": 3.2,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10057136,
+      14.57330968,
+      121.10060149,
+      14.57333747
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10057136, 14.57333747],
+          [121.10057136, 14.57330968],
+          [121.10060149, 14.57330968],
+          [121.10060149, 14.57333747],
+          [121.10057136, 14.57333747]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10057136,
+          14.57330968,
+          121.10059454,
+          14.57332358
+        ],
+        "steps": 8,
+        "direction": "east",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10059454,
+          14.57330968,
+          121.10060149,
+          14.57333747
+        ],
+        "step_number": 9,
+        "height": 1.8
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10057136,
+          14.57332358,
+          121.10059454,
+          14.57333747
+        ],
+        "steps": 7,
+        "direction": "west",
+        "start_step": 10
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-JAVIER-SECURITY",
+    "type": "stairs",
+    "name": "Javier West Security Staircase",
+    "full_name": "Javier Building West Wing U-Shaped Security Staircase",
+    "building": "Javier Building",
+    "direction": "west",
+    "layout": "u_turn",
+    "steps": 17,
+    "start_height": 0.2,
+    "target_height": 3.4,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09937115,
+      14.57270078,
+      121.09946383,
+      14.57275636
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09937115, 14.57275636],
+          [121.09937115, 14.57270078],
+          [121.09946383, 14.57270078],
+          [121.09946383, 14.57275636],
+          [121.09937115, 14.57275636]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09938273,
+          14.57272857,
+          121.09946383,
+          14.57275636
+        ],
+        "steps": 8,
+        "direction": "west",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09937115,
+          14.57270078,
+          121.09938273,
+          14.57275636
+        ],
+        "step_number": 9,
+        "height": 1.8
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09938273,
+          14.57270078,
+          121.09946383,
+          14.57272857
+        ],
+        "steps": 8,
+        "direction": "east",
+        "start_step": 10
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-JAVIER-JANITORIAL",
+    "type": "stairs",
+    "name": "Javier East Janitorial Staircase",
+    "full_name": "Javier Building East Wing U-Shaped Janitorial Staircase",
+    "building": "Javier Building",
+    "direction": "east",
+    "layout": "u_turn",
+    "steps": 17,
+    "start_height": 0.2,
+    "target_height": 3.4,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10043466,
+      14.57270078,
+      121.10052734,
+      14.57275636
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10043466, 14.57275636],
+          [121.10043466, 14.57270078],
+          [121.10052734, 14.57270078],
+          [121.10052734, 14.57275636],
+          [121.10043466, 14.57275636]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10043466,
+          14.57272857,
+          121.10051576,
+          14.57275636
+        ],
+        "steps": 8,
+        "direction": "east",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10051576,
+          14.57270078,
+          121.10052734,
+          14.57275636
+        ],
+        "step_number": 9,
+        "height": 1.8
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10043466,
+          14.57270078,
+          121.10051576,
+          14.57272857
+        ],
+        "steps": 8,
+        "direction": "west",
+        "start_step": 10
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-BFMU-CENTRAL",
+    "type": "stairs",
+    "name": "Central BFMU U-Shaped Staircase",
+    "full_name": "Main Lobby / BFMU I (Plumbing) Central U-Shaped Staircase",
+    "building": "Javier Building",
+    "direction": "south",
+    "layout": "u_turn",
+    "steps": 17,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09990638,
+      14.57281194,
+      121.09999211,
+      14.57288016
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09990638, 14.57288016],
+          [121.09990638, 14.57281194],
+          [121.09999211, 14.57281194],
+          [121.09999211, 14.57288016],
+          [121.09990638, 14.57288016]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09990638,
+          14.57282963,
+          121.09993187,
+          14.57288016
+        ],
+        "steps": 8,
+        "direction": "south",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 3.5
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09990638,
+          14.57281194,
+          121.09999211,
+          14.57282963
+        ],
+        "step_number": 9,
+        "height": 3.5
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09996662,
+          14.57282963,
+          121.09999211,
+          14.57288016
+        ],
+        "steps": 8,
+        "direction": "south",
+        "start_step": 10,
+        "start_height": 0.0,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-CANTEEN-WEST",
+    "type": "stairs",
+    "name": "Canteen West Flank Staircase",
+    "full_name": "Canteen Wing West Flank Staircase (Continuous Upstairs Flight 0.0m-3.5m)",
+    "building": "Canteen Wing",
+    "direction": "south",
+    "layout": "continuous",
+    "steps": 15,
+    "start_height": 0,
+    "target_height": 3.5,
+    "bounds": [
+      121.10017515,
+      14.57253149,
+      121.10019832,
+      14.57257445
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10017515, 14.57257445],
+          [121.10017515, 14.57253149],
+          [121.10019832, 14.57253149],
+          [121.10019832, 14.57257445],
+          [121.10017515, 14.57257445]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10017515,
+          14.57253149,
+          121.10019832,
+          14.57257445
+        ],
+        "steps": 14,
+        "direction": "south",
+        "start_step": 1
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-CANTEEN-EAST",
+    "type": "stairs",
+    "name": "Canteen East Flank Staircase",
+    "full_name": "Canteen Wing East Flank Staircase",
+    "building": "Canteen Wing",
+    "direction": "south",
+    "layout": "u_turn",
+    "steps": 13,
+    "start_height": 0.2,
+    "target_height": 2.6,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10037442,
+      14.57253149,
+      121.10039759,
+      14.57257445
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10037442, 14.57257445],
+          [121.10037442, 14.57253149],
+          [121.10039759, 14.57253149],
+          [121.10039759, 14.57257445],
+          [121.10037442, 14.57257445]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10037442,
+          14.5725416,
+          121.100386,
+          14.57257445
+        ],
+        "steps": 6,
+        "direction": "south",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10037442,
+          14.57253149,
+          121.10039759,
+          14.5725416
+        ],
+        "step_number": 7,
+        "height": 1.4
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.100386,
+          14.5725416,
+          121.10039759,
+          14.57257445
+        ],
+        "steps": 6,
+        "direction": "north",
+        "start_step": 8
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-MAE-CENTRAL-WEST",
+    "type": "stairs",
+    "name": "MAE Central-West Entrance Staircase",
+    "full_name": "M.A.E Building Central-West Upward Entrance Staircase",
+    "building": "M.A.E Building",
+    "direction": "north",
+    "layout": "single",
+    "steps": 8,
+    "start_height": 0.2,
+    "target_height": 1.6,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09952639,
+      14.57328947,
+      121.09963066,
+      14.57331979
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09952639, 14.57331979],
+          [121.09952639, 14.57328947],
+          [121.09963066, 14.57328947],
+          [121.09963066, 14.57331979],
+          [121.09952639, 14.57331979]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "STAIRS-MAE-CENTRAL-WIDE",
+    "type": "stairs",
+    "name": "MAE E105-E107 Wide Entrance Staircase",
+    "full_name": "M.A.E Building E105-E107 Hallway Wide Upward Staircase Runway",
+    "building": "M.A.E Building",
+    "direction": "north",
+    "layout": "single",
+    "steps": 8,
+    "start_height": 0.2,
+    "target_height": 1.6,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09974651,
+      14.57328947,
+      121.09995736,
+      14.57331979
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09974651, 14.57331979],
+          [121.09974651, 14.57328947],
+          [121.09995736, 14.57328947],
+          [121.09995736, 14.57331979],
+          [121.09974651, 14.57331979]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "STAIRS-PCED-MAIN",
+    "type": "stairs",
+    "name": "PCED Main Entrance Staircase",
+    "full_name": "CED / PCED Activity Area Main Upward Entrance Staircase",
+    "building": "CED Building",
+    "direction": "north",
+    "layout": "single",
+    "steps": 8,
+    "start_height": 0.2,
+    "target_height": 1.6,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10037905,
+      14.57326673,
+      121.10046942,
+      14.57330463
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10037905, 14.57330463],
+          [121.10037905, 14.57326673],
+          [121.10046942, 14.57326673],
+          [121.10046942, 14.57330463],
+          [121.10037905, 14.57330463]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "STAIRS-PCED-UTURN",
+    "type": "stairs",
+    "name": "PCED West U-Turn Staircase",
+    "full_name": "CED / PCED Activity Area Tight U-Shaped Turn-Around Staircase",
+    "building": "CED Building",
+    "direction": "west",
+    "layout": "u_turn",
+    "steps": 13,
+    "start_height": 0.2,
+    "target_height": 2.6,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10030722,
+      14.57328189,
+      121.10033271,
+      14.57330715
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10030722, 14.57330715],
+          [121.10030722, 14.57328189],
+          [121.10033271, 14.57328189],
+          [121.10033271, 14.57330715],
+          [121.10030722, 14.57330715]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10031418,
+          14.57328189,
+          121.10033271,
+          14.57329452
+        ],
+        "steps": 6,
+        "direction": "west",
+        "start_step": 1
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10030722,
+          14.57328189,
+          121.10031418,
+          14.57330715
+        ],
+        "step_number": 7,
+        "height": 1.4
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10031418,
+          14.57329452,
+          121.10033271,
+          14.57330715
+        ],
+        "steps": 6,
+        "direction": "east",
+        "start_step": 8
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-CAS-ENTRY",
+    "type": "stairs",
+    "name": "CAS South Striped Entry Platform",
+    "full_name": "CAS Building South Gateway Striped Entry Platform Extension",
+    "building": "CAS Building",
+    "direction": "east",
+    "layout": "single",
+    "steps": 4,
+    "start_height": 0.2,
+    "target_height": 0.8,
+    "step_increment": 0.2,
+    "bounds": [
+      121.10050881,
+      14.57308987,
+      121.10053198,
+      14.57312524
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10050881, 14.57312524],
+          [121.10050881, 14.57308987],
+          [121.10053198, 14.57308987],
+          [121.10053198, 14.57312524],
+          [121.10050881, 14.57312524]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-MAE-WEST",
+    "type": "ramp",
+    "name": "PWD RAMP (MAE West Entrance)",
+    "full_name": "M.A.E Building West Entrance Wheelchair Accessible PWD Ramp",
+    "building": "M.A.E Building",
+    "direction": "east",
+    "label": "PWD RAMP",
+    "slices": 12,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.09942676,
+      14.57328441,
+      121.09951017,
+      14.57330463
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09942676, 14.57330463],
+          [121.09942676, 14.57328441],
+          [121.09951017, 14.57328441],
+          [121.09951017, 14.57330463],
+          [121.09942676, 14.57330463]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-MAE-CENTRAL",
+    "type": "ramp",
+    "name": "PWD RAMP (MAE Central Entrance)",
+    "full_name": "M.A.E Building Central Entrance Wheelchair Accessible PWD Ramp",
+    "building": "M.A.E Building",
+    "direction": "west",
+    "label": "PWD RAMP",
+    "slices": 12,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.09964687,
+      14.57328441,
+      121.09972565,
+      14.57330463
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09964687, 14.57330463],
+          [121.09964687, 14.57328441],
+          [121.09972565, 14.57328441],
+          [121.09972565, 14.57330463],
+          [121.09964687, 14.57330463]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-MAE-EAST",
+    "type": "ramp",
+    "name": "PWD RAMP (MAE ICS Corridor Entrance)",
+    "full_name": "M.A.E Building ICS Corridor Wheelchair Accessible PWD Ramp",
+    "building": "M.A.E Building",
+    "direction": "west",
+    "label": "PWD RAMP",
+    "slices": 15,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.09997357,
+      14.57328441,
+      121.1001126,
+      14.57329957
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.09997357, 14.57329957],
+          [121.09997357, 14.57328441],
+          [121.1001126, 14.57328441],
+          [121.1001126, 14.57329957],
+          [121.09997357, 14.57329957]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-CAS-SOUTH",
+    "type": "ramp",
+    "name": "PWD RAMP (CAS Gateway)",
+    "full_name": "CAS Building Perimeter Wheelchair Accessible Vertical PWD Ramp",
+    "building": "CAS Building",
+    "direction": "north",
+    "label": "PWD RAMP",
+    "slices": 15,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.10048332,
+      14.57309745,
+      121.10050881,
+      14.57323136
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10048332, 14.57323136],
+          [121.10048332, 14.57309745],
+          [121.10050881, 14.57309745],
+          [121.10050881, 14.57323136],
+          [121.10048332, 14.57323136]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-PCED-WEST",
+    "type": "ramp",
+    "name": "PWD RAMP (PCED Entrance)",
+    "full_name": "CED / PCED Activity Area Wheelchair Accessible Entrance PWD Ramp",
+    "building": "CED Building",
+    "direction": "east",
+    "label": "PWD RAMP",
+    "slices": 10,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.10030722,
+      14.57324399,
+      121.10036283,
+      14.57326168
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [121.10030722, 14.57326168],
+          [121.10030722, 14.57324399],
+          [121.10036283, 14.57324399],
+          [121.10036283, 14.57326168],
+          [121.10030722, 14.57326168]
+        ]
+      ]
+    }
+  }
+]

@@ -1,0 +1,162 @@
+{
+  "type": "FeatureCollection",
+  "name": "rtu_site_features",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Parking 1",
+        "label": "Parking 1",
+        "category": "parking",
+        "color": "#B8BEC4",
+        "height": 0.2,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "role": "parking"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09923995,
+              14.57341648
+            ],
+            [
+              121.09923995,
+              14.5732714
+            ],
+            [
+              121.09938379,
+              14.5732714
+            ],
+            [
+              121.09938379,
+              14.57341648
+            ],
+            [
+              121.09923995,
+              14.57341648
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Parking 2",
+        "label": "Parking 2",
+        "category": "parking",
+        "color": "#B8BEC4",
+        "height": 0.2,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "role": "parking"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09919414,
+              14.572994
+            ],
+            [
+              121.09919414,
+              14.57264
+            ],
+            [
+              121.099371,
+              14.57264
+            ],
+            [
+              121.099371,
+              14.572994
+            ],
+            [
+              121.09919414,
+              14.572994
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gate 1",
+        "label": "Gate 1",
+        "category": "gate",
+        "color": "#E74C3C",
+        "height": 1.5,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "role": "entrance/exit"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09919946,
+              14.57323426
+            ],
+            [
+              121.09919946,
+              14.57303114
+            ],
+            [
+              121.09921651,
+              14.57303114
+            ],
+            [
+              121.09921651,
+              14.57323426
+            ],
+            [
+              121.09919946,
+              14.57323426
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gate 2",
+        "label": "Gate 2",
+        "category": "gate",
+        "color": "#E74C3C",
+        "height": 1.5,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "role": "entrance/exit"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09928044,
+              14.5726342
+            ],
+            [
+              121.09928044,
+              14.57262027
+            ],
+            [
+              121.09946156,
+              14.57262027
+            ],
+            [
+              121.09946156,
+              14.5726342
+            ],
+            [
+              121.09928044,
+              14.5726342
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
