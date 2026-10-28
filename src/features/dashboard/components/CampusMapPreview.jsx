@@ -85,6 +85,7 @@ export default function CampusMapPreview({
   useEffect(() => {
     if (mapRef.current || !mapContainerRef.current) return;
 
+    // MAPBOX API KEY
     mapboxgl.accessToken =
       import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
