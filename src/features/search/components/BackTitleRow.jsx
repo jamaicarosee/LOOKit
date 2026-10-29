@@ -12,7 +12,7 @@ export default function BackTitleRow({ onBack }) {
       >
         <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
       </button>
-      <h2 className="text-lg font-black uppercase tracking-tight text-[#0B2545]">Directions</h2>
+      <h2 className="text-lg font-black uppercase tracking-tight text-[#0B2545]">Search</h2>
     </div>
   );
 }
