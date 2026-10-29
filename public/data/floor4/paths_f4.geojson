@@ -135,7 +135,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — FACULTY CR 1",
+        "name": "MAE Entrance \u2014 FACULTY CR 1",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -162,7 +162,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — FACULTY CR 2",
+        "name": "MAE Entrance \u2014 FACULTY CR 2",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -189,7 +189,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — GENT'S CR",
+        "name": "MAE Entrance \u2014 GENT'S CR",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -216,7 +216,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — LADY'S CR",
+        "name": "MAE Entrance \u2014 LADY'S CR",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -243,7 +243,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E402",
+        "name": "MAE Entrance \u2014 E402",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -270,7 +270,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E403",
+        "name": "MAE Entrance \u2014 E403",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -297,7 +297,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E404",
+        "name": "MAE Entrance \u2014 E404",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -324,7 +324,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E405",
+        "name": "MAE Entrance \u2014 E405",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -351,7 +351,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E406",
+        "name": "MAE Entrance \u2014 E406",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -378,7 +378,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E407",
+        "name": "MAE Entrance \u2014 E407",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -405,7 +405,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "MAE Entrance — E408",
+        "name": "MAE Entrance \u2014 E408",
         "building": "M.A.E Building",
         "color": "#BDC3C7"
       },
@@ -440,20 +440,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09941554,
-            14.57273615
-          ],
-          [
-            121.09941554,
-            14.5727898
-          ],
-          [
-            121.09941554,
-            14.57289711
-          ],
-          [
-            121.09941554,
+            121.0994902,
             14.57292535
+          ],
+          [
+            121.0994902,
+            14.57273615
           ]
         ]
       }
@@ -475,6 +467,10 @@
         "type": "LineString",
         "coordinates": [
           [
+            121.0994902,
+            14.57273615
+          ],
+          [
             121.09941554,
             14.57273615
           ],
@@ -494,7 +490,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 401",
+        "name": "Javier Entrance \u2014 401",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -502,11 +498,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09941554,
+            121.0994902,
             14.5727898
           ],
           [
-            121.09937115,
+            121.09945993,
             14.5727898
           ]
         ]
@@ -521,7 +517,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 402",
+        "name": "Javier Entrance \u2014 402",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -529,11 +525,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09941554,
+            121.0994902,
             14.57289711
           ],
           [
-            121.09937115,
+            121.09945993,
             14.57289711
           ]
         ]
@@ -548,7 +544,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 403",
+        "name": "Javier Entrance \u2014 403",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -557,11 +553,11 @@
         "coordinates": [
           [
             121.09941554,
-            14.57292535
+            14.57295076
           ],
           [
             121.09941554,
-            14.57295076
+            14.57297
           ]
         ]
       }
@@ -583,7 +579,7 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09941554,
+            121.0994902,
             14.57292535
           ],
           [
@@ -627,7 +623,7 @@
             14.57292535
           ],
           [
-            121.10048295,
+            121.10040829,
             14.57292535
           ]
         ]
@@ -642,7 +638,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 404",
+        "name": "Javier Entrance \u2014 404",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -669,7 +665,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 405",
+        "name": "Javier Entrance \u2014 405",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -696,7 +692,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 406",
+        "name": "Javier Entrance \u2014 406",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -723,7 +719,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — PCCSC",
+        "name": "Javier Entrance \u2014 PCCSC",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -750,7 +746,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — STUDENT COUNCIL OFFICE",
+        "name": "Javier Entrance \u2014 STUDENT COUNCIL OFFICE",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -777,7 +773,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 409",
+        "name": "Javier Entrance \u2014 409",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -804,7 +800,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — TRAINING HALL",
+        "name": "Javier Entrance \u2014 TRAINING HALL",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -831,7 +827,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 411",
+        "name": "Javier Entrance \u2014 411",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -858,7 +854,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 412",
+        "name": "Javier Entrance \u2014 412",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -893,12 +889,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09992907,
+            121.09994926,
             14.57292535
           ],
           [
-            121.09992907,
-            14.57290276
+            121.09994926,
+            14.57288016
           ]
         ]
       }
@@ -912,7 +908,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — ELECTRICAL ROOM",
+        "name": "Javier Entrance \u2014 ELECTRICAL ROOM",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -920,12 +916,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09976664,
+            121.09986468,
             14.57292535
           ],
           [
-            121.09976664,
-            14.57290276
+            121.09986468,
+            14.57288016
           ]
         ]
       }
@@ -939,7 +935,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — FEMALE RESTROOM",
+        "name": "Javier Entrance \u2014 FEMALE RESTROOM",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -947,12 +943,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09980699,
+            121.09988089,
             14.57292535
           ],
           [
-            121.09980699,
-            14.57290276
+            121.09988089,
+            14.57288016
           ]
         ]
       }
@@ -966,7 +962,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — STOCKROOM (Left Flank)",
+        "name": "Javier Entrance \u2014 STOCKROOM (Left Flank)",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -974,12 +970,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09984735,
+            121.09989712,
             14.57292535
           ],
           [
-            121.09984735,
-            14.57290276
+            121.09989712,
+            14.57288016
           ]
         ]
       }
@@ -993,7 +989,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — STOCKROOM (Right Flank)",
+        "name": "Javier Entrance \u2014 STOCKROOM (Right Flank)",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -1001,12 +997,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10001079,
+            121.10000138,
             14.57292535
           ],
           [
-            121.10001079,
-            14.57290276
+            121.10000138,
+            14.57288016
           ]
         ]
       }
@@ -1020,7 +1016,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — MALE RESTROOM",
+        "name": "Javier Entrance \u2014 MALE RESTROOM",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -1028,12 +1024,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10005114,
+            121.10001761,
             14.57292535
           ],
           [
-            121.10005114,
-            14.57290276
+            121.10001761,
+            14.57288016
           ]
         ]
       }
@@ -1047,7 +1043,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — ELECTRICAL OFFICE",
+        "name": "Javier Entrance \u2014 ELECTRICAL OFFICE",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -1055,12 +1051,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.1000915,
+            121.10003382,
             14.57292535
           ],
           [
-            121.1000915,
-            14.57290276
+            121.10003382,
+            14.57288016
           ]
         ]
       }
@@ -1082,19 +1078,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10048295,
+            121.10040829,
             14.57292535
           ],
           [
-            121.10048295,
-            14.57295076
-          ],
-          [
-            121.10048295,
-            14.57280957
-          ],
-          [
-            121.10048295,
+            121.10040829,
             14.57273615
           ]
         ]
@@ -1109,7 +1097,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — 413",
+        "name": "Javier Entrance \u2014 413",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -1117,12 +1105,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10048295,
-            14.57295076
+            121.10040829,
+            14.57292535
           ],
           [
             121.10043856,
-            14.57295076
+            14.57292535
           ]
         ]
       }
@@ -1136,7 +1124,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "Javier Entrance — PEMU",
+        "name": "Javier Entrance \u2014 PEMU",
         "building": "Javier Building",
         "color": "#BDC3C7"
       },
@@ -1144,7 +1132,7 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10048295,
+            121.10040829,
             14.57280957
           ],
           [
@@ -1170,6 +1158,10 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
+          [
+            121.10040829,
+            14.57273615
+          ],
           [
             121.10048295,
             14.57273615
@@ -1260,7 +1252,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CED Entrance — PCED 401",
+        "name": "CED Entrance \u2014 PCED 401",
         "building": "CED Building",
         "color": "#BDC3C7"
       },
@@ -1287,7 +1279,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CED Entrance — PCED 402",
+        "name": "CED Entrance \u2014 PCED 402",
         "building": "CED Building",
         "color": "#BDC3C7"
       },
@@ -1314,7 +1306,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CED Entrance — PCED 403",
+        "name": "CED Entrance \u2014 PCED 403",
         "building": "CED Building",
         "color": "#BDC3C7"
       },
@@ -1341,7 +1333,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CED Entrance — MALE RESTROOM",
+        "name": "CED Entrance \u2014 MALE RESTROOM",
         "building": "CED Building",
         "color": "#BDC3C7"
       },
@@ -1490,7 +1482,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CAS Entrance — MALE CR",
+        "name": "CAS Entrance \u2014 MALE CR",
         "building": "CAS Building",
         "color": "#BDC3C7",
         "aligned_to_floor3": true
@@ -1518,7 +1510,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CAS Entrance — PCASMAB 401",
+        "name": "CAS Entrance \u2014 PCASMAB 401",
         "building": "CAS Building",
         "color": "#BDC3C7",
         "aligned_to_floor3": true
@@ -1546,7 +1538,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CAS Entrance — PCASMAB 402",
+        "name": "CAS Entrance \u2014 PCASMAB 402",
         "building": "CAS Building",
         "color": "#BDC3C7",
         "aligned_to_floor3": true
@@ -1574,7 +1566,7 @@
         "indoor": "corridor",
         "floor_level": 4,
         "level": "4",
-        "name": "CAS Entrance — PCASMAB 403",
+        "name": "CAS Entrance \u2014 PCASMAB 403",
         "building": "CAS Building",
         "color": "#BDC3C7",
         "aligned_to_floor3": true

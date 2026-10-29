@@ -20,12 +20,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09985364,
-            14.5733422
+            121.09985543,
+            14.573337
           ],
           [
-            121.09945304,
-            14.5733422
+            121.09947815,
+            14.573337
           ]
         ]
       }
@@ -48,96 +48,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09985364,
-            14.5733422
+            121.09985543,
+            14.573337
           ],
           [
-            121.10017008,
-            14.5733422
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_ramp_west",
-        "name": "PWD ramp (west) up to corridor",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09949566,
-            14.57323193
-          ],
-          [
-            121.09949566,
-            14.57333871
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_ramp_mid",
-        "name": "PWD ramp (centre) up to corridor",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09965973,
-            14.57323193
-          ],
-          [
-            121.09965973,
-            14.57333871
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_ramp_east",
-        "name": "PWD ramp (east) up to corridor",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09999428,
-            14.57324238
-          ],
-          [
-            121.09999428,
-            14.57333871
+            121.10013915,
+            14.573337
           ]
         ]
       }
@@ -160,12 +76,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09938379,
-            14.57329461
+            121.09938156,
+            14.57329696
           ],
           [
-            121.09949566,
-            14.57329461
+            121.09949626,
+            14.57329696
+          ],
+          [
+            121.09949626,
+            14.573337
           ]
         ]
       }
@@ -173,8 +93,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_exit_road_north",
-        "name": "Exit road (north) to Gate 1",
+        "id": "f1_path_ramp_mid",
+        "name": "PWD ramp (centre) up to corridor",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -188,28 +108,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10030006,
-            14.5732505
+            121.09965925,
+            14.57324098
           ],
           [
-            121.10011148,
-            14.57324238
-          ],
-          [
-            121.09993781,
-            14.57324006
-          ],
-          [
-            121.09963949,
-            14.57323426
-          ],
-          [
-            121.09941575,
-            14.57323077
-          ],
-          [
-            121.09921651,
-            14.57322613
+            121.09965925,
+            14.573337
           ]
         ]
       }
@@ -217,8 +121,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_exit_road_south",
-        "name": "Exit road (south) to Gate 1",
+        "id": "f1_path_mae_east_ramp",
+        "name": "M.A.E east PWD ramp down to court",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -232,36 +136,32 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.1000369,
-            14.57315069
+            121.10008784,
+            14.57329367
           ],
           [
-            121.09995486,
-            14.57315649
+            121.10013311,
+            14.57329037
           ],
           [
-            121.09963949,
-            14.57316113
+            121.10013311,
+            14.57328214
           ],
           [
-            121.09948607,
-            14.5731681
+            121.10012104,
+            14.5732278
           ],
           [
-            121.09941575,
-            14.57318203
+            121.10011802,
+            14.57320311
           ],
           [
-            121.09938165,
-            14.57319595
+            121.10011802,
+            14.57304175
           ],
           [
-            121.09934117,
-            14.57321336
-          ],
-          [
-            121.09921651,
-            14.57321917
+            121.10011802,
+            14.5730187
           ]
         ]
       }
@@ -269,7 +169,55 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_connector_west",
+        "id": "f1_path_exit_road",
+        "name": "Exit road to Gate 1",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10025536,
+            14.57324427
+          ],
+          [
+            121.10020555,
+            14.57324427
+          ],
+          [
+            121.10007879,
+            14.57324098
+          ],
+          [
+            121.09992787,
+            14.57323604
+          ],
+          [
+            121.09941477,
+            14.57323274
+          ],
+          [
+            121.09932422,
+            14.5732311
+          ],
+          [
+            121.09921858,
+            14.5732311
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_connector_1",
         "name": "Connector to entrance walkway (west)",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
@@ -284,12 +232,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09941575,
-            14.57323077
+            121.09941477,
+            14.57325909
           ],
           [
-            121.09941575,
-            14.57301953
+            121.09941477,
+            14.57306315
+          ],
+          [
+            121.09941477,
+            14.57302199
           ]
         ]
       }
@@ -297,7 +249,39 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_connector_mid",
+        "id": "f1_path_connector_2",
+        "name": "Connector to entrance walkway (west-centre)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09957473,
+            14.57325909
+          ],
+          [
+            121.09957473,
+            14.57306315
+          ],
+          [
+            121.09957473,
+            14.57302199
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_connector_3",
         "name": "Connector to entrance walkway (centre)",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
@@ -312,12 +296,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09957556,
-            14.57323426
+            121.09974074,
+            14.5732558
           ],
           [
-            121.09957556,
-            14.57301953
+            121.09974074,
+            14.57306315
+          ],
+          [
+            121.09974074,
+            14.57302199
           ]
         ]
       }
@@ -325,8 +313,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_connector_east",
-        "name": "Connector to entrance walkway (east)",
+        "id": "f1_path_connector_4",
+        "name": "Centre stair/ramp down to entrance walkway",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -340,12 +328,24 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09973964,
-            14.57323426
+            121.09985694,
+            14.5733019
           ],
           [
-            121.09973964,
-            14.57301953
+            121.09985845,
+            14.57327391
+          ],
+          [
+            121.09985996,
+            14.57320311
+          ],
+          [
+            121.09985996,
+            14.57306315
+          ],
+          [
+            121.09985996,
+            14.57302199
           ]
         ]
       }
@@ -353,8 +353,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_diag_pced",
-        "name": "PCED ramp diagonal to lobby",
+        "id": "f1_path_court_center",
+        "name": "Court centre line to return row",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -368,28 +368,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10012426,
-            14.57326095
+            121.10029761,
+            14.57323604
           ],
           [
-            121.10008697,
-            14.57320872
+            121.10030063,
+            14.57303846
           ],
           [
-            121.10003903,
-            14.57315881
-          ],
-          [
-            121.09999428,
-            14.57309266
-          ],
-          [
-            121.09996765,
-            14.57304043
-          ],
-          [
-            121.09994847,
-            14.57302186
+            121.10030063,
+            14.5730187
           ]
         ]
       }
@@ -397,8 +385,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_diag_centre",
-        "name": "Centre diagonal to lobby",
+        "id": "f1_path_court_east",
+        "name": "Court east side to return row",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -412,24 +400,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09985897,
-            14.57327256
+            121.10042438,
+            14.5732525
           ],
           [
-            121.09987815,
-            14.5731739
+            121.10042891,
+            14.57304669
           ],
           [
-            121.09989733,
-            14.57308337
-          ],
-          [
-            121.09992503,
-            14.57303346
-          ],
-          [
-            121.09994314,
-            14.57302186
+            121.10042891,
+            14.5730187
           ]
         ]
       }
@@ -437,8 +417,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_lobby_exit_diagonal",
-        "name": "Lobby exit diagonal",
+        "id": "f1_path_pced_ramp",
+        "name": "PCED PWD ramp",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -452,24 +432,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09994634,
-            14.57302882
+            121.1002629,
+            14.5732525
           ],
           [
-            121.09985471,
-            14.57307525
+            121.10034439,
+            14.5732525
           ],
           [
-            121.099778,
-            14.5731089
-          ],
-          [
-            121.09973751,
-            14.57312631
-          ],
-          [
-            121.09970661,
-            14.57315649
+            121.10034439,
+            14.57330519
           ]
         ]
       }
@@ -477,8 +449,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_court_north",
-        "name": "Court north crossing",
+        "id": "f1_path_storage_ramp",
+        "name": "Storage PWD ramp",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -492,28 +464,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10041513,
-            14.57324586
+            121.10049531,
+            14.57304175
           ],
           [
-            121.10039382,
-            14.57320756
-          ],
-          [
-            121.1002926,
-            14.57317622
-          ],
-          [
-            121.10019671,
-            14.57315649
-          ],
-          [
-            121.10013279,
-            14.57314953
-          ],
-          [
-            121.1000369,
-            14.57315069
+            121.10049531,
+            14.57312078
           ]
         ]
       }
@@ -521,8 +477,8 @@
     {
       "type": "Feature",
       "properties": {
-        "id": "f1_path_court_south",
-        "name": "Court south crossing to lobby",
+        "id": "f1_path_storage_corridor",
+        "name": "Storage corridor",
         "feature_type": "pedestrian_path",
         "type": "pedestrian_path",
         "highway": "footway",
@@ -536,304 +492,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10051421,
-            14.57312399
+            121.10050134,
+            14.57321793
           ],
           [
-            121.10041513,
-            14.57310658
-          ],
-          [
-            121.10028195,
-            14.57308917
-          ],
-          [
-            121.10017008,
-            14.57306596
-          ],
-          [
-            121.10006886,
-            14.57305203
-          ],
-          [
-            121.09999961,
-            14.57302882
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_entrance_walkway",
-        "name": "Entrance walkway (Gate 1 to lobby)",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09921651,
-            14.57301605
-          ],
-          [
-            121.099371,
-            14.57301605
-          ],
-          [
-            121.09991224,
-            14.57301605
-          ],
-          [
-            121.09994634,
-            14.57300793
-          ],
-          [
-            121.09994634,
-            14.57299632
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_lobby_down",
-        "name": "Lobby to courtyard ring",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09994634,
-            14.57299632
-          ],
-          [
-            121.09994634,
-            14.57292088
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_ring_west",
-        "name": "Courtyard ring west (to Gate 2)",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09994634,
-            14.57292088
-          ],
-          [
-            121.09948607,
-            14.57292088
-          ],
-          [
-            121.09948287,
-            14.57288838
-          ],
-          [
-            121.09948287,
-            14.57264464
-          ],
-          [
-            121.09946369,
-            14.57262839
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_ring_east",
-        "name": "Courtyard ring east",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09994634,
-            14.57292088
-          ],
-          [
-            121.10041513,
-            14.57292088
-          ],
-          [
-            121.10041513,
-            14.57264464
-          ],
-          [
-            121.10045242,
-            14.5726133
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_inner_west",
-        "name": "Stage-side link south",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09983553,
-            14.57292088
-          ],
-          [
-            121.09983553,
-            14.57263071
-          ],
-          [
-            121.09985577,
-            14.5726133
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_inner_east",
-        "name": "Garden-side link south",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.10004542,
-            14.57292088
-          ],
-          [
-            121.10004542,
-            14.57265625
-          ],
-          [
-            121.1000646,
-            14.5726133
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_south_row",
-        "name": "South walkway east",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09985577,
-            14.5726133
-          ],
-          [
-            121.10036399,
-            14.5726133
-          ],
-          [
-            121.10045242,
-            14.5726133
-          ],
-          [
-            121.10055151,
-            14.5726133
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "f1_path_east_column",
-        "name": "East column north to CED activity area",
-        "feature_type": "pedestrian_path",
-        "type": "pedestrian_path",
-        "highway": "footway",
-        "floor_level": 1,
-        "level": "1",
-        "oneway": true,
-        "color": "#BDC3C7",
-        "campus": "Rizal Technological University - Pasig Branch"
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.10055151,
-            14.5726133
-          ],
-          [
-            121.10055151,
-            14.57334452
-          ],
-          [
-            121.10051102,
-            14.57335264
+            121.10052851,
+            14.57321793
           ]
         ]
       }
@@ -856,12 +520,376 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10055151,
-            14.57301025
+            121.10052549,
+            14.57304175
           ],
           [
-            121.09999961,
-            14.57301025
+            121.10051644,
+            14.57301376
+          ],
+          [
+            121.09999578,
+            14.57301376
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_entrance_walkway",
+        "name": "Entrance walkway (Gate 1 to lobby)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09921556,
+            14.5730187
+          ],
+          [
+            121.099371,
+            14.5730187
+          ],
+          [
+            121.09990825,
+            14.5730187
+          ],
+          [
+            121.09994598,
+            14.57300882
+          ],
+          [
+            121.09994598,
+            14.57298906
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_lobby_down",
+        "name": "Lobby to courtyard ring",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994598,
+            14.57298906
+          ],
+          [
+            121.09994598,
+            14.57292485
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_ring_west",
+        "name": "Courtyard ring west (to Gate 2)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994598,
+            14.57292485
+          ],
+          [
+            121.09948268,
+            14.57292485
+          ],
+          [
+            121.09948268,
+            14.57264329
+          ],
+          [
+            121.09947513,
+            14.57262683
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_ring_east",
+        "name": "Courtyard ring east",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994598,
+            14.57292485
+          ],
+          [
+            121.10038363,
+            14.57292485
+          ],
+          [
+            121.10041834,
+            14.57291497
+          ],
+          [
+            121.10041834,
+            14.57264329
+          ],
+          [
+            121.10045305,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_inner_west",
+        "name": "Stage-side link south",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983581,
+            14.57292485
+          ],
+          [
+            121.09983581,
+            14.57264329
+          ],
+          [
+            121.09983883,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_inner_east",
+        "name": "Garden-side link south",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10004709,
+            14.57292485
+          ],
+          [
+            121.10004709,
+            14.57265976
+          ],
+          [
+            121.10004709,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_south_row",
+        "name": "South walkway east",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983883,
+            14.57261366
+          ],
+          [
+            121.10037307,
+            14.57261366
+          ],
+          [
+            121.10045305,
+            14.57261366
+          ],
+          [
+            121.10054964,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_east_column",
+        "name": "East column north to CED activity area",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10054964,
+            14.57261366
+          ],
+          [
+            121.10054964,
+            14.57335129
+          ],
+          [
+            121.10052851,
+            14.57335623
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_stage_north",
+        "name": "Stage entrance (north)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09965925,
+            14.5729232
+          ],
+          [
+            121.09965925,
+            14.57288698
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_stage_west",
+        "name": "Stage entrance (west)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09948268,
+            14.5726647
+          ],
+          [
+            121.09950833,
+            14.5726647
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "f1_path_stage_east",
+        "name": "Stage entrance (east)",
+        "feature_type": "pedestrian_path",
+        "type": "pedestrian_path",
+        "highway": "footway",
+        "floor_level": 1,
+        "level": "1",
+        "oneway": true,
+        "color": "#BDC3C7",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983581,
+            14.5726614
+          ],
+          [
+            121.09981469,
+            14.5726614
           ]
         ]
       }
@@ -884,16 +912,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09921651,
-            14.57320524
+            121.09921556,
+            14.57320311
           ],
           [
-            121.0993124,
-            14.57324586
+            121.09930913,
+            14.57326567
           ],
           [
-            121.0993124,
-            14.5732714
+            121.09930913,
+            14.57327391
           ]
         ]
       }
@@ -916,16 +944,16 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09921651,
-            14.57306596
+            121.09921556,
+            14.57303846
           ],
           [
-            121.09928044,
-            14.57301605
+            121.09927894,
+            14.57300882
           ],
           [
-            121.09928044,
-            14.572994
+            121.09927894,
+            14.57299729
           ]
         ]
       }
@@ -948,12 +976,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.09933371,
-            14.57262723
+            121.09933931,
+            14.57262683
           ],
           [
-            121.09933371,
-            14.57267134
+            121.09933931,
+            14.57267622
           ]
         ]
       }

@@ -1461,7 +1461,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-ELEC-RM",
-        "label": "ELECTRICAL ROOM",
+        "label": "ELEC.",
         "name": "ELECTRICAL ROOM",
         "full_name": "Javier Electrical Room (West Core)",
         "building": "Javier Building",
@@ -1471,31 +1471,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.09974646,
-              14.57290276
+              121.09985772,
+              14.57288016
             ],
             [
-              121.09974646,
-              14.5727898
+              121.09985772,
+              14.57282205
             ],
             [
-              121.09978681,
-              14.5727898
+              121.09987163,
+              14.57282205
             ],
             [
-              121.09978681,
-              14.57290276
+              121.09987163,
+              14.57288016
             ],
             [
-              121.09974646,
-              14.57290276
+              121.09985772,
+              14.57288016
             ]
           ]
         ]
@@ -1511,7 +1512,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-FR",
-        "label": "FEMALE RESTROOM",
+        "label": "FEMALE C.R.",
         "name": "FEMALE RESTROOM",
         "full_name": "Female Restroom (Central Core)",
         "building": "Javier Building",
@@ -1521,31 +1522,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.09978681,
-              14.57290276
+              121.09987394,
+              14.57288016
             ],
             [
-              121.09978681,
-              14.5727898
+              121.09987394,
+              14.57282205
             ],
             [
-              121.09982717,
-              14.5727898
+              121.09988785,
+              14.57282205
             ],
             [
-              121.09982717,
-              14.57290276
+              121.09988785,
+              14.57288016
             ],
             [
-              121.09978681,
-              14.57290276
+              121.09987394,
+              14.57288016
             ]
           ]
         ]
@@ -1561,7 +1563,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-STOCK1",
-        "label": "STOCKROOM",
+        "label": "STOCK",
         "name": "STOCKROOM",
         "full_name": "Stockroom (West Central Core)",
         "building": "Javier Building",
@@ -1571,31 +1573,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.09982717,
-              14.57290276
+              121.09989016,
+              14.57288016
             ],
             [
-              121.09982717,
-              14.5727898
+              121.09989016,
+              14.57282205
             ],
             [
-              121.09986752,
-              14.5727898
+              121.09990407,
+              14.57282205
             ],
             [
-              121.09986752,
-              14.57290276
+              121.09990407,
+              14.57288016
             ],
             [
-              121.09982717,
-              14.57290276
+              121.09989016,
+              14.57288016
             ]
           ]
         ]
@@ -1611,7 +1614,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-STOCK2",
-        "label": "STOCKROOM",
+        "label": "STOCK",
         "name": "STOCKROOM",
         "full_name": "Stockroom (East Central Core)",
         "building": "Javier Building",
@@ -1621,31 +1624,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.09999061,
-              14.57290276
+              121.09999443,
+              14.57288016
             ],
             [
-              121.09999061,
-              14.5727898
+              121.09999443,
+              14.57282205
             ],
             [
-              121.10003097,
-              14.5727898
+              121.10000834,
+              14.57282205
             ],
             [
-              121.10003097,
-              14.57290276
+              121.10000834,
+              14.57288016
             ],
             [
-              121.09999061,
-              14.57290276
+              121.09999443,
+              14.57288016
             ]
           ]
         ]
@@ -1661,7 +1665,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-MR",
-        "label": "MALE RESTROOM",
+        "label": "MALE C.R.",
         "name": "MALE RESTROOM",
         "full_name": "Male Restroom (Central Core)",
         "building": "Javier Building",
@@ -1671,31 +1675,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.10003097,
-              14.57290276
+              121.10001065,
+              14.57288016
             ],
             [
-              121.10003097,
-              14.5727898
+              121.10001065,
+              14.57282205
             ],
             [
-              121.10007132,
-              14.5727898
+              121.10002456,
+              14.57282205
             ],
             [
-              121.10007132,
-              14.57290276
+              121.10002456,
+              14.57288016
             ],
             [
-              121.10003097,
-              14.57290276
+              121.10001065,
+              14.57288016
             ]
           ]
         ]
@@ -1711,7 +1716,7 @@
         "level": "3",
         "type": "room",
         "code": "F3-JAV-ELEC-OFF",
-        "label": "ELECTRICAL OFFICE",
+        "label": "ELEC. OFF.",
         "name": "ELECTRICAL OFFICE",
         "full_name": "Electrical Office (East Core)",
         "building": "Javier Building",
@@ -1721,31 +1726,32 @@
         "color": "#F1C40F",
         "outline_color": "#5F6368",
         "fill-extrusion-opacity": 0.6,
-        "campus": "Rizal Technological University - Pasig Branch"
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_rotate": -90
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              121.10007132,
-              14.57290276
+              121.10002687,
+              14.57288016
             ],
             [
-              121.10007132,
-              14.5727898
+              121.10002687,
+              14.57282205
             ],
             [
-              121.10011168,
-              14.5727898
+              121.10004078,
+              14.57282205
             ],
             [
-              121.10011168,
-              14.57290276
+              121.10004078,
+              14.57288016
             ],
             [
-              121.10007132,
-              14.57290276
+              121.10002687,
+              14.57288016
             ]
           ]
         ]
@@ -1779,7 +1785,7 @@
           [
             [
               121.10026784,
-              14.573405
+              14.57342085
             ],
             [
               121.10026784,
@@ -1791,11 +1797,11 @@
             ],
             [
               121.10033967,
-              14.573405
+              14.57342085
             ],
             [
               121.10026784,
-              14.573405
+              14.57342085
             ]
           ]
         ]
@@ -1829,7 +1835,7 @@
           [
             [
               121.10033967,
-              14.573405
+              14.57342085
             ],
             [
               121.10033967,
@@ -1841,11 +1847,11 @@
             ],
             [
               121.10041149,
-              14.573405
+              14.57342085
             ],
             [
               121.10033967,
-              14.573405
+              14.57342085
             ]
           ]
         ]
@@ -1879,7 +1885,7 @@
           [
             [
               121.10041149,
-              14.573405
+              14.57342085
             ],
             [
               121.10041149,
@@ -1891,11 +1897,11 @@
             ],
             [
               121.10048332,
-              14.573405
+              14.57342085
             ],
             [
               121.10041149,
-              14.573405
+              14.57342085
             ]
           ]
         ]

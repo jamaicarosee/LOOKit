@@ -238,7 +238,7 @@
         "name": "Garden",
         "label": "Garden",
         "floors": 0,
-        "height": 0.5,
+        "height": 0.2,
         "amenity": "park",
         "campus": "Rizal Technological University - Pasig Branch",
         "category": "amenity"
@@ -371,7 +371,7 @@
         "name": "Basketball Court",
         "label": "Basketball Court",
         "floors": 0,
-        "height": 0.5,
+        "height": 0.2,
         "amenity": "gym",
         "campus": "Rizal Technological University - Pasig Branch",
         "category": "outdoor_structure"
