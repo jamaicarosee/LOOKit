@@ -3,19 +3,6 @@ import mapboxgl from 'mapbox-gl';
 import { Plus, Minus, Compass, Box } from 'lucide-react';
 
 const RTU_PASIG_CENTER = [121.09999, 14.57309];
-<<<<<<< HEAD
-const BUFFER = 0.005;
-
-// Building target coordinates for filter camera easing
-const BUILDING_ANCHORS = {
-  all: { center: RTU_PASIG_CENTER, zoom: 17.5 },
-  mae: { center: [121.09981, 14.57337], zoom: 18.2 },
-  ced: { center: [121.10037, 14.57334], zoom: 18.2 },
-  cas: { center: [121.10058, 14.57323], zoom: 18.2 },
-  javier: { center: [121.09995, 14.57282], zoom: 18.0 },
-  canteen: { center: [121.10041, 14.57263], zoom: 18.3 },
-};
-=======
 // Slightly shifted north on desktop so the campus sits cleanly below the floating title at start
 const DESKTOP_START_CENTER = [121.09999, 14.57315];
 const BUFFER = 0.005;
@@ -45,7 +32,6 @@ function getBuildingAnchors(isDesktop) {
     canteen: { center: [121.10041, 14.57263], zoom: 18.3 },
   };
 }
->>>>>>> 26db5f2 (added search and directions page)
 
 const FILTER_NAME_MATCHES = {
   mae: ['M.A.E Building'],
@@ -82,29 +68,17 @@ function getFeatureCenter(feature) {
   return count > 0 ? [sumLon / count, sumLat / count] : RTU_PASIG_CENTER;
 }
 
-<<<<<<< HEAD
-export default function CampusMapPreview({ activeFilter, isDesktop = false }) {
-=======
 export default function CampusMapPreview({
   activeFilter,
   isDesktop = false,
   onZoomStateChange,
 }) {
->>>>>>> 26db5f2 (added search and directions page)
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [is3D, setIs3D] = useState(false);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (mapRef.current || !mapContainerRef.current) return;
-
-    // MAPBOX API KEY
-    mapboxgl.accessToken =
-      import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
-=======
   const initialZoom = isDesktop ? DESKTOP_DEFAULT_ZOOM : MOBILE_DEFAULT_ZOOM;
   const initialCenter = isDesktop ? DESKTOP_START_CENTER : RTU_PASIG_CENTER;
 
@@ -113,7 +87,6 @@ export default function CampusMapPreview({
 
     mapboxgl.accessToken =
       import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || import.meta.env.VITE_MAPBOX_TOKEN;
->>>>>>> 26db5f2 (added search and directions page)
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -129,13 +102,8 @@ export default function CampusMapPreview({
           },
         ],
       },
-<<<<<<< HEAD
-      center: RTU_PASIG_CENTER,
-      zoom: 17.5,
-=======
       center: initialCenter,
       zoom: initialZoom,
->>>>>>> 26db5f2 (added search and directions page)
       minZoom: 16.5,
       maxBounds: [
         [RTU_PASIG_CENTER[0] - BUFFER, RTU_PASIG_CENTER[1] - BUFFER],
@@ -155,15 +123,6 @@ export default function CampusMapPreview({
     });
     resizeObserver.observe(mapContainerRef.current);
 
-<<<<<<< HEAD
-    map.on('load', async () => {
-      try { 
-        // Fetch Macro Datasets from geojson file
-        const [campusRes, siteRes, pathsRes] = await Promise.all([
-          fetch('/data/macro/rtu_pasig_campus.geojson'),
-          fetch('/data/macro/site_features.geojson'),
-          fetch('/data/macro/paths.geojson'),
-=======
     // Track zoom changes to animate the desktop campus header out/in
     const handleZoomCheck = () => {
       if (!onZoomStateChange) return;
@@ -201,7 +160,6 @@ export default function CampusMapPreview({
           fetch('/data/macro/rtu_pasig_campus.geojson'),
           fetch('/data/macro/site_features.geojson'),
           fetch('/data/floor1/paths_f1.geojson'),
->>>>>>> 26db5f2 (added search and directions page)
         ]);
 
         const campusData = campusRes.ok ? await campusRes.json() : null;
@@ -221,11 +179,7 @@ export default function CampusMapPreview({
 
         // --- LAYERS ---
 
-<<<<<<< HEAD
-        // Render the Overall Campus Layout
-=======
         // A. Base Campus Footprint
->>>>>>> 26db5f2 (added search and directions page)
         if (campusData) {
           map.addLayer({
             id: 'rtu-campus-fill',
@@ -248,11 +202,7 @@ export default function CampusMapPreview({
           });
         }
 
-<<<<<<< HEAD
-        // Render Site Features (Parking Lots, Courts, Gates)
-=======
         // Site Features (Parking Lots, Courts, Gates)
->>>>>>> 26db5f2 (added search and directions page)
         if (siteData) {
           map.addLayer({
             id: 'rtu-site-3d',
@@ -277,11 +227,7 @@ export default function CampusMapPreview({
             },
           });
 
-<<<<<<< HEAD
-          // Render Parking 1 & Parking 2 Labels
-=======
           // Parking 1 & Parking 2 Labels
->>>>>>> 26db5f2 (added search and directions page)
           map.addLayer({
             id: 'rtu-site-parking-labels',
             type: 'symbol',
@@ -344,13 +290,9 @@ export default function CampusMapPreview({
           });
         }
 
-<<<<<<< HEAD
-        // 3D Buildings Render
-=======
         
 
         // 3D Extruded Buildings
->>>>>>> 26db5f2 (added search and directions page)
         if (campusData) {
           map.addLayer({
             id: 'rtu-campus-buildings',
@@ -418,34 +360,23 @@ export default function CampusMapPreview({
     });
 
     return () => {
-<<<<<<< HEAD
-=======
       map.off('zoom', handleZoomCheck);
->>>>>>> 26db5f2 (added search and directions page)
       resizeObserver.disconnect();
       markersRef.current.forEach((marker) => marker.remove());
       markersRef.current = [];
       map.remove();
       mapRef.current = null;
     };
-<<<<<<< HEAD
-  }, []);
-=======
   }, [initialCenter, initialZoom, onZoomStateChange]);
->>>>>>> 26db5f2 (added search and directions page)
 
   // Sync Dynamic Filter Highlighting & Camera Movements
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapLoaded || !map.getLayer('rtu-campus-buildings')) return;
 
-<<<<<<< HEAD
-    const targetConfig = BUILDING_ANCHORS[activeFilter] || BUILDING_ANCHORS.all;
-=======
     const anchors = getBuildingAnchors(isDesktop);
     const targetConfig = anchors[activeFilter] || anchors.all;
 
->>>>>>> 26db5f2 (added search and directions page)
     map.flyTo({
       ...targetConfig,
       pitch: is3D ? 55 : 0,
@@ -465,24 +396,15 @@ export default function CampusMapPreview({
         0.22,
       ]);
     }
-<<<<<<< HEAD
-  }, [activeFilter, mapLoaded, is3D]);
-=======
   }, [activeFilter, mapLoaded, is3D, isDesktop]);
->>>>>>> 26db5f2 (added search and directions page)
 
   // Floating HUD Controls
   const handleZoomIn = () => mapRef.current?.zoomIn({ duration: 250 });
   const handleZoomOut = () => mapRef.current?.zoomOut({ duration: 250 });
   const handleReset = () => {
     mapRef.current?.flyTo({
-<<<<<<< HEAD
-      center: RTU_PASIG_CENTER,
-      zoom: 17.5,
-=======
       center: initialCenter,
       zoom: initialZoom,
->>>>>>> 26db5f2 (added search and directions page)
       pitch: is3D ? 55 : 0,
       bearing: is3D ? -15 : 0,
       duration: 500,
@@ -500,17 +422,10 @@ export default function CampusMapPreview({
   };
 
   const btnSizeClass = isDesktop ? 'w-9 h-9' : 'w-8 h-8';
-<<<<<<< HEAD
-  const hudPositionClass = isDesktop ? 'top-2 right-8 gap-2' : 'top-3 right-3 gap-1.5';
-
-  return (
-    <div className="relative flex-1 w-full bg-[#F8F9F9] overflow-hidden select-none">
-=======
   const hudPositionClass = isDesktop ? 'top-6 right-8 gap-2' : 'top-3 right-3 gap-1.5';
 
   return (
     <div className="relative flex-1 w-full h-full bg-[#F8F9F9] overflow-hidden select-none">
->>>>>>> 26db5f2 (added search and directions page)
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Floating HUD Controls (+ / - / Reset / 2D-3D Toggle) */}
