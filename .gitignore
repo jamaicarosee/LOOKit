@@ -17,7 +17,7 @@ dist-ssr
 
 #ENV Variable
 .env.local
-
+.env
 
 # Tooling, Linters & Vite caches
 .vite/
