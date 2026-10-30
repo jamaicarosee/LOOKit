@@ -6,8 +6,7 @@ import BuildingFilterTabs from './components/BuildingFilterTabs';
 import CampusMapPreview from './components/CampusMapPreview';
 import MobileBottomSheet from './components/MobileBottomSheet';
 
-export default function DashboardMobileView({ onOpenSearch }) {
-  const {
+export default function DashboardMobileView({ onOpenSearch, onLoginClick }) {  const {
     searchQuery,
     setSearchQuery,
     activeFilter,
@@ -19,7 +18,7 @@ export default function DashboardMobileView({ onOpenSearch }) {
   return (
     <div className="w-full h-[100dvh] max-w-md mx-auto bg-white flex flex-col overflow-hidden shadow-2xl">
       {/* Header with Logo & Profile */}
-      <MobileTopBar onProfileClick={() => console.log('Profile toggled')} />
+      <MobileTopBar onProfileClick={onLoginClick} />
 
       {/* Search Input */}
       <SearchBar value={searchQuery} onChange={setSearchQuery} onOpenSearch={onOpenSearch} />

@@ -6,8 +6,7 @@ import DesktopFilterRibbon from './components/desktop/DesktopFilterRibbon';
 import DesktopCampusHeader from './components/desktop/DesktopCampusHeader';
 import CampusMapPreview from './components/CampusMapPreview';
 
-export default function DashboardDesktopView({ onOpenSearch }) {
-  const {
+export default function DashboardDesktopView({ onOpenSearch, onLoginClick }) {  const {
     searchQuery,
     setSearchQuery,
     activeFilter,
@@ -21,7 +20,11 @@ export default function DashboardDesktopView({ onOpenSearch }) {
   return (
     <div className="w-screen h-[100dvh] bg-[#F8F9F9] flex flex-col overflow-hidden">
       {/* 1. Deep Navy Top Header */}
-      <DesktopTopNav activeNav={activeNav} setActiveNav={setActiveNav} />
+      <DesktopTopNav
+        activeNav={activeNav}
+        setActiveNav={setActiveNav}
+        onProfileClick={onLoginClick}
+      />
 
       {/* 2. White Wide Search Pill Section */}
       <DesktopSearchSection
