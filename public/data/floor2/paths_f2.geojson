@@ -16,12 +16,30 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09947023, 14.57334346],
-          [121.09957949, 14.57334346],
-          [121.099726, 14.57334346],
-          [121.09987251, 14.57334346],
-          [121.10001778, 14.57334346],
-          [121.10016304, 14.57334346]
+          [
+            121.09946505,
+            14.5733125
+          ],
+          [
+            121.09957516,
+            14.5733125
+          ],
+          [
+            121.09972281,
+            14.5733125
+          ],
+          [
+            121.09987045,
+            14.5733125
+          ],
+          [
+            121.10001685,
+            14.5733125
+          ],
+          [
+            121.10016324,
+            14.5733125
+          ]
         ]
       }
     },
@@ -33,15 +51,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — GENT'S CR",
+        "name": "MAE Access \u2014 GENT'S CR",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09952362, 14.57334346],
-          [121.09952362, 14.57336654]
+          [
+            121.09951886,
+            14.5733125
+          ],
+          [
+            121.09951886,
+            14.57334274
+          ]
         ]
       }
     },
@@ -53,15 +77,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — LADY'S CR",
+        "name": "MAE Access \u2014 LADY'S CR",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09955962, 14.57334346],
-          [121.09955962, 14.57336654]
+          [
+            121.09955513,
+            14.5733125
+          ],
+          [
+            121.09955513,
+            14.57334274
+          ]
         ]
       }
     },
@@ -73,15 +103,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — MISU",
+        "name": "MAE Access \u2014 MISU",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.0996515, 14.57334346],
-          [121.0996515, 14.57336654]
+          [
+            121.09964773,
+            14.5733125
+          ],
+          [
+            121.09964773,
+            14.57334274
+          ]
         ]
       }
     },
@@ -93,15 +129,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — LAB A",
+        "name": "MAE Access \u2014 LAB A",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09979801, 14.57334346],
-          [121.09979801, 14.57336654]
+          [
+            121.09979538,
+            14.5733125
+          ],
+          [
+            121.09979538,
+            14.57334274
+          ]
         ]
       }
     },
@@ -113,15 +155,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — LAB B",
+        "name": "MAE Access \u2014 LAB B",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09994328, 14.57334346],
-          [121.09994328, 14.57336654]
+          [
+            121.09994177,
+            14.5733125
+          ],
+          [
+            121.09994177,
+            14.57334274
+          ]
         ]
       }
     },
@@ -133,15 +181,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "MAE Access — LAB C",
+        "name": "MAE Access \u2014 LAB C",
         "building": "M.A.E Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10008979, 14.57334346],
-          [121.10008979, 14.57336654]
+          [
+            121.10008942,
+            14.5733125
+          ],
+          [
+            121.10008942,
+            14.57334274
+          ]
         ]
       }
     },
@@ -160,10 +214,22 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10029562, 14.57333133],
-          [121.10034694, 14.57333133],
-          [121.10039826, 14.57333133],
-          [121.10044511, 14.57333133]
+          [
+            121.10029562,
+            14.57333133
+          ],
+          [
+            121.10034694,
+            14.57333133
+          ],
+          [
+            121.10039826,
+            14.57333133
+          ],
+          [
+            121.10044511,
+            14.57333133
+          ]
         ]
       }
     },
@@ -175,15 +241,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CED Access — DEAN",
+        "name": "CED Access \u2014 DEAN",
         "building": "CED Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10032016, 14.57333133],
-          [121.10032016, 14.57334557]
+          [
+            121.10032016,
+            14.57333133
+          ],
+          [
+            121.10032016,
+            14.57334557
+          ]
         ]
       }
     },
@@ -195,15 +267,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CED Access — FACULTY",
+        "name": "CED Access \u2014 FACULTY",
         "building": "CED Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10037148, 14.57333133],
-          [121.10037148, 14.57334557]
+          [
+            121.10037148,
+            14.57333133
+          ],
+          [
+            121.10037148,
+            14.57334557
+          ]
         ]
       }
     },
@@ -215,15 +293,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CED Access — PCED203",
+        "name": "CED Access \u2014 PCED203",
         "building": "CED Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10042169, 14.57333133],
-          [121.10042169, 14.57334557]
+          [
+            121.10042169,
+            14.57333133
+          ],
+          [
+            121.10042169,
+            14.57334557
+          ]
         ]
       }
     },
@@ -242,11 +326,26 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10056505, 14.57334927],
-          [121.10056505, 14.57330109],
-          [121.10056505, 14.57324705],
-          [121.10056505, 14.573193],
-          [121.10056505, 14.5731413]
+          [
+            121.10056505,
+            14.57334927
+          ],
+          [
+            121.10056505,
+            14.57330109
+          ],
+          [
+            121.10056505,
+            14.57324705
+          ],
+          [
+            121.10056505,
+            14.573193
+          ],
+          [
+            121.10056505,
+            14.5731413
+          ]
         ]
       }
     },
@@ -258,15 +357,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CAS Access — 201",
+        "name": "CAS Access \u2014 201",
         "building": "CAS Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10056505, 14.57327525],
-          [121.10057844, 14.57327525]
+          [
+            121.10056505,
+            14.57327525
+          ],
+          [
+            121.10057844,
+            14.57327525
+          ]
         ]
       }
     },
@@ -278,15 +383,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CAS Access — FACULTY",
+        "name": "CAS Access \u2014 FACULTY",
         "building": "CAS Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10056505, 14.5732212],
-          [121.10057844, 14.5732212]
+          [
+            121.10056505,
+            14.5732212
+          ],
+          [
+            121.10057844,
+            14.5732212
+          ]
         ]
       }
     },
@@ -298,15 +409,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "CAS Access — DEAN",
+        "name": "CAS Access \u2014 DEAN",
         "building": "CAS Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10056505, 14.57316715],
-          [121.10057844, 14.57316715]
+          [
+            121.10056505,
+            14.57316715
+          ],
+          [
+            121.10057844,
+            14.57316715
+          ]
         ]
       }
     },
@@ -325,17 +442,42 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.0993711, 14.57293087],
-          [121.09948645, 14.57293087],
-          [121.09958823, 14.57293087],
-          [121.09970221, 14.57293087],
-          [121.09981349, 14.57293087],
-          [121.09992884, 14.57293087],
-          [121.10006726, 14.57293087],
-          [121.10019346, 14.57293087],
-          [121.10034816, 14.57293087],
-          [121.10044179, 14.57293087],
-          [121.10052729, 14.57293087]
+          [
+            121.0994902,
+            14.57293087
+          ],
+          [
+            121.09958823,
+            14.57293087
+          ],
+          [
+            121.09970221,
+            14.57293087
+          ],
+          [
+            121.09981349,
+            14.57293087
+          ],
+          [
+            121.09992884,
+            14.57293087
+          ],
+          [
+            121.10006726,
+            14.57293087
+          ],
+          [
+            121.10019346,
+            14.57293087
+          ],
+          [
+            121.10034816,
+            14.57293087
+          ],
+          [
+            121.10040829,
+            14.57293087
+          ]
         ]
       }
     },
@@ -347,15 +489,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — LMSU",
+        "name": "Javier Access \u2014 LMSU",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09942674, 14.57293087],
-          [121.09942674, 14.57295084]
+          [
+            121.0994902,
+            14.57293087
+          ],
+          [
+            121.0994902,
+            14.57295084
+          ]
         ]
       }
     },
@@ -367,15 +515,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — QAU",
+        "name": "Javier Access \u2014 QAU",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09950952, 14.57293087],
-          [121.09950952, 14.57295084]
+          [
+            121.09950952,
+            14.57293087
+          ],
+          [
+            121.09950952,
+            14.57295084
+          ]
         ]
       }
     },
@@ -387,15 +541,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — PLANNING",
+        "name": "Javier Access \u2014 PLANNING",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09956108, 14.57293087],
-          [121.09956108, 14.57295084]
+          [
+            121.09956108,
+            14.57293087
+          ],
+          [
+            121.09956108,
+            14.57295084
+          ]
         ]
       }
     },
@@ -407,15 +567,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OVCPQASI",
+        "name": "Javier Access \u2014 OVCPQASI",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09961401, 14.57293087],
-          [121.09961401, 14.57295084]
+          [
+            121.09961401,
+            14.57293087
+          ],
+          [
+            121.09961401,
+            14.57295084
+          ]
         ]
       }
     },
@@ -427,15 +593,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — PROG HEADS",
+        "name": "Javier Access \u2014 PROG HEADS",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09967101, 14.57293087],
-          [121.09967101, 14.57295084]
+          [
+            121.09967101,
+            14.57293087
+          ],
+          [
+            121.09967101,
+            14.57295084
+          ]
         ]
       }
     },
@@ -447,15 +619,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OFDEAN",
+        "name": "Javier Access \u2014 OFDEAN",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.099728, 14.57293087],
-          [121.099728, 14.57295084]
+          [
+            121.099728,
+            14.57293087
+          ],
+          [
+            121.099728,
+            14.57295084
+          ]
         ]
       }
     },
@@ -467,15 +645,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — CBMOAD",
+        "name": "Javier Access \u2014 CBMOAD",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09978364, 14.57293087],
-          [121.09978364, 14.57295084]
+          [
+            121.09978364,
+            14.57293087
+          ],
+          [
+            121.09978364,
+            14.57295084
+          ]
         ]
       }
     },
@@ -487,15 +671,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — CBMFAC",
+        "name": "Javier Access \u2014 CBMFAC",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09983927, 14.57293087],
-          [121.09983927, 14.57295084]
+          [
+            121.09983927,
+            14.57293087
+          ],
+          [
+            121.09983927,
+            14.57295084
+          ]
         ]
       }
     },
@@ -507,15 +697,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OFCHAN",
+        "name": "Javier Access \u2014 OFCHAN",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.09992884, 14.57293087],
-          [121.09992884, 14.57295084]
+          [
+            121.09992884,
+            14.57293087
+          ],
+          [
+            121.09992884,
+            14.57295084
+          ]
         ]
       }
     },
@@ -527,15 +723,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OVCFA",
+        "name": "Javier Access \u2014 OVCFA",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.1000279, 14.57293087],
-          [121.1000279, 14.57295084]
+          [
+            121.1000279,
+            14.57293087
+          ],
+          [
+            121.1000279,
+            14.57295084
+          ]
         ]
       }
     },
@@ -547,15 +749,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OVCASS",
+        "name": "Javier Access \u2014 OVCASS",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10010118, 14.57293087],
-          [121.10010118, 14.57295084]
+          [
+            121.10010118,
+            14.57293087
+          ],
+          [
+            121.10010118,
+            14.57295084
+          ]
         ]
       }
     },
@@ -567,15 +775,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — OVCRIES",
+        "name": "Javier Access \u2014 OVCRIES",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10016496, 14.57293087],
-          [121.10016496, 14.57295084]
+          [
+            121.10016496,
+            14.57293087
+          ],
+          [
+            121.10016496,
+            14.57295084
+          ]
         ]
       }
     },
@@ -587,15 +801,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — GSDU",
+        "name": "Javier Access \u2014 GSDU",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10021652, 14.57293087],
-          [121.10021652, 14.57295084]
+          [
+            121.10021652,
+            14.57293087
+          ],
+          [
+            121.10021652,
+            14.57295084
+          ]
         ]
       }
     },
@@ -607,15 +827,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — RSO",
+        "name": "Javier Access \u2014 RSO",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10026946, 14.57293087],
-          [121.10026946, 14.57295084]
+          [
+            121.10026946,
+            14.57293087
+          ],
+          [
+            121.10026946,
+            14.57295084
+          ]
         ]
       }
     },
@@ -627,15 +853,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — CONFROOM",
+        "name": "Javier Access \u2014 CONFROOM",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10032102, 14.57293087],
-          [121.10032102, 14.57295084]
+          [
+            121.10032102,
+            14.57293087
+          ],
+          [
+            121.10032102,
+            14.57295084
+          ]
         ]
       }
     },
@@ -647,15 +879,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — ULIB TOP",
+        "name": "Javier Access \u2014 ULIB TOP",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10043772, 14.57293087],
-          [121.10043772, 14.57295084]
+          [
+            121.10040829,
+            14.57293087
+          ],
+          [
+            121.10040829,
+            14.57295084
+          ]
         ]
       }
     },
@@ -674,8 +912,18 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.0994155, 14.57277],
-          [121.0994155, 14.5729309]
+          [
+            121.0994902,
+            14.57293087
+          ],
+          [
+            121.0994902,
+            14.57273615
+          ],
+          [
+            121.09941554,
+            14.57273615
+          ]
         ]
       }
     },
@@ -694,8 +942,18 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10048295, 14.572746],
-          [121.10048295, 14.5729309]
+          [
+            121.10040829,
+            14.57293087
+          ],
+          [
+            121.10040829,
+            14.57273615
+          ],
+          [
+            121.10048295,
+            14.57273615
+          ]
         ]
       }
     },
@@ -714,9 +972,18 @@
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10018673, 14.57259445],
-          [121.100483, 14.57259445],
-          [121.100483, 14.57264014]
+          [
+            121.10018673,
+            14.57259445
+          ],
+          [
+            121.100483,
+            14.57259445
+          ],
+          [
+            121.100483,
+            14.57264014
+          ]
         ]
       }
     },
@@ -728,15 +995,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — IHK",
+        "name": "Javier Access \u2014 IHK",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10021686, 14.57259445],
-          [121.10021686, 14.57257295]
+          [
+            121.10021686,
+            14.57259445
+          ],
+          [
+            121.10021686,
+            14.57257295
+          ]
         ]
       }
     },
@@ -748,15 +1021,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — 226",
+        "name": "Javier Access \u2014 226",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10025162, 14.57259445],
-          [121.10025162, 14.57257295]
+          [
+            121.10025162,
+            14.57259445
+          ],
+          [
+            121.10025162,
+            14.57257295
+          ]
         ]
       }
     },
@@ -768,15 +1047,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — RMS",
+        "name": "Javier Access \u2014 RMS",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10028637, 14.57259445],
-          [121.10028637, 14.57257295]
+          [
+            121.10028637,
+            14.57259445
+          ],
+          [
+            121.10028637,
+            14.57257295
+          ]
         ]
       }
     },
@@ -788,15 +1073,21 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — 224",
+        "name": "Javier Access \u2014 224",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10032112, 14.57259445],
-          [121.10032112, 14.57257295]
+          [
+            121.10032112,
+            14.57259445
+          ],
+          [
+            121.10032112,
+            14.57257295
+          ]
         ]
       }
     },
@@ -808,15 +1099,223 @@
         "type": "pedestrian_path",
         "floor_level": 2,
         "level": "2",
-        "name": "Javier Access — CEU",
+        "name": "Javier Access \u2014 CEU",
         "building": "Javier Building",
         "campus": "Rizal Technological University - Pasig Branch"
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [121.10035588, 14.57259445],
-          [121.10035588, 14.57257295]
+          [
+            121.10035588,
+            14.57259445
+          ],
+          [
+            121.10035588,
+            14.57257295
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Access \u2014 ACCREDITATION",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.0994902,
+            14.5728435
+          ],
+          [
+            121.09945993,
+            14.5728435
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 17,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Access \u2014 LIBRARY WING",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10040829,
+            14.5728435
+          ],
+          [
+            121.10043856,
+            14.5728435
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 ELECTRICAL",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09986468,
+            14.57293087
+          ],
+          [
+            121.09986468,
+            14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 FEMALE RESTROOM",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09988089,
+            14.57293087
+          ],
+          [
+            121.09988089,
+            14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 STOCKROOM",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09989711,
+            14.57293087
+          ],
+          [
+            121.09989711,
+            14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 STOCKROOM",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10000138,
+            14.57293087
+          ],
+          [
+            121.10000138,
+            14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 MALE RESTROOM",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1000176,
+            14.57293087
+          ],
+          [
+            121.1000176,
+            14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Utility Entrance \u2014 STOCKROOM",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10003383,
+            14.57293087
+          ],
+          [
+            121.10003383,
+            14.57288016
+          ]
         ]
       }
     }

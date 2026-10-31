@@ -1,518 +1,507 @@
 {
   "type": "FeatureCollection",
-  "name": "rtu_paths",
+  "name": "rtu_pasig_paths",
   "features": [
     {
       "type": "Feature",
-      "id": 2,
       "properties": {
         "highway": "footway",
         "level": "0",
         "type": "pedestrian_path",
-        "id": "path_mae_entrance",
-        "name": "M.A.E Building Entrance Path",
-        "from": "JCT_MAE",
-        "to": "ENTRANCE_MAE",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09974546,
-            14.5731027
-          ],
-          [
-            121.09978705,
-            14.57314804
-          ],
-          [
-            121.099812,
-            14.57320246
-          ],
-          [
-            121.09982032,
-            14.57325688
-          ],
-          [
-            121.09982032,
-            14.57329618
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 3,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_plaza_connector",
-        "name": "Main Gateway Road (M.A.E Junction to CED Junction)",
-        "from": "JCT_MAE",
-        "to": "JCT_CED",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09974546,
-            14.5731027
-          ],
-          [
-            121.09979536,
-            14.5731027
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 4,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_ced_entrance",
-        "name": "CED Building Entrance Path",
-        "from": "JCT_CED",
-        "to": "ENTRANCE_CED",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09979536,
-            14.5731027
-          ],
-          [
-            121.09985636,
-            14.573142
-          ],
-          [
-            121.09992013,
-            14.57316921
-          ],
-          [
-            121.09998945,
-            14.57319037
-          ],
-          [
-            121.10005876,
-            14.57321153
-          ],
-          [
-            121.10012808,
-            14.57323874
-          ],
-          [
-            121.10020294,
-            14.57325083
-          ],
-          [
-            121.10028058,
-            14.57325688
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 5,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_javier_north_approach",
-        "name": "Main Walkway to Javier Central Overpass",
-        "from": "JCT_CED",
-        "to": "JCT_JAVIER_NORTH",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09979536,
-            14.5731027
-          ],
-          [
-            121.099934,
-            14.5731027
-          ],
-          [
-            121.0999534,
-            14.57308758
-          ],
-          [
-            121.09995895,
-            14.57302107
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 6,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_cas_entrance",
-        "name": "CAS Building Entrance Path (North of Javier East Wing)",
-        "from": "JCT_JAVIER_NORTH",
-        "to": "ENTRANCE_CAS",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09995895,
-            14.57302107
-          ],
-          [
-            121.10000054,
-            14.57302107
-          ],
-          [
-            121.10021681,
-            14.57302107
-          ],
-          [
-            121.10043862,
-            14.57302107
-          ],
-          [
-            121.10047743,
-            14.57304525
-          ],
-          [
-            121.10051071,
-            14.57310572
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 7,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_javier_breezeway",
-        "name": "Javier Building Central Breezeway Passage",
-        "from": "JCT_JAVIER_NORTH",
-        "to": "JCT_COURTYARD_CENTER",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09995895,
-            14.57302107
-          ],
-          [
-            121.09995895,
-            14.57291223
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 8,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_javier_central_stairs",
-        "name": "Javier Building Central Courtyard Stairs Entrance",
-        "from": "JCT_COURTYARD_CENTER",
-        "to": "ENTRANCE_JAVIER_STAIRS",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09995895,
-            14.57291223
-          ],
-          [
-            121.09995895,
-            14.57286083
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 9,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_courtyard_west_spine",
-        "name": "Inner Courtyard West Corridor Spine",
-        "from": "JCT_COURTYARD_CENTER",
-        "to": "JCT_COURTYARD_WEST",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09995895,
-            14.57291223
-          ],
-          [
-            121.09983973,
-            14.57291223
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 10,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_gymnasium_west_wrap",
-        "name": "Gymnasium North & West Perimeter Walkway",
-        "from": "JCT_COURTYARD_WEST",
-        "to": "ENTRANCE_GYM_WEST",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09983973,
-            14.57291223
-          ],
-          [
-            121.0994876,
-            14.57291223
-          ],
-          [
-            121.0994876,
-            14.57267944
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 11,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_gymnasium_east_courtyard",
-        "name": "Gymnasium East Walkway to Southern Courtyard",
-        "from": "JCT_COURTYARD_WEST",
-        "to": "COURTYARD_SOUTH_WEST",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09983973,
-            14.57291223
-          ],
-          [
-            121.0998425,
-            14.57274897
-          ],
-          [
-            121.09984804,
-            14.5725827
-          ],
-          [
-            121.09987023,
-            14.57257363
-          ],
-          [
-            121.10002827,
-            14.57256153
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 12,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_courtyard_east_spine",
-        "name": "Inner Courtyard East Corridor Spine",
-        "from": "JCT_COURTYARD_CENTER",
-        "to": "JCT_COURTYARD_EAST",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09995895,
-            14.57291223
-          ],
-          [
-            121.10005322,
-            14.57291223
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 13,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_garden_west_courtyard",
-        "name": "Garden West Walkway to Southern Garden Entrance",
-        "from": "JCT_COURTYARD_EAST",
-        "to": "ENTRANCE_GARDEN_SOUTH",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.10005322,
-            14.57291223
-          ],
-          [
-            121.10005045,
-            14.57273386
-          ],
-          [
-            121.10005045,
-            14.57259781
-          ],
-          [
-            121.1001059,
-            14.57259781
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": 14,
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_garden_east_wrap",
-        "name": "Garden North & East Perimeter Walkway (to Canteen & Javier East Wing)",
-        "from": "JCT_COURTYARD_EAST",
-        "to": "ENTRANCE_GARDEN_EAST",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.10005322,
-            14.57291223
-          ],
-          [
-            121.10021681,
-            14.57290618
-          ],
-          [
-            121.10040812,
-            14.57290316
-          ],
-          [
-            121.10040812,
-            14.57267037
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_main_gate_west",
-        "name": "Main Gateway Road (Gate 1 to M.A.E Junction)",
-        "from": "GATE_1",
-        "to": "JCT_MAE",
-        "oneway": false
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09921651,
-            14.57312399
-          ],
-          [
-            121.09933371,
-            14.57309846
-          ],
-          [
-            121.0993656,
-            14.57309665
-          ],
-          [
-            121.09955137,
-            14.57309967
-          ],
-          [
-            121.09974546,
-            14.5731027
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_gate1_entrance",
-        "name": "Gate 1 entrance walkway to lobby",
-        "from": "GATE_1",
-        "to": "LOBBY",
+        "id": "path_mae_corridor_west",
+        "name": "M.A.E corridor (west flow)",
         "oneway": true
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            121.09921651,
-            14.57301605
+            121.09985543,
+            14.5733019
+          ],
+          [
+            121.09947815,
+            14.5733019
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_mae_corridor_east",
+        "name": "M.A.E corridor (east flow)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09985543,
+            14.5733019
+          ],
+          [
+            121.10013915,
+            14.5733019
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_parking1_to_ramp",
+        "name": "Parking 1 to west PWD ramp",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09938156,
+            14.57329696
+          ],
+          [
+            121.09949626,
+            14.57329696
+          ],
+          [
+            121.09949626,
+            14.5733019
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_ramp_mid",
+        "name": "PWD ramp (centre) up to corridor",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09965925,
+            14.57324098
+          ],
+          [
+            121.09965925,
+            14.5733019
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_mae_east_ramp",
+        "name": "M.A.E east PWD ramp down to court",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10008784,
+            14.57329367
+          ],
+          [
+            121.10013311,
+            14.57329037
+          ],
+          [
+            121.10013311,
+            14.57328214
+          ],
+          [
+            121.10012104,
+            14.5732278
+          ],
+          [
+            121.10011802,
+            14.57320311
+          ],
+          [
+            121.10011802,
+            14.57304175
+          ],
+          [
+            121.10011802,
+            14.5730187
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_exit_road",
+        "name": "Exit road to Gate 1",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10025536,
+            14.57324427
+          ],
+          [
+            121.10020555,
+            14.57324427
+          ],
+          [
+            121.10007879,
+            14.57324098
+          ],
+          [
+            121.09992787,
+            14.57323604
+          ],
+          [
+            121.09941477,
+            14.57323274
+          ],
+          [
+            121.09932422,
+            14.5732311
+          ],
+          [
+            121.09921858,
+            14.5732311
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_connector_1",
+        "name": "Connector to entrance walkway (west)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09941477,
+            14.57325909
+          ],
+          [
+            121.09941477,
+            14.57306315
+          ],
+          [
+            121.09941477,
+            14.57302199
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_connector_2",
+        "name": "Connector to entrance walkway (west-centre)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09957473,
+            14.57325909
+          ],
+          [
+            121.09957473,
+            14.57306315
+          ],
+          [
+            121.09957473,
+            14.57302199
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_connector_3",
+        "name": "Connector to entrance walkway (centre)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09974074,
+            14.5732558
+          ],
+          [
+            121.09974074,
+            14.57306315
+          ],
+          [
+            121.09974074,
+            14.57302199
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_connector_4",
+        "name": "Centre stair/ramp down to entrance walkway",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09985694,
+            14.5733019
+          ],
+          [
+            121.09985845,
+            14.57327391
+          ],
+          [
+            121.09985996,
+            14.57320311
+          ],
+          [
+            121.09985996,
+            14.57306315
+          ],
+          [
+            121.09985996,
+            14.57302199
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_court_center",
+        "name": "Court centre line to return row",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10029761,
+            14.57323604
+          ],
+          [
+            121.10030063,
+            14.57303846
+          ],
+          [
+            121.10030063,
+            14.5730187
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_court_east",
+        "name": "Court east side to return row",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10042438,
+            14.5732525
+          ],
+          [
+            121.10042891,
+            14.57304669
+          ],
+          [
+            121.10042891,
+            14.5730187
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_pced_ramp",
+        "name": "PCED PWD ramp",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.1002629,
+            14.5732525
+          ],
+          [
+            121.10034439,
+            14.5732525
+          ],
+          [
+            121.10034439,
+            14.573273
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_storage_ramp",
+        "name": "Storage PWD ramp",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10049531,
+            14.57304175
+          ],
+          [
+            121.10049531,
+            14.57312078
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_storage_corridor",
+        "name": "Storage corridor",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10050134,
+            14.57321793
+          ],
+          [
+            121.10052851,
+            14.57321793
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_east_return",
+        "name": "East return to lobby",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10052549,
+            14.57304175
+          ],
+          [
+            121.10051644,
+            14.57301376
+          ],
+          [
+            121.09999578,
+            14.57301376
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_entrance_walkway",
+        "name": "Entrance walkway (Gate 1 to lobby)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09921556,
+            14.5730187
           ],
           [
             121.099371,
-            14.57301605
+            14.5730187
           ],
           [
-            121.09991224,
-            14.57301605
+            121.09990825,
+            14.5730187
           ],
           [
-            121.09994634,
-            14.57300793
+            121.09994598,
+            14.57300882
+          ],
+          [
+            121.09994598,
+            14.57298906
           ]
         ]
       }
@@ -523,30 +512,276 @@
         "highway": "footway",
         "level": "0",
         "type": "pedestrian_path",
-        "id": "path_gate1_exit",
-        "name": "Exit road to Gate 1",
-        "from": "JCT_EXIT_EAST",
-        "to": "GATE_1",
+        "id": "path_lobby_down",
+        "name": "Lobby to courtyard ring",
         "oneway": true
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            121.10011148,
-            14.57324238
+            121.09994598,
+            14.57298906
           ],
           [
-            121.09963949,
-            14.57323426
+            121.09994598,
+            14.57292485
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_ring_west",
+        "name": "Courtyard ring west (to Gate 2)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994598,
+            14.57292485
           ],
           [
-            121.09941575,
-            14.57323077
+            121.09948268,
+            14.57292485
           ],
           [
-            121.09921651,
-            14.57322613
+            121.09948268,
+            14.57264329
+          ],
+          [
+            121.09947513,
+            14.57262683
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_ring_east",
+        "name": "Courtyard ring east",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994598,
+            14.57292485
+          ],
+          [
+            121.10038363,
+            14.57292485
+          ],
+          [
+            121.10041834,
+            14.57291497
+          ],
+          [
+            121.10041834,
+            14.57264329
+          ],
+          [
+            121.10045305,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_inner_west",
+        "name": "Stage-side link south",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983581,
+            14.57292485
+          ],
+          [
+            121.09983581,
+            14.57264329
+          ],
+          [
+            121.09983883,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_inner_east",
+        "name": "Garden-side link south",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10004709,
+            14.57292485
+          ],
+          [
+            121.10004709,
+            14.57265976
+          ],
+          [
+            121.10004709,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_south_row",
+        "name": "South walkway east",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983883,
+            14.57261366
+          ],
+          [
+            121.10037307,
+            14.57261366
+          ],
+          [
+            121.10045305,
+            14.57261366
+          ],
+          [
+            121.10054964,
+            14.57261366
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_east_column",
+        "name": "East column north to CED activity area",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10054964,
+            14.57261366
+          ],
+          [
+            121.10054964,
+            14.57335129
+          ],
+          [
+            121.10052851,
+            14.57335623
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_stage_north",
+        "name": "Stage entrance (north)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09965925,
+            14.5729232
+          ],
+          [
+            121.09965925,
+            14.57288698
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_stage_west",
+        "name": "Stage entrance (west)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09948268,
+            14.5726647
+          ],
+          [
+            121.09950833,
+            14.5726647
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "level": "0",
+        "type": "pedestrian_path",
+        "id": "path_stage_east",
+        "name": "Stage entrance (east)",
+        "oneway": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09983581,
+            14.5726614
+          ],
+          [
+            121.09981469,
+            14.5726614
           ]
         ]
       }
@@ -559,24 +794,22 @@
         "type": "pedestrian_path",
         "id": "path_gate1_parking1",
         "name": "Gate 1 - Parking 1",
-        "from": "GATE_1",
-        "to": "PARKING_1",
         "oneway": false
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            121.09921651,
-            14.57320524
+            121.09921556,
+            14.57320311
           ],
           [
-            121.0993124,
-            14.57324586
+            121.09930913,
+            14.57326567
           ],
           [
-            121.0993124,
-            14.5732714
+            121.09930913,
+            14.57327391
           ]
         ]
       }
@@ -589,58 +822,22 @@
         "type": "pedestrian_path",
         "id": "path_gate1_parking2",
         "name": "Gate 1 - Parking 2",
-        "from": "GATE_1",
-        "to": "PARKING_2",
         "oneway": false
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            121.09921651,
-            14.57306596
+            121.09921556,
+            14.57303846
           ],
           [
-            121.09928044,
-            14.57301605
+            121.09927894,
+            14.57300882
           ],
           [
-            121.09928044,
-            14.572994
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_gate2_exit",
-        "name": "Courtyard ring exit to Gate 2",
-        "from": "LOBBY",
-        "to": "GATE_2",
-        "oneway": true
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09994634,
-            14.57292088
-          ],
-          [
-            121.09948607,
-            14.57292088
-          ],
-          [
-            121.09948287,
-            14.57264464
-          ],
-          [
-            121.09946369,
-            14.57262839
+            121.09927894,
+            14.57299729
           ]
         ]
       }
@@ -653,62 +850,18 @@
         "type": "pedestrian_path",
         "id": "path_gate2_parking2",
         "name": "Gate 2 - Parking 2",
-        "from": "GATE_2",
-        "to": "PARKING_2",
         "oneway": false
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            121.09933371,
-            14.57262723
+            121.09933931,
+            14.57262683
           ],
           [
-            121.09933371,
-            14.57267134
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "highway": "footway",
-        "level": "0",
-        "type": "pedestrian_path",
-        "id": "path_service_loop",
-        "name": "South walkway and east column (to CED activity area)",
-        "from": "JCT_COURTYARD_WEST",
-        "to": "CED_ACTIVITY",
-        "oneway": true
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            121.09983553,
-            14.57292088
-          ],
-          [
-            121.09983553,
-            14.57263071
-          ],
-          [
-            121.09985577,
-            14.5726133
-          ],
-          [
-            121.10055151,
-            14.5726133
-          ],
-          [
-            121.10055151,
-            14.57334452
-          ],
-          [
-            121.10051102,
-            14.57335264
+            121.09933931,
+            14.57267622
           ]
         ]
       }

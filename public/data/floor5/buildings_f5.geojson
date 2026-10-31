@@ -1,1 +1,717 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","id":5000,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E501","label":"E501","name":"E501","full_name":"Room E501 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09946755,14.57342085],[121.09946755,14.57334274],[121.09954094,14.57334274],[121.09954094,14.57342085],[121.09946755,14.57342085]]]}},{"type":"Feature","id":5001,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E502","label":"E502","name":"E502","full_name":"Room E502 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09954094,14.57342085],[121.09954094,14.57334274],[121.09961433,14.57334274],[121.09961433,14.57342085],[121.09954094,14.57342085]]]}},{"type":"Feature","id":5002,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E503","label":"E503","name":"E503","full_name":"Room E503 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09961433,14.57342085],[121.09961433,14.57334274],[121.09968772,14.57334274],[121.09968772,14.57342085],[121.09961433,14.57342085]]]}},{"type":"Feature","id":5003,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E504","label":"E504","name":"E504","full_name":"Room E504 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09968772,14.57342085],[121.09968772,14.57334274],[121.0997611,14.57334274],[121.0997611,14.57342085],[121.09968772,14.57342085]]]}},{"type":"Feature","id":5004,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E505","label":"E505","name":"E505","full_name":"Room E505 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.0997611,14.57342085],[121.0997611,14.57334274],[121.09983449,14.57334274],[121.09983449,14.57342085],[121.0997611,14.57342085]]]}},{"type":"Feature","id":5005,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E506","label":"E506","name":"E506","full_name":"Room E506 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09983449,14.57342085],[121.09983449,14.57334274],[121.09990788,14.57334274],[121.09990788,14.57342085],[121.09983449,14.57342085]]]}},{"type":"Feature","id":5006,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E507","label":"E507","name":"E507","full_name":"Room E507 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09990788,14.57342085],[121.09990788,14.57334274],[121.09998035,14.57334274],[121.09998035,14.57342085],[121.09990788,14.57342085]]]}},{"type":"Feature","id":5007,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-E508","label":"E508","name":"E508","full_name":"Room E508 Lecture Hall","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.09998035,14.57342085],[121.09998035,14.57334274],[121.10005374,14.57334274],[121.10005374,14.57342085],[121.09998035,14.57342085]]]}},{"type":"Feature","id":5008,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-FACCR1","label":"FACULTY CR","name":"FACULTY CR","full_name":"MAE Faculty Restroom 1","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch","label_slot":1},"geometry":{"type":"Polygon","coordinates":[[[121.10005374,14.57342085],[121.10005374,14.57334274],[121.10007025,14.57334274],[121.10007025,14.57342085],[121.10005374,14.57342085]]]}},{"type":"Feature","id":5009,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-FACCR2","label":"FACULTY CR","name":"FACULTY CR","full_name":"MAE Faculty Restroom 2","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch","label_slot":2},"geometry":{"type":"Polygon","coordinates":[[[121.10007025,14.57342085],[121.10007025,14.57334274],[121.10008768,14.57334274],[121.10008768,14.57342085],[121.10007025,14.57342085]]]}},{"type":"Feature","id":5010,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-GCR","label":"GENT'S CR","name":"GENT'S CR","full_name":"MAE Gent's Restroom","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch","label_slot":3},"geometry":{"type":"Polygon","coordinates":[[[121.10008768,14.57342085],[121.10008768,14.57334274],[121.10012438,14.57334274],[121.10012438,14.57342085],[121.10008768,14.57342085]]]}},{"type":"Feature","id":5011,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-MAE-LCR","label":"LADY'S CR","name":"LADY'S CR","full_name":"MAE Lady's Restroom","building":"M.A.E Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#E67E22","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch","label_slot":4},"geometry":{"type":"Polygon","coordinates":[[[121.10012438,14.57342085],[121.10012438,14.57334274],[121.10016199,14.57334274],[121.10016199,14.57342085],[121.10012438,14.57342085]]]}},{"type":"Feature","id":5040,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-CED-GYM","label":"PCED GYM","name":"PCED GYM","full_name":"PCED Gymnasium (5th Floor, CED Building)","building":"CED Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#2980B9","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.10026784,14.573405],[121.10026784,14.57328959],[121.10036098,14.57328959],[121.10036098,14.57330525],[121.10048332,14.57330525],[121.10048332,14.573405],[121.10026784,14.573405]]]}},{"type":"Feature","id":5041,"properties":{"feature_type":"room","indoor":"room","floor_level":5,"level":"5","type":"room","code":"F5-CED-STORAGE","label":"STORAGE","name":"STORAGE","full_name":"CED Gym Storage Room","building":"CED Building","base_height":0.0,"height":3.5,"clearance":3.5,"color":"#2980B9","outline_color":"#5F6368","fill-extrusion-opacity":0.6,"campus":"Rizal Technological University - Pasig Branch"},"geometry":{"type":"Polygon","coordinates":[[[121.10026784,14.57328959],[121.10026784,14.57325662],[121.10030136,14.57325662],[121.10030136,14.57328959],[121.10026784,14.57328959]]]}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 5000,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E501",
+        "label": "E501",
+        "name": "E501",
+        "full_name": "Room E501 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09946755,
+              14.57342085
+            ],
+            [
+              121.09946755,
+              14.57334274
+            ],
+            [
+              121.09954094,
+              14.57334274
+            ],
+            [
+              121.09954094,
+              14.57342085
+            ],
+            [
+              121.09946755,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5001,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E502",
+        "label": "E502",
+        "name": "E502",
+        "full_name": "Room E502 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09954094,
+              14.57342085
+            ],
+            [
+              121.09954094,
+              14.57334274
+            ],
+            [
+              121.09961433,
+              14.57334274
+            ],
+            [
+              121.09961433,
+              14.57342085
+            ],
+            [
+              121.09954094,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5002,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E503",
+        "label": "E503",
+        "name": "E503",
+        "full_name": "Room E503 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09961433,
+              14.57342085
+            ],
+            [
+              121.09961433,
+              14.57334274
+            ],
+            [
+              121.09968772,
+              14.57334274
+            ],
+            [
+              121.09968772,
+              14.57342085
+            ],
+            [
+              121.09961433,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5003,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E504",
+        "label": "E504",
+        "name": "E504",
+        "full_name": "Room E504 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09968772,
+              14.57342085
+            ],
+            [
+              121.09968772,
+              14.57334274
+            ],
+            [
+              121.0997611,
+              14.57334274
+            ],
+            [
+              121.0997611,
+              14.57342085
+            ],
+            [
+              121.09968772,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5004,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E505",
+        "label": "E505",
+        "name": "E505",
+        "full_name": "Room E505 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.0997611,
+              14.57342085
+            ],
+            [
+              121.0997611,
+              14.57334274
+            ],
+            [
+              121.09983449,
+              14.57334274
+            ],
+            [
+              121.09983449,
+              14.57342085
+            ],
+            [
+              121.0997611,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5005,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E506",
+        "label": "E506",
+        "name": "E506",
+        "full_name": "Room E506 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09983449,
+              14.57342085
+            ],
+            [
+              121.09983449,
+              14.57334274
+            ],
+            [
+              121.09990788,
+              14.57334274
+            ],
+            [
+              121.09990788,
+              14.57342085
+            ],
+            [
+              121.09983449,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5006,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E507",
+        "label": "E507",
+        "name": "E507",
+        "full_name": "Room E507 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09990788,
+              14.57342085
+            ],
+            [
+              121.09990788,
+              14.57334274
+            ],
+            [
+              121.09998035,
+              14.57334274
+            ],
+            [
+              121.09998035,
+              14.57342085
+            ],
+            [
+              121.09990788,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5007,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-E508",
+        "label": "E508",
+        "name": "E508",
+        "full_name": "Room E508 Lecture Hall",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.09998035,
+              14.57342085
+            ],
+            [
+              121.09998035,
+              14.57334274
+            ],
+            [
+              121.10005374,
+              14.57334274
+            ],
+            [
+              121.10005374,
+              14.57342085
+            ],
+            [
+              121.09998035,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5008,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-FACCR1",
+        "label": "FACULTY CR",
+        "name": "FACULTY CR",
+        "full_name": "MAE Faculty Restroom 1",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_slot": 1
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10005374,
+              14.57342085
+            ],
+            [
+              121.10005374,
+              14.57334274
+            ],
+            [
+              121.10007025,
+              14.57334274
+            ],
+            [
+              121.10007025,
+              14.57342085
+            ],
+            [
+              121.10005374,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5009,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-FACCR2",
+        "label": "FACULTY CR",
+        "name": "FACULTY CR",
+        "full_name": "MAE Faculty Restroom 2",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_slot": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10007025,
+              14.57342085
+            ],
+            [
+              121.10007025,
+              14.57334274
+            ],
+            [
+              121.10008768,
+              14.57334274
+            ],
+            [
+              121.10008768,
+              14.57342085
+            ],
+            [
+              121.10007025,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5010,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-GCR",
+        "label": "GENT'S CR",
+        "name": "GENT'S CR",
+        "full_name": "MAE Gent's Restroom",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_slot": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10008768,
+              14.57342085
+            ],
+            [
+              121.10008768,
+              14.57334274
+            ],
+            [
+              121.10012438,
+              14.57334274
+            ],
+            [
+              121.10012438,
+              14.57342085
+            ],
+            [
+              121.10008768,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5011,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-MAE-LCR",
+        "label": "LADY'S CR",
+        "name": "LADY'S CR",
+        "full_name": "MAE Lady's Restroom",
+        "building": "M.A.E Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#E67E22",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch",
+        "label_slot": 4
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10012438,
+              14.57342085
+            ],
+            [
+              121.10012438,
+              14.57334274
+            ],
+            [
+              121.10016199,
+              14.57334274
+            ],
+            [
+              121.10016199,
+              14.57342085
+            ],
+            [
+              121.10012438,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5040,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-CED-GYM",
+        "label": "PCED GYM",
+        "name": "PCED GYM",
+        "full_name": "PCED Gymnasium (5th Floor, CED Building)",
+        "building": "CED Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#2980B9",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10026784,
+              14.57342085
+            ],
+            [
+              121.10026784,
+              14.57328959
+            ],
+            [
+              121.10036283,
+              14.57328959
+            ],
+            [
+              121.10036283,
+              14.57330715
+            ],
+            [
+              121.10048332,
+              14.57330715
+            ],
+            [
+              121.10048332,
+              14.57342085
+            ],
+            [
+              121.10026784,
+              14.57342085
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5041,
+      "properties": {
+        "feature_type": "room",
+        "indoor": "room",
+        "floor_level": 5,
+        "level": "5",
+        "type": "room",
+        "code": "F5-CED-STORAGE",
+        "label": "STORAGE",
+        "name": "STORAGE",
+        "full_name": "CED Gym Storage Room",
+        "building": "CED Building",
+        "base_height": 0.0,
+        "height": 3.5,
+        "clearance": 3.5,
+        "color": "#2980B9",
+        "outline_color": "#5F6368",
+        "fill-extrusion-opacity": 0.6,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              121.10026784,
+              14.57328959
+            ],
+            [
+              121.10026784,
+              14.57325662
+            ],
+            [
+              121.10030136,
+              14.57325662
+            ],
+            [
+              121.10030136,
+              14.57328959
+            ],
+            [
+              121.10026784,
+              14.57328959
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

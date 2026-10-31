@@ -1,1 +1,618 @@
-[{"id":"STAIRS-F3-BFMU-CENTRAL","type":"stairs","layout":"u_turn","name":"Central BFMU 3rd-Floor Staircase Landing","full_name":"Main Lobby Central U-Shaped Staircase 3rd-Floor Landing Platform","building":"Javier Building","floor_level":3,"steps":17,"direction":"south","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.09986752,14.57273897,121.09999061,14.57290276],"geometry":{"type":"Polygon","coordinates":[[[121.09986752,14.57290276],[121.09986752,14.57273897],[121.09999061,14.57273897],[121.09999061,14.57290276],[121.09986752,14.57290276]]]},"flights":[{"kind":"steps","bounds":[121.09986752,14.57276156,121.09990788,14.57290276],"steps":8,"direction":"south","start_step":1,"start_height":0.0,"target_height":3.5},{"kind":"landing","bounds":[121.09986752,14.57273897,121.09999061,14.57276156],"step_number":9,"height":3.5},{"kind":"steps","bounds":[121.09995025,14.57276156,121.09999061,14.57290276],"steps":8,"direction":"north","start_step":10,"start_height":0.0,"target_height":3.5}]},{"id":"STAIRS-F3-MAE-WEST","type":"stairs","layout":"u_turn","name":"MAE West Staircase","full_name":"M.A.E Building West Turn-Around Staircase (Floor 3)","building":"M.A.E Building","floor_level":3,"steps":17,"direction":"north","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.09940442,14.57334274,121.09946755,14.57342085],"geometry":{"type":"Polygon","coordinates":[[[121.09940442,14.57342085],[121.09940442,14.57334274],[121.09946755,14.57334274],[121.09946755,14.57342085],[121.09940442,14.57342085]]]},"flights":[{"kind":"steps","bounds":[121.09940442,14.57334274,121.09943599,14.57340825],"steps":8,"direction":"north","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.09940442,14.57340825,121.09946755,14.57342085],"step_number":9,"height":1.75},{"kind":"steps","bounds":[121.09943599,14.57334274,121.09946755,14.57340825],"steps":8,"direction":"south","start_step":10,"start_height":1.75,"target_height":3.5}]},{"id":"STAIRS-F3-MAE-EAST","type":"stairs","layout":"u_turn","name":"MAE East Staircase","full_name":"M.A.E Building East Turn-Around Staircase (Floor 3)","building":"M.A.E Building","floor_level":3,"steps":17,"direction":"north","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.10016199,14.57334274,121.10022512,14.57342085],"geometry":{"type":"Polygon","coordinates":[[[121.10016199,14.57342085],[121.10016199,14.57334274],[121.10022512,14.57334274],[121.10022512,14.57342085],[121.10016199,14.57342085]]]},"flights":[{"kind":"steps","bounds":[121.10019355,14.57334274,121.10022512,14.57340825],"steps":8,"direction":"north","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.10016199,14.57340825,121.10022512,14.57342085],"step_number":9,"height":1.75},{"kind":"steps","bounds":[121.10016199,14.57334274,121.10019355,14.57340825],"steps":8,"direction":"south","start_step":10,"start_height":1.75,"target_height":3.5}]},{"id":"STAIRS-F3-JAVIER-WEST","type":"stairs","layout":"u_turn","name":"Javier West Wing Staircase","full_name":"Javier Building West Wing U-Shaped Staircase (Floor 3)","building":"Javier Building","floor_level":3,"steps":17,"direction":"west","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.09937115,14.57264014,121.09945993,14.57273615],"geometry":{"type":"Polygon","coordinates":[[[121.09937115,14.57273615],[121.09937115,14.57264014],[121.09945993,14.57264014],[121.09945993,14.57273615],[121.09937115,14.57273615]]]},"flights":[{"kind":"steps","bounds":[121.09938326,14.57268815,121.09945993,14.57273615],"steps":8,"direction":"west","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.09937115,14.57264014,121.09938326,14.57273615],"step_number":9,"height":1.75},{"kind":"steps","bounds":[121.09938326,14.57264014,121.09945993,14.57268815],"steps":8,"direction":"east","start_step":10,"start_height":1.75,"target_height":3.5}]},{"id":"STAIRS-F3-JAVIER-EAST","type":"stairs","layout":"u_turn","name":"Javier East Wing Staircase","full_name":"Javier Building East Wing U-Shaped Staircase (Floor 3)","building":"Javier Building","floor_level":3,"steps":17,"direction":"east","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.10043856,14.57264014,121.10052734,14.57273615],"geometry":{"type":"Polygon","coordinates":[[[121.10043856,14.57273615],[121.10043856,14.57264014],[121.10052734,14.57264014],[121.10052734,14.57273615],[121.10043856,14.57273615]]]},"flights":[{"kind":"steps","bounds":[121.10043856,14.57268815,121.10051523,14.57273615],"steps":8,"direction":"east","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.10051523,14.57264014,121.10052734,14.57273615],"step_number":9,"height":1.75},{"kind":"steps","bounds":[121.10043856,14.57264014,121.10051523,14.57268815],"steps":8,"direction":"west","start_step":10,"start_height":1.75,"target_height":3.5}]},{"id":"STAIRS-F3-CED","type":"stairs","layout":"u_turn","name":"CED Staircase","full_name":"CED Building U-Shaped Staircase (Floor 3)","building":"CED Building","floor_level":3,"steps":13,"direction":"west","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.10030136,14.57325662,121.10033967,14.57328959],"geometry":{"type":"Polygon","coordinates":[[[121.10030136,14.57328959],[121.10030136,14.57325662],[121.10033967,14.57325662],[121.10033967,14.57328959],[121.10030136,14.57328959]]]},"flights":[{"kind":"steps","bounds":[121.10031094,14.57325662,121.10033967,14.57327311],"steps":6,"direction":"west","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.10030136,14.57325662,121.10031094,14.57328959],"step_number":7,"height":1.75},{"kind":"steps","bounds":[121.10031094,14.57327311,121.10033967,14.57328959],"steps":6,"direction":"east","start_step":8,"start_height":1.75,"target_height":3.5}]},{"id":"STAIRS-F3-CAS","type":"stairs","layout":"u_turn","name":"CAS Top Staircase","full_name":"CAS Building Top U-Shaped Staircase (Floor 3)","building":"CAS Building","floor_level":3,"steps":15,"direction":"east","step_increment":0.2,"start_height":0.0,"target_height":3.5,"bounds":[121.10053777,14.57331031,121.10058411,14.57336779],"geometry":{"type":"Polygon","coordinates":[[[121.10053777,14.57336779],[121.10053777,14.57331031],[121.10058411,14.57331031],[121.10058411,14.57336779],[121.10053777,14.57336779]]]},"flights":[{"kind":"steps","bounds":[121.10053777,14.57333905,121.10057253,14.57336779],"steps":7,"direction":"east","start_step":1,"start_height":0.0,"target_height":1.75},{"kind":"landing","bounds":[121.10057253,14.57331031,121.10058411,14.57336779],"step_number":8,"height":1.75},{"kind":"steps","bounds":[121.10053777,14.57331031,121.10057253,14.57333905],"steps":7,"direction":"west","start_step":9,"start_height":1.75,"target_height":3.5}]}]
+[
+  {
+    "id": "STAIRS-F3-BFMU-CENTRAL",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "Central BFMU 3rd-Floor Staircase Landing",
+    "full_name": "Main Lobby Central U-Shaped Staircase 3rd-Floor Landing Platform",
+    "building": "Javier Building",
+    "floor_level": 3,
+    "steps": 17,
+    "direction": "south",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.09990638,
+      14.57281194,
+      121.09999211,
+      14.57288016
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09990638,
+            14.57288016
+          ],
+          [
+            121.09990638,
+            14.57281194
+          ],
+          [
+            121.09999211,
+            14.57281194
+          ],
+          [
+            121.09999211,
+            14.57288016
+          ],
+          [
+            121.09990638,
+            14.57288016
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09990638,
+          14.57282963,
+          121.09993187,
+          14.57288016
+        ],
+        "steps": 8,
+        "direction": "south",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 3.5
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09990638,
+          14.57281194,
+          121.09999211,
+          14.57282963
+        ],
+        "step_number": 9,
+        "height": 3.5
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09996662,
+          14.57282963,
+          121.09999211,
+          14.57288016
+        ],
+        "steps": 8,
+        "direction": "north",
+        "start_step": 10,
+        "start_height": 0.0,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-MAE-WEST",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "MAE West Staircase",
+    "full_name": "M.A.E Building West Turn-Around Staircase (Floor 3)",
+    "building": "M.A.E Building",
+    "floor_level": 3,
+    "steps": 17,
+    "direction": "north",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.09940442,
+      14.57334274,
+      121.09946755,
+      14.57342085
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09940442,
+            14.57342085
+          ],
+          [
+            121.09940442,
+            14.57334274
+          ],
+          [
+            121.09946755,
+            14.57334274
+          ],
+          [
+            121.09946755,
+            14.57342085
+          ],
+          [
+            121.09940442,
+            14.57342085
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09940442,
+          14.57334274,
+          121.09943599,
+          14.57340825
+        ],
+        "steps": 8,
+        "direction": "north",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09940442,
+          14.57340825,
+          121.09946755,
+          14.57342085
+        ],
+        "step_number": 9,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09943599,
+          14.57334274,
+          121.09946755,
+          14.57340825
+        ],
+        "steps": 8,
+        "direction": "south",
+        "start_step": 10,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-MAE-EAST",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "MAE East Staircase",
+    "full_name": "M.A.E Building East Turn-Around Staircase (Floor 3)",
+    "building": "M.A.E Building",
+    "floor_level": 3,
+    "steps": 17,
+    "direction": "north",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.10016199,
+      14.57334274,
+      121.10022512,
+      14.57342085
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.10016199,
+            14.57342085
+          ],
+          [
+            121.10016199,
+            14.57334274
+          ],
+          [
+            121.10022512,
+            14.57334274
+          ],
+          [
+            121.10022512,
+            14.57342085
+          ],
+          [
+            121.10016199,
+            14.57342085
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10019355,
+          14.57334274,
+          121.10022512,
+          14.57340825
+        ],
+        "steps": 8,
+        "direction": "north",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10016199,
+          14.57340825,
+          121.10022512,
+          14.57342085
+        ],
+        "step_number": 9,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10016199,
+          14.57334274,
+          121.10019355,
+          14.57340825
+        ],
+        "steps": 8,
+        "direction": "south",
+        "start_step": 10,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-JAVIER-WEST",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "Javier West Wing Staircase",
+    "full_name": "Javier Building West Wing U-Shaped Staircase (Floor 3)",
+    "building": "Javier Building",
+    "floor_level": 3,
+    "steps": 17,
+    "direction": "west",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.09937115,
+      14.57264014,
+      121.09945993,
+      14.57273615
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09937115,
+            14.57273615
+          ],
+          [
+            121.09937115,
+            14.57264014
+          ],
+          [
+            121.09945993,
+            14.57264014
+          ],
+          [
+            121.09945993,
+            14.57273615
+          ],
+          [
+            121.09937115,
+            14.57273615
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09938326,
+          14.57268815,
+          121.09945993,
+          14.57273615
+        ],
+        "steps": 8,
+        "direction": "west",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.09937115,
+          14.57264014,
+          121.09938326,
+          14.57273615
+        ],
+        "step_number": 9,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09938326,
+          14.57264014,
+          121.09945993,
+          14.57268815
+        ],
+        "steps": 8,
+        "direction": "east",
+        "start_step": 10,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-JAVIER-EAST",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "Javier East Wing Staircase",
+    "full_name": "Javier Building East Wing U-Shaped Staircase (Floor 3)",
+    "building": "Javier Building",
+    "floor_level": 3,
+    "steps": 17,
+    "direction": "east",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.10043856,
+      14.57264014,
+      121.10052734,
+      14.57273615
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.10043856,
+            14.57273615
+          ],
+          [
+            121.10043856,
+            14.57264014
+          ],
+          [
+            121.10052734,
+            14.57264014
+          ],
+          [
+            121.10052734,
+            14.57273615
+          ],
+          [
+            121.10043856,
+            14.57273615
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10043856,
+          14.57268815,
+          121.10051523,
+          14.57273615
+        ],
+        "steps": 8,
+        "direction": "east",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10051523,
+          14.57264014,
+          121.10052734,
+          14.57273615
+        ],
+        "step_number": 9,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10043856,
+          14.57264014,
+          121.10051523,
+          14.57268815
+        ],
+        "steps": 8,
+        "direction": "west",
+        "start_step": 10,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-CED",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "CED Staircase",
+    "full_name": "CED Building U-Shaped Staircase (Floor 3)",
+    "building": "CED Building",
+    "floor_level": 3,
+    "steps": 13,
+    "direction": "west",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.10030136,
+      14.57325662,
+      121.10033967,
+      14.57328959
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.10030136,
+            14.57328959
+          ],
+          [
+            121.10030136,
+            14.57325662
+          ],
+          [
+            121.10033967,
+            14.57325662
+          ],
+          [
+            121.10033967,
+            14.57328959
+          ],
+          [
+            121.10030136,
+            14.57328959
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10031094,
+          14.57325662,
+          121.10033967,
+          14.57327311
+        ],
+        "steps": 6,
+        "direction": "west",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10030136,
+          14.57325662,
+          121.10031094,
+          14.57328959
+        ],
+        "step_number": 7,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10031094,
+          14.57327311,
+          121.10033967,
+          14.57328959
+        ],
+        "steps": 6,
+        "direction": "east",
+        "start_step": 8,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  },
+  {
+    "id": "STAIRS-F3-CAS",
+    "type": "stairs",
+    "layout": "u_turn",
+    "name": "CAS Top Staircase",
+    "full_name": "CAS Building Top U-Shaped Staircase (Floor 3)",
+    "building": "CAS Building",
+    "floor_level": 3,
+    "steps": 15,
+    "direction": "east",
+    "step_increment": 0.2,
+    "start_height": 0.0,
+    "target_height": 3.5,
+    "bounds": [
+      121.10055515,
+      14.57331031,
+      121.10058411,
+      14.57336779
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.10055515,
+            14.57336779
+          ],
+          [
+            121.10055515,
+            14.57331031
+          ],
+          [
+            121.10058411,
+            14.57331031
+          ],
+          [
+            121.10058411,
+            14.57336779
+          ],
+          [
+            121.10055515,
+            14.57336779
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10055515,
+          14.57333905,
+          121.10057611,
+          14.57336779
+        ],
+        "steps": 7,
+        "direction": "east",
+        "start_step": 1,
+        "start_height": 0.0,
+        "target_height": 1.75
+      },
+      {
+        "kind": "landing",
+        "bounds": [
+          121.10057611,
+          14.57331031,
+          121.10058411,
+          14.57336779
+        ],
+        "step_number": 8,
+        "height": 1.75
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.10055515,
+          14.57331031,
+          121.10057611,
+          14.57333905
+        ],
+        "steps": 7,
+        "direction": "west",
+        "start_step": 9,
+        "start_height": 1.75,
+        "target_height": 3.5
+      }
+    ]
+  }
+]
