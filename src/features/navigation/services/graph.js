@@ -20,11 +20,31 @@ const SNAP_TOL_M = 3; // dead ends within this of another line are joined (T-jun
 const STAIR_ATTACH_MAX_M = 16; // stair centre -> nearest corridor
 const STAIR_MATCH_MAX_M = 8; // stair on floor n <-> stair on floor n+1
 const ROOM_ATTACH_MAX_M = 60; // room centroid -> nearest corridor
+<<<<<<< HEAD
 const ONEWAY_PENALTY_M = 3; // ranking penalty for snapping onto one-way lines
 
 // Drawings flag nearly every path one-way (digitising direction). Only real one-way traffic is kept:
 // vehicle exit roads, the ring leading to the Gate 2 exit, and the Gate 1 -> lobby entrance walkway.
 const isOneWayName = (name) => /^Exit road|\(to Gate 2\)|^Entrance walkway/i.test(name || '');
+=======
+
+// Every path is two-way except the first stretch of the two lanes at Gate 1:
+//   upper lane  ("Exit road to Gate 1")                  -> exit only (towards the gate)
+//   lower lane  ("Entrance walkway (Gate 1 to lobby)")   -> entrance only (away from the gate)
+// The stretch runs from the gate to the first junction (Connector 1, 21.6 m out) plus 0.4 m tolerance.
+// The one-way flags in the GeoJSON are digitising artefacts and are ignored.
+const GATE1_LANE_M = 22;
+const GATE1_LANES = [
+  { re: /^Exit road/i, flow: 'in' }, // travel allowed towards Gate 1
+  { re: /^Entrance walkway/i, flow: 'out' }, // travel allowed away from Gate 1
+];
+
+// All routes to the Javier Building pass through its lobby: the lobby column's stretch inside the
+// building footprint. The graph tags its midpoint so routing can force a stop there.
+export const JAVIER_BUILDING = 'Javier Building';
+export const JAVIER_LOBBY_TAG = 'node:JAVIER_LOBBY';
+const LOBBY_LINE = /^Lobby (column )?to courtyard ring/i;
+>>>>>>> bdbb095 (Fixed routing)
 
 // --- Line collection ---
 
@@ -38,7 +58,11 @@ function macroLines(macroPaths) {
     name: f.properties.name,
     kind: 'walk',
     zone: 'outdoor',
+<<<<<<< HEAD
     oneway: isOneWayName(f.properties.name),
+=======
+    oneway: false,
+>>>>>>> bdbb095 (Fixed routing)
     coords: f.geometry.coordinates.map((c) => [c[0], c[1]]),
     // Older data named its junctions; newer data has none (gates/entrances are found by geometry)
     tags: f.properties.from ? { start: `node:${f.properties.from}`, end: `node:${f.properties.to}` } : undefined,
@@ -55,7 +79,11 @@ function floorLines(floor, paths) {
       name,
       kind: ramp ? 'ramp' : 'walk',
       zone: floor === 1 && !/corridor/i.test(name) && !ramp ? 'outdoor' : 'indoor',
+<<<<<<< HEAD
       oneway: floor === 1 && isOneWayName(name),
+=======
+      oneway: false,
+>>>>>>> bdbb095 (Fixed routing)
       building: p.building || null,
       spur: /(Access|Entrance) — /.test(name),
       coords: f.geometry.coordinates.map((c) => [c[0], c[1]]),
@@ -84,7 +112,11 @@ function riseLine(struct, kind, name, candidates) {
     if (l.kind === 'door') continue;
     for (const v of l.coords) {
       const r = projectOnLine(v, edge);
+<<<<<<< HEAD
       const score = r.distance + (l.oneway ? ONEWAY_PENALTY_M : 0);
+=======
+      const score = r.distance;
+>>>>>>> bdbb095 (Fixed routing)
       if (r.distance <= 8 && (!best || score < best.score)) best = { score, point: r.point };
     }
   }
@@ -132,6 +164,16 @@ function planarize(lines) {
     if (l.tags?.start) l.verts[0].tag = l.tags.start;
     if (l.tags?.end) l.verts[l.verts.length - 1].tag = l.tags.end;
     if (l.startTag) l.verts[0].tag = l.startTag;
+<<<<<<< HEAD
+=======
+    (l.marks || []).forEach(({ c, tag }) => {
+      const v = l.verts.find((x) => x.c === c);
+      if (v) {
+        v.node = true;
+        v.tag = tag;
+      }
+    });
+>>>>>>> bdbb095 (Fixed routing)
   });
 
   // Pass 1: decide how each dead end connects (computed on the untouched geometry)
@@ -164,8 +206,12 @@ function planarize(lines) {
       for (const B of items) {
         if (B === A || B.kind === 'door' || (filter && !filter(B))) continue;
         const r = projectOnLine(e.c, B.coords);
+<<<<<<< HEAD
         // One-way roads are a last resort so walkways don't latch onto vehicle exits
         const score = r ? r.distance + (B.oneway ? ONEWAY_PENALTY_M : 0) : Infinity;
+=======
+        const score = r ? r.distance : Infinity;
+>>>>>>> bdbb095 (Fixed routing)
         if (r && r.distance <= tol && (!best || score < best.score)) best = { B, r, score };
       }
       if (!best) continue;
@@ -273,6 +319,30 @@ function planarize(lines) {
   return { nodes, edges, tagNode };
 }
 
+<<<<<<< HEAD
+=======
+// The macro file repeats most of the floor-1 network with slightly different geometry (up to ~4 m off).
+// Routes must follow the floor-1 drawing, so a macro path that lies on top of it is dropped. Macro paths
+// that add something (the gates' links to the parking lots) are kept.
+const MACRO_REDUNDANT_M = 4.5;
+function dropRedundantMacro(macro, floorLines) {
+  const ground = floorLines.filter((l) => l.kind !== 'door');
+  const covered = (p) => ground.some((l) => {
+    const r = projectOnLine(p, l.coords);
+    return r && r.distance <= MACRO_REDUNDANT_M;
+  });
+  return macro.filter((m) => {
+    if (/^Gate \d/i.test(m.name || '')) return true;
+    for (let i = 0; i < m.coords.length - 1; i++) {
+      for (let k = 0; k <= 8; k++) {
+        if (!covered(lerp(m.coords[i], m.coords[i + 1], k / 8))) return true;
+      }
+    }
+    return false;
+  });
+}
+
+>>>>>>> bdbb095 (Fixed routing)
 // Revised data repeats the ground network in both macro and floor-1 files; keep one copy of each line
 // (duplicates would otherwise snap onto each other instead of joining the rest of the network).
 function dedupeLines(lines) {
@@ -287,6 +357,92 @@ function dedupeLines(lines) {
   return out;
 }
 
+<<<<<<< HEAD
+=======
+// --- Gate 1 lanes and the Javier lobby ---
+
+function lerp(a, b, t) {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+}
+
+// Splits the Gate 1 lanes at GATE1_LANE_M and orients the stretch next to the gate so that
+// a -> b is the permitted direction. Everything else is two-way.
+function applyGateLanes(lines, gateGeom) {
+  if (!gateGeom) return lines.map((l) => ({ ...l, oneway: false }));
+  const dist = (c) => distanceToPolygon(c, gateGeom);
+  const out = [];
+  lines.forEach((l, idx) => {
+    const rule = GATE1_LANES.find((r) => r.re.test(l.name || ''));
+    if (!rule) {
+      out.push({ ...l, oneway: false });
+      return;
+    }
+    const parts = [];
+    let cur = [l.coords[0]];
+    for (let i = 1; i < l.coords.length; i++) {
+      const p = l.coords[i - 1];
+      const q = l.coords[i];
+      const dp = dist(p);
+      const dq = dist(q);
+      if (dp <= GATE1_LANE_M !== dq <= GATE1_LANE_M) {
+        const cut = lerp(p, q, (GATE1_LANE_M - dp) / (dq - dp));
+        cur.push(cut);
+        parts.push(cur);
+        cur = [cut];
+      }
+      cur.push(q);
+    }
+    parts.push(cur);
+    parts.forEach((coords, k) => {
+      const ds = coords.map(dist);
+      const near = Math.max(...ds) <= GATE1_LANE_M + 0.01;
+      if (!near) {
+        out.push({ ...l, id: parts.length > 1 ? `${l.id}_p${k}` : l.id, coords, oneway: false });
+        return;
+      }
+      const towardsGate = ds[0] > ds[ds.length - 1];
+      const wantTowardsGate = rule.flow === 'in';
+      out.push({
+        ...l,
+        id: parts.length > 1 ? `${l.id}_p${k}` : l.id,
+        coords: towardsGate === wantTowardsGate ? coords : [...coords].reverse(),
+        oneway: true,
+        // keep the original index order stable for debugging
+        order: idx,
+      });
+    });
+  });
+  return out;
+}
+
+// Adds a tagged waypoint at the middle of the lobby column's stretch inside the Javier footprint.
+function markJavierLobby(lines, javierGeom) {
+  if (!javierGeom) return;
+  lines.filter((l) => LOBBY_LINE.test(l.name || '')).forEach((l) => {
+    let first = null;
+    let last = null;
+    for (let i = 0; i < l.coords.length - 1; i++) {
+      const a = l.coords[i];
+      const b = l.coords[i + 1];
+      const n = Math.max(1, Math.ceil(haversine(a, b) / 0.25));
+      for (let k = 0; k <= n; k++) {
+        const pt = lerp(a, b, k / n);
+        if (pointInPolygon(pt, javierGeom)) {
+          first = first || pt;
+          last = pt;
+        }
+      }
+    }
+    if (!first) return;
+    const mid = lerp(first, last, 0.5);
+    const r = projectOnLine(mid, l.coords);
+    if (!r) return;
+    l.coords = [...l.coords.slice(0, r.segmentIndex + 1), mid, ...l.coords.slice(r.segmentIndex + 1)];
+    l.marks = [{ c: mid, tag: JAVIER_LOBBY_TAG }];
+  });
+}
+
+>>>>>>> bdbb095 (Fixed routing)
 // --- Building the full graph ---
 
 function nearestOnLines(point, lines, filter) {
@@ -294,7 +450,11 @@ function nearestOnLines(point, lines, filter) {
   for (const l of lines) {
     if (filter && !filter(l)) continue;
     const r = projectOnLine(point, l.coords);
+<<<<<<< HEAD
     const score = r ? r.distance + (l.oneway ? ONEWAY_PENALTY_M : 0) : Infinity;
+=======
+    const score = r ? r.distance : Infinity;
+>>>>>>> bdbb095 (Fixed routing)
     if (r && (!best || score < best.score)) best = { ...r, score };
   }
   return best;
@@ -304,7 +464,19 @@ function roomsOf(floorData) {
   return floorData?.rooms?.features || [];
 }
 
+<<<<<<< HEAD
 // raw = { macroPaths, floors: { [n]: { rooms, paths, structures } } }
+=======
+function siteGeometry(raw, name) {
+  return (raw.site?.features || []).find((f) => f.properties.name === name)?.geometry || null;
+}
+
+function campusGeometry(raw, name) {
+  return (raw.campus?.features || []).find((f) => f.properties.name === name)?.geometry || null;
+}
+
+// raw = { macroPaths, site, campus, floors: { [n]: { rooms, paths, structures } } }
+>>>>>>> bdbb095 (Fixed routing)
 export function buildGraph(raw) {
   const nodes = [];
   const edges = [];
@@ -325,7 +497,16 @@ export function buildGraph(raw) {
     const fd = raw.floors?.[floor];
     if (!fd?.paths && floor !== 1) continue;
 
+<<<<<<< HEAD
     const base = dedupeLines([...floorLines(floor, fd?.paths), ...(floor === 1 ? macroLines(raw.macroPaths) : [])]);
+=======
+    const ownLines = floorLines(floor, fd?.paths);
+    let base = dedupeLines([...ownLines, ...(floor === 1 ? dropRedundantMacro(macroLines(raw.macroPaths), ownLines) : [])]);
+    if (floor === 1) {
+      base = applyGateLanes(base, siteGeometry(raw, 'Gate 1'));
+      markJavierLobby(base, campusGeometry(raw, JAVIER_BUILDING));
+    }
+>>>>>>> bdbb095 (Fixed routing)
     const extra = [];
     const structs = fd?.structures || [];
 
@@ -503,7 +684,19 @@ export function edgeCost(edge, mode = {}) {
   return edge.len / WALKING_SPEED_MPS;
 }
 
+<<<<<<< HEAD
 // Shortest path from `sources` (node ids) to the cheapest of `targets`.
+=======
+// Length (metres) of one edge for route search, or Infinity when the mode forbids it.
+// Routes are ranked by distance only; a flight of stairs counts as STAIRS_LENGTH_M.
+export function edgeDistance(edge, mode = {}) {
+  const isStairs = edge.kind === 'stairs' || edge.kind === 'entrance-stairs';
+  if (isStairs && mode.avoidStairs) return Infinity;
+  return edge.kind === 'stairs' ? STAIRS_LENGTH_M : edge.len;
+}
+
+// Shortest (by distance) path from `sources` (node ids) to the cheapest of `targets`.
+>>>>>>> bdbb095 (Fixed routing)
 // Returns { nodeIds, steps: [{ edge, forward }], cost, target } or null.
 export function shortestPath(graph, sources, targets, mode = {}) {
   const dist = new Map();
@@ -524,7 +717,11 @@ export function shortestPath(graph, sources, targets, mode = {}) {
       break;
     }
     for (const { edge, to, forward } of graph.adj[u]) {
+<<<<<<< HEAD
       const w = edgeCost(edge, mode);
+=======
+      const w = edgeDistance(edge, mode);
+>>>>>>> bdbb095 (Fixed routing)
       if (w === Infinity) continue;
       const nd = d + w;
       if (nd < (dist.get(to) ?? Infinity)) {
@@ -549,6 +746,24 @@ export function shortestPath(graph, sources, targets, mode = {}) {
   return { nodeIds, steps, cost: dist.get(found), target: found };
 }
 
+<<<<<<< HEAD
+=======
+// Shortest path that must stop at `via` on the way (e.g. the Javier lobby).
+export function shortestPathVia(graph, sources, via, targets, mode = {}) {
+  const first = shortestPath(graph, sources, [via], mode);
+  if (!first) return null;
+  const second = shortestPath(graph, [via], targets, mode);
+  if (!second) return null;
+  return {
+    nodeIds: [...first.nodeIds, ...second.nodeIds.slice(1)],
+    steps: [...first.steps, ...second.steps],
+    cost: first.cost + second.cost,
+    target: second.target,
+    via,
+  };
+}
+
+>>>>>>> bdbb095 (Fixed routing)
 
 // --- Geometry lookups (gates, parking and building entrances have no named nodes in the data) ---
 

@@ -4,7 +4,11 @@
 import axios from 'axios';
 import { USE_REMOTE_ROUTING, API_BASE_URL } from '../constants';
 import { fetchCampusData } from './dataService';
+<<<<<<< HEAD
 import { buildGraph, shortestPath, nodesNearGeometry } from './graph';
+=======
+import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
+>>>>>>> bdbb095 (Fixed routing)
 import { buildRouteResult } from './stepBuilder';
 import { buildingAtFactory } from './locationService';
 import { haversine, pointInPolygon } from './geo';
@@ -47,6 +51,20 @@ function resolveNodes(graph, loc) {
   return { ids, exact: false };
 }
 
+<<<<<<< HEAD
+=======
+// Every route into the Javier Building passes through its lobby (routes that start inside it are exempt)
+const inJavier = (loc) => loc?.building === JAVIER_BUILDING;
+
+function findPath(graph, from, to, emergency, sources, targets, mode) {
+  const lobby = graph.tags.get(JAVIER_LOBBY_TAG);
+  if (!emergency && lobby !== undefined && inJavier(to) && !inJavier(from)) {
+    return shortestPathVia(graph, sources, lobby, targets, mode);
+  }
+  return shortestPath(graph, sources, targets, mode);
+}
+
+>>>>>>> bdbb095 (Fixed routing)
 // --- Local routing ---
 
 async function getLocalRoute(from, to, options) {
@@ -76,10 +94,17 @@ async function getLocalRoute(from, to, options) {
 
   // Step-free first; fall back to stairs with a clear warning when the data has no accessible link
   let mode = { avoidStairs: pwd };
+<<<<<<< HEAD
   let path = shortestPath(graph, src.ids, targets, mode);
   if (!path && pwd) {
     mode = { avoidStairs: false };
     path = shortestPath(graph, src.ids, targets, mode);
+=======
+  let path = findPath(graph, from, to, emergency, src.ids, targets, mode);
+  if (!path && pwd) {
+    mode = { avoidStairs: false };
+    path = findPath(graph, from, to, emergency, src.ids, targets, mode);
+>>>>>>> bdbb095 (Fixed routing)
     if (path) warnings.push('No step-free route exists in the campus data (no elevator or ramp between floors). This route uses stairs.');
   }
   if (!path) return null;
@@ -103,6 +128,16 @@ async function getLocalRoute(from, to, options) {
     endFloor: graph.nodes[path.target].floor,
   });
 
+<<<<<<< HEAD
+=======
+  // Say so in the directions when the route goes through the Javier lobby
+  if (path.via !== undefined) {
+    const lobbyCoord = graph.nodes[path.via].coord;
+    const hit = result.steps.find((st) => st.coords?.some((c) => haversine(c, lobbyCoord) < 1.5));
+    if (hit && !/lobby/i.test(hit.instruction)) hit.instruction += ' (through the Javier Building lobby)';
+  }
+
+>>>>>>> bdbb095 (Fixed routing)
   const named = new Map([...graph.tags].filter(([t]) => t.startsWith('node:')).map(([t, id]) => [id, t.slice(5)]));
   return {
     ...result,
