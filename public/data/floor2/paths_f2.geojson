@@ -327,23 +327,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10056505,
+            121.10053515,
             14.57334927
           ],
           [
-            121.10056505,
+            121.10053515,
             14.57330109
           ],
           [
-            121.10056505,
+            121.10053515,
             14.57324705
           ],
           [
-            121.10056505,
+            121.10053515,
             14.573193
           ],
           [
-            121.10056505,
+            121.10053515,
             14.5731413
           ]
         ]
@@ -365,11 +365,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10056505,
+            121.10053515,
             14.57327525
           ],
           [
-            121.10057844,
+            121.10055515,
             14.57327525
           ]
         ]
@@ -391,11 +391,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10056505,
+            121.10053515,
             14.5732212
           ],
           [
-            121.10057844,
+            121.10055515,
             14.5732212
           ]
         ]
@@ -417,11 +417,11 @@
         "type": "LineString",
         "coordinates": [
           [
-            121.10056505,
+            121.10053515,
             14.57316715
           ],
           [
-            121.10057844,
+            121.10055515,
             14.57316715
           ]
         ]
@@ -977,12 +977,8 @@
             14.57259445
           ],
           [
-            121.100483,
+            121.10039,
             14.57259445
-          ],
-          [
-            121.100483,
-            14.57264014
           ]
         ]
       }
@@ -1315,6 +1311,92 @@
           [
             121.10003383,
             14.57288016
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CAS Stair Link",
+        "building": "CAS Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10053515,
+            14.57334927
+          ],
+          [
+            121.10055515,
+            14.57334927
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CAS Access \u2014 FACULTY C.R.",
+        "building": "CAS Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10055515,
+            14.57334927
+          ],
+          [
+            121.10058411,
+            14.57334927
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 35,
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier Library to South Wing Corridor",
+        "building": "Javier Building",
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10040829,
+            14.57273615
+          ],
+          [
+            121.10040829,
+            14.57265
+          ],
+          [
+            121.10039,
+            14.57265
+          ],
+          [
+            121.10039,
+            14.57259445
           ]
         ]
       }
