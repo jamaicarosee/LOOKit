@@ -11,7 +11,10 @@ import {
 import TermsAndConditions from './TermsAndConditions';
 import ForgotPassword from './ForgotPassword';
 
-export default function LoginModal({ onClose }) {
+export default function LoginModal({
+  onClose,
+  loginRequired = false,
+}) {
   const [mode, setMode] = useState('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -183,6 +186,13 @@ export default function LoginModal({ onClose }) {
           </div>
 
           {/* LOGIN / CREATE ACCOUNT */}
+          {loginRequired && !isForgot && (
+            <div className="mb-[20px] rounded-[10px] bg-[#E7EDF6] px-[15px] py-[13px]">
+              <p className="text-center text-[12px] leading-5 text-[#102747]">
+                Please log in or create an account to start navigation.
+              </p>
+            </div>
+          )}
           {!isForgot && (
             <form
               key={mode}

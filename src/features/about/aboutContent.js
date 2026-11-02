@@ -33,4 +33,4 @@ export const CONTACT_TEXT =
   'For questions, concerns, or suggestions regarding LOOKit, please contact us through our official email address.';
 
 export const FOOTER_TEXT = '© 2026 LOOKit. All Rights Reserved.';
-export const FOOTER_SUB = 'RTU Pasig Campus';
+export const FOOTER_SUB = 'Rizal Technological University - Pasig Branch';

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import ScreenShell from '../navigation/ScreenShell';
@@ -10,31 +11,71 @@ import DirectoryPanel from './components/DirectoryPanel';
 import useRoute from './hooks/useRoute';
 import useRoutePlayback from './hooks/useRoutePlayback';
 
-// Directions screen: inputs + toggles, Route map (floor tabs), Play guide, Steps, Directory.
-// The centre column scrolls so all panels fit on small phones; the page itself never scrolls.
-export default function DirectionsMobileView({ inputs, request, onBack, onStart, onPickDestination, onNavSelect, onProfileClick }) {
+export default function DirectionsMobileView({
+  inputs,
+  request,
+  onBack,
+  onStart,
+  onPickDestination,
+  onNavSelect,
+  onProfileClick,
+  isAuthenticated = false,
+  requireLogin = () => false,
+}) {
   const { isDesktop } = useViewport(1024);
+
   const { route, status } = useRoute(request);
   const playback = useRoutePlayback(route);
+
   const [activeFloor, setActiveFloor] = useState(1);
   const [focus, setFocus] = useState(null);
 
-  // New route: show the floor it starts on
+  // Check authentication before interactive navigation.
+  const checkNavigationAccess = () => {
+    if (!isAuthenticated) {
+      requireLogin();
+      return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
-    if (route) setActiveFloor(route.start.floor);
+    if (route) {
+      setActiveFloor(route.start.floor);
+    }
   }, [route]);
 
-  // While the guide plays, follow it between floors
   const guideFloor = playback.position?.floor;
+
   useEffect(() => {
-    if (playback.engaged && playback.isPlaying && guideFloor) setActiveFloor(guideFloor);
-  }, [guideFloor, playback.engaged, playback.isPlaying]);
+    if (
+      playback.engaged &&
+      playback.isPlaying &&
+      guideFloor
+    ) {
+      setActiveFloor(guideFloor);
+    }
+  }, [
+    guideFloor,
+    playback.engaged,
+    playback.isPlaying,
+  ]);
 
   const selectStep = (i) => {
+    if (!checkNavigationAccess()) return;
+
+    if (!route?.steps?.[i]) return;
+
     const step = route.steps[i];
+
     playback.goTo(i);
     setActiveFloor(step.floor);
-    setFocus({ coordinate: step.coordinate, nonce: Date.now() });
+
+    setFocus({
+      coordinate: step.coordinate,
+      nonce: Date.now(),
+    });
   };
 
   const steps = route?.steps || [];
@@ -43,13 +84,24 @@ export default function DirectionsMobileView({ inputs, request, onBack, onStart,
   const warnings =
     route?.warnings?.length > 0 &&
     route.warnings.map((w) => (
-      <div key={w} role="alert" className="flex gap-2 items-start rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[11px] font-semibold text-amber-900">
+      <div
+        key={w}
+        role="alert"
+        className="flex gap-2 items-start rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-[11px] font-semibold text-amber-900"
+      >
         <TriangleAlert className="w-4 h-4 shrink-0 mt-px" />
         <span>{w}</span>
       </div>
     ));
 
-  const form = <RouteForm inputs={inputs} onBack={onBack} onStart={onStart} isLoading={status === 'loading'} />;
+  const form = (
+    <RouteForm
+      inputs={inputs}
+      onBack={onBack}
+      onStart={onStart}
+      isLoading={status === 'loading'}
+    />
+  );
 
   const mapPanel = (mapClassName) => (
     <RouteMapPanel
@@ -57,31 +109,57 @@ export default function DirectionsMobileView({ inputs, request, onBack, onStart,
       status={status}
       activeFloor={activeFloor}
       onFloorChange={setActiveFloor}
-      guide={playback}
+      guide={isAuthenticated ? playback : null}
       focus={focus}
       hasRequest={!!request}
       mapClassName={mapClassName}
     />
   );
 
-  // Play guide sits directly below the route map
-  const guide = status === 'success' && <PlayGuideBar steps={steps} playback={playback} />;
+  // Guests can see the guide button but must log in.
+  const guide = status === 'success' && (
+    <div
+      onClickCapture={(event) => {
+        if (!isAuthenticated) {
+          event.stopPropagation();
+          requireLogin();
+        }
+      }}
+    >
+      <PlayGuideBar
+        steps={steps}
+        playback={playback}
+      />
+    </div>
+  );
 
   const stepsPanel = (
     <StepByStepPanel
       steps={steps}
       status={status}
-      activeIndex={playback.engaged ? playback.stepIndex : -1}
+      activeIndex={
+        isAuthenticated && playback.engaged
+          ? playback.stepIndex
+          : -1
+      }
       onSelect={selectStep}
     />
   );
 
-  const directory = <DirectoryPanel destination={destination} onPick={onPickDestination} />;
+  const directory = (
+    <DirectoryPanel
+      destination={destination}
+      onPick={onPickDestination}
+    />
+  );
 
   return (
-    <ScreenShell isDesktop={isDesktop} onNavSelect={onNavSelect} onProfileClick={onProfileClick}>
+    <ScreenShell
+      isDesktop={isDesktop}
+      onNavSelect={onNavSelect}
+      onProfileClick={onProfileClick}
+    >
       {isDesktop ? (
-        // Desktop: full-width workspace like the dashboard. Left = inputs, steps, directory; right = route map + guide.
         <main className="flex-1 min-h-0 px-8 py-5">
           <div className="max-w-6xl mx-auto h-full grid grid-cols-[minmax(340px,420px)_1fr] gap-6">
             <div className="min-h-0 overflow-y-auto no-scrollbar space-y-3 pr-1">
@@ -89,6 +167,7 @@ export default function DirectionsMobileView({ inputs, request, onBack, onStart,
               {stepsPanel}
               {directory}
             </div>
+
             <div className="min-h-0 overflow-y-auto no-scrollbar space-y-3">
               {mapPanel('h-[58dvh] min-h-[320px]')}
               {warnings}

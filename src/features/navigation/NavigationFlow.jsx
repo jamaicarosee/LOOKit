@@ -1,37 +1,82 @@
+
 import React, { useState } from 'react';
 import SearchMobileView from '../search/SearchMobileView';
 import DirectionsMobileView from '../directions/DirectionsMobileView';
 import useRouteInputs, { saveRecent } from '../search/hooks/useRouteInputs';
 
-// Search -> Directions flow. Wire into App.jsx without touching existing files:
-//
-//   <NavigationFlow onBackToMap={() => setScreen('dashboard')} onNavSelect={handleNav} />
-//
-// Optional: initialTo pre-fills the destination (e.g. from a search bar result).
-export default function NavigationFlow({ onBackToMap, onNavSelect = () => {}, onProfileClick, initialFrom = null, initialTo = null }) {
+export default function NavigationFlow({
+  onBackToMap,
+  onNavSelect = () => {},
+  onProfileClick,
+  initialFrom = null,
+  initialTo = null,
+  isAuthenticated = false,
+  requireLogin = () => false,
+}) {
   const inputs = useRouteInputs({ initialFrom, initialTo });
+
   const [screen, setScreen] = useState('search');
   const [request, setRequest] = useState(null);
 
   const run = (from, to) => {
-    setRequest({ from, to, options: { emergency: inputs.emergency, pwd: inputs.pwd } });
+    setRequest({
+      from,
+      to,
+      options: {
+        emergency: inputs.emergency,
+        pwd: inputs.pwd,
+      },
+    });
+
     setScreen('directions');
   };
 
   const start = async () => {
     if (!inputs.canNavigate) return;
+
+    // Require login before starting navigation.
+    if (!isAuthenticated) {
+      requireLogin();
+      return;
+    }
+
     const resolved = await inputs.resolvePending();
-    if (!resolved || (!inputs.emergency && resolved.from.id === resolved.to.id)) return;
-    if (!inputs.emergency) saveRecent(resolved.from, resolved.to);
+
+    if (
+      !resolved ||
+      (!inputs.emergency && resolved.from.id === resolved.to.id)
+    ) {
+      return;
+    }
+
+    if (!inputs.emergency) {
+      saveRecent(resolved.from, resolved.to);
+    }
+
     run(resolved.from, resolved.to);
   };
 
-  // Directory "Go": make that room the destination and re-route
   const pickDestination = (room) => {
     inputs.selectTo(room);
-    if (inputs.emergency) inputs.setEmergency(false);
+
+    if (inputs.emergency) {
+      inputs.setEmergency(false);
+    }
+
     if (inputs.from && inputs.from.id !== room.id) {
-      setRequest({ from: inputs.from, to: room, options: { emergency: false, pwd: inputs.pwd } });
+      if (!isAuthenticated) {
+        requireLogin();
+        return;
+      }
+
+      setRequest({
+        from: inputs.from,
+        to: room,
+        options: {
+          emergency: false,
+          pwd: inputs.pwd,
+        },
+      });
     }
   };
 
@@ -45,10 +90,19 @@ export default function NavigationFlow({ onBackToMap, onNavSelect = () => {}, on
         onPickDestination={pickDestination}
         onNavSelect={onNavSelect}
         onProfileClick={onProfileClick}
+        isAuthenticated={isAuthenticated}
+        requireLogin={requireLogin}
       />
     );
   }
+
   return (
-    <SearchMobileView inputs={inputs} onBack={onBackToMap} onStart={start} onNavSelect={onNavSelect} onProfileClick={onProfileClick} />
+    <SearchMobileView
+      inputs={inputs}
+      onBack={onBackToMap}
+      onStart={start}
+      onNavSelect={onNavSelect}
+      onProfileClick={onProfileClick}
+    />
   );
 }

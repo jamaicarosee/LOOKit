@@ -14,28 +14,47 @@ export default function App() {
 
   const [screen, setScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginRequired, setLoginRequired] = useState(false);
 
-  // Authentication will be connected to the backend later.
+  // Authentication will be connected to backend later.
   const [user, setUser] = useState(null);
+
+  const isAuthenticated = Boolean(user);
 
   const openSearch = () => setScreen('navigation');
   const openAbout = () => setScreen('about');
   const closeSearch = () => setScreen('dashboard');
 
   const openLogin = () => {
-    if (user) {
+    if (isAuthenticated) {
       setScreen('account');
     } else {
+      setLoginRequired(false);
       setShowLoginModal(true);
     }
   };
 
-  const closeLogin = () => setShowLoginModal(false);
+  const closeLogin = () => {
+    setShowLoginModal(false);
+    setLoginRequired(false);
+  };
+
+  // Guest must log in before navigation.
+  const requireLogin = () => {
+    if (!isAuthenticated) {
+      setLoginRequired(true);
+      setShowLoginModal(true);
+      return false;
+    }
+
+    return true;
+  };
 
   const handleLogout = () => {
     setUser(null);
     setScreen('dashboard');
     setShowLoginModal(false);
+    setLoginRequired(false);
   };
 
   const mainClass = `w-screen h-[100dvh] overflow-hidden ${
@@ -63,11 +82,14 @@ export default function App() {
             onNavSelect={(id) => {
               if (id === 'map') closeSearch();
             }}
+            onProfileClick={openLogin}
+            isAuthenticated={isAuthenticated}
+            requireLogin={requireLogin}
           />
         </main>
       )}
 
-      {screen === 'account' && (
+      {screen === 'account' && isAuthenticated && (
         <main className={mainClass}>
           <AccountInfo
             user={user}
@@ -98,7 +120,10 @@ export default function App() {
       )}
 
       {showLoginModal && (
-        <LoginModal onClose={closeLogin} />
+        <LoginModal
+          onClose={closeLogin}
+          loginRequired={loginRequired}
+        />
       )}
 
     </AboutNavProvider>
