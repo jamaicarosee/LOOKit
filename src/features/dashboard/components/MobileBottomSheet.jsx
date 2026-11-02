@@ -1,13 +1,15 @@
 import React from 'react';
-import { MapPin, Users, LogOut } from 'lucide-react';
+import { MapPin, Users, Info } from 'lucide-react';
+import { useAboutNav } from '../../about/AboutNavContext';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
   { id: 'staff', label: 'Staff', icon: Users },
-  { id: 'signout', label: 'Sign Out', icon: LogOut },
+  { id: 'about', label: 'About', icon: Info },
 ];
 
 export default function MobileBottomSheet({ activeNav, onSelectNav }) {
+  const { openAbout } = useAboutNav();
   return (
     <footer className="bg-white pt-4 pb-5 px-6 flex flex-col items-center justify-between border-t border-gray-100 shrink-0">
       {/* University Name */}
@@ -30,7 +32,7 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
             <button
               key={item.id}
               type="button"
-              onClick={() => onSelectNav(item.id)}
+              onClick={() => (item.id === 'about' ? openAbout() : onSelectNav(item.id))}
               className={`flex flex-col items-center justify-center py-3 px-2 rounded-2xl transition-all active:scale-95 shadow-sm ${
                 isActive
                   ? 'bg-[#E5EEF7] text-[#0B1E36]'
