@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardMobileView from './features/dashboard/DashboardMobileView';
 import DashboardDesktopView from './features/dashboard/DashboardDesktopView';
@@ -8,18 +7,15 @@ import LoginModal from './features/login/components/LoginModal';
 import AboutPage from './features/about/AboutPage';
 import { AboutNavProvider } from './features/about/AboutNavContext';
 import AccountInfo from './features/account/AccountInfo';
+import { AuthProvider, useAuth } from './features/login/context/AuthContext';
 
-export default function App() {
+function AppContent() {
   const { isDesktop } = useViewport(1024);
+  const { user, profile, isAuthenticated, logout } = useAuth();
 
   const [screen, setScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginRequired, setLoginRequired] = useState(false);
-
-  // Authentication will be connected to backend later.
-  const [user, setUser] = useState(null);
-
-  const isAuthenticated = Boolean(user);
 
   const openSearch = () => setScreen('navigation');
   const openAbout = () => setScreen('about');
@@ -50,11 +46,16 @@ export default function App() {
     return true;
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setScreen('dashboard');
-    setShowLoginModal(false);
-    setLoginRequired(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error('[LOOKit Auth] Logout error:', err);
+    } finally {
+      setScreen('dashboard');
+      setShowLoginModal(false);
+      setLoginRequired(false);
+    }
   };
 
   const mainClass = `w-screen h-[100dvh] overflow-hidden ${
@@ -93,6 +94,7 @@ export default function App() {
         <main className={mainClass}>
           <AccountInfo
             user={user}
+            profile={profile}
             onBackToMap={closeSearch}
             onLogout={handleLogout}
           />
@@ -127,5 +129,13 @@ export default function App() {
       )}
 
     </AboutNavProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

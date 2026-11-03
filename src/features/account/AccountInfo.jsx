@@ -1,17 +1,20 @@
-
 import React, { useState } from 'react';
 import {
   ArrowLeft,
   UserRound,
   Search,
   X,
+  Loader2,
 } from 'lucide-react';
 
 export default function AccountInfo({
   onBackToMap,
   onLogout,
   user,
+  profile,
 }) {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const [recentSearches, setRecentSearches] = useState(() => {
     try {
       return JSON.parse(
@@ -36,6 +39,28 @@ export default function AccountInfo({
     localStorage.removeItem('lookit_recent_searches');
   };
 
+  const handleLogoutClick = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      await onLogout();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const displayName =
+    profile?.full_name ||
+    user?.full_name ||
+    user?.user_metadata?.full_name ||
+    user?.name ||
+    'LOOKit User';
+
+  const displayEmail =
+    profile?.email ||
+    user?.email ||
+    'No email available';
+
   return (
     <div className="flex h-full w-full justify-center overflow-y-auto bg-[#F8F9F9]">
       <div className="min-h-full w-full max-w-[480px] bg-white px-[22px] pb-10 pt-[25px] lg:mt-8 lg:min-h-0 lg:rounded-[24px] lg:px-[30px] lg:shadow-sm">
@@ -56,8 +81,9 @@ export default function AccountInfo({
           <button
             type="button"
             onClick={onBackToMap}
+            disabled={isLoggingOut}
             aria-label="Back to map"
-            className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-white shadow-md"
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-white shadow-md disabled:opacity-60"
           >
             <ArrowLeft size={19} className="text-[#102747]" />
           </button>
@@ -75,10 +101,10 @@ export default function AccountInfo({
 
           <div className="min-w-0">
             <p className="truncate text-[13px] font-semibold text-[#102747]">
-              {user?.name || 'LOOKit User'}
+              {displayName}
             </p>
             <p className="truncate text-[10px] text-[#102747]">
-              {user?.email || 'No email available'}
+              {displayEmail}
             </p>
           </div>
         </div>
@@ -93,7 +119,8 @@ export default function AccountInfo({
             <button
               type="button"
               onClick={clearSearches}
-              className="text-[11px] text-[#B58B34] hover:underline"
+              disabled={isLoggingOut}
+              className="text-[11px] text-[#B58B34] hover:underline disabled:opacity-60"
             >
               Clear all
             </button>
@@ -125,8 +152,9 @@ export default function AccountInfo({
                     <button
                       type="button"
                       onClick={() => removeSearch(index)}
+                      disabled={isLoggingOut}
                       aria-label={`Remove ${searchText}`}
-                      className="text-[#102747] hover:text-red-500"
+                      className="text-[#102747] hover:text-red-500 disabled:opacity-60"
                     >
                       <X size={14} />
                     </button>
@@ -140,10 +168,18 @@ export default function AccountInfo({
         {/* LOGOUT */}
         <button
           type="button"
-          onClick={onLogout}
-          className="h-[45px] w-full rounded-[11px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E]"
+          onClick={handleLogoutClick}
+          disabled={isLoggingOut}
+          className="flex h-[45px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Log out
+          {isLoggingOut ? (
+            <>
+              <Loader2 size={18} className="animate-spin text-white" />
+              <span>Logging out...</span>
+            </>
+          ) : (
+            'Log out'
+          )}
         </button>
       </div>
     </div>

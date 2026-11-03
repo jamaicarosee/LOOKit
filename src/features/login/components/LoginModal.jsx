@@ -1,26 +1,35 @@
-
 import React, { useEffect, useState } from 'react';
 import {
   UserRound,
   X,
   Eye,
   EyeOff,
-  ArrowLeft,
   KeyRound,
+  Loader2,
 } from 'lucide-react';
 import TermsAndConditions from './TermsAndConditions';
 import ForgotPassword from './ForgotPassword';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginModal({
   onClose,
   loginRequired = false,
 }) {
+  const { login, register } = useAuth();
+
   const [mode, setMode] = useState('login');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [keepSignedIn, setKeepSignedIn] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const isLogin = mode === 'login';
   const isSignup = mode === 'signup';
@@ -28,15 +37,14 @@ export default function LoginModal({
 
   useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape' && !isSubmitting) onClose();
     };
 
     window.addEventListener('keydown', handleEscape);
-
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }, [onClose]);
+  }, [onClose, isSubmitting]);
 
   const switchForm = (newMode) => {
     setMode(newMode);
@@ -45,12 +53,16 @@ export default function LoginModal({
     setPassword('');
     setConfirmPassword('');
     setMessage('');
+    setIsError(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setMessage('');
+    setIsError(false);
 
     if (isForgot) {
+      setIsError(true);
       setMessage(
         'Password recovery is not available yet. Please contact the system administrator.'
       );
@@ -58,15 +70,49 @@ export default function LoginModal({
     }
 
     if (isSignup && password !== confirmPassword) {
+      setIsError(true);
       setMessage('Passwords do not match.');
       return;
     }
 
-    setMessage('Authentication is not connected yet.');
+    setIsSubmitting(true);
+
+    try {
+      if (isLogin) {
+        await login({
+          email,
+          password,
+          keepSignedIn,
+        });
+        onClose();
+      } else if (isSignup) {
+        const result = await register({
+          fullName,
+          email,
+          password,
+        });
+
+        if (result.requiresEmailConfirmation) {
+          setIsError(false);
+          setMessage(
+            'Account created! Please check your email inbox to confirm your account before logging in.'
+          );
+          setPassword('');
+          setConfirmPassword('');
+        } else {
+          onClose();
+        }
+      }
+    } catch (err) {
+      setIsError(true);
+      setMessage(err.message || 'Authentication failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputClass =
-    'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40';
+    'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40 disabled:opacity-60';
 
   const labelClass =
     'mb-[6px] block text-[13px] font-medium text-[#102747]';
@@ -94,6 +140,7 @@ export default function LoginModal({
           autoComplete={autoComplete}
           required
           minLength={8}
+          disabled={isSubmitting}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className={`${inputClass} pr-[45px]`}
@@ -102,6 +149,7 @@ export default function LoginModal({
         <button
           type="button"
           onClick={onToggle}
+          disabled={isSubmitting}
           aria-label={visible ? 'Hide password' : 'Show password'}
           className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
         >
@@ -115,7 +163,7 @@ export default function LoginModal({
     <div
       className="fixed inset-0 z-[90] flex items-end justify-center bg-[#071C35]/50 lg:items-center lg:p-6"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget && !isSubmitting) onClose();
       }}
     >
       <section
@@ -178,6 +226,7 @@ export default function LoginModal({
             <button
               type="button"
               onClick={onClose}
+              disabled={isSubmitting}
               aria-label="Close"
               className="rounded-full p-1 text-[#68768A] transition hover:bg-[#E7EDF6]"
             >
@@ -193,6 +242,7 @@ export default function LoginModal({
               </p>
             </div>
           )}
+
           {!isForgot && (
             <form
               key={mode}
@@ -212,6 +262,9 @@ export default function LoginModal({
                     placeholder="Enter your name"
                     autoComplete="name"
                     required
+                    disabled={isSubmitting}
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
                     className={inputClass}
                   />
                 </div>
@@ -229,6 +282,9 @@ export default function LoginModal({
                   placeholder="Enter your email"
                   autoComplete="email"
                   required
+                  disabled={isSubmitting}
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   className={inputClass}
                 />
               </div>
@@ -246,6 +302,7 @@ export default function LoginModal({
                   {isLogin && (
                     <button
                       type="button"
+                      disabled={isSubmitting}
                       onClick={() => switchForm('forgot')}
                       className="text-[11px] text-[#B58B34] hover:underline"
                     >
@@ -264,6 +321,7 @@ export default function LoginModal({
                     }
                     required
                     minLength={8}
+                    disabled={isSubmitting}
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className={`${inputClass} pr-[45px]`}
@@ -271,6 +329,7 @@ export default function LoginModal({
 
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={
                       showPassword ? 'Hide password' : 'Show password'
@@ -308,6 +367,15 @@ export default function LoginModal({
                   id="lookit-agreement"
                   type="checkbox"
                   required={isSignup}
+                  disabled={isSubmitting}
+                  checked={isLogin ? keepSignedIn : agreedToTerms}
+                  onChange={(event) => {
+                    if (isLogin) {
+                      setKeepSignedIn(event.target.checked);
+                    } else {
+                      setAgreedToTerms(event.target.checked);
+                    }
+                  }}
                   className="h-[17px] w-[17px] shrink-0 cursor-pointer accent-[#102747]"
                 />
 
@@ -329,7 +397,9 @@ export default function LoginModal({
               {message && (
                 <p
                   role="status"
-                  className="text-center text-[12px] text-[#B58B34]"
+                  className={`text-center text-[12px] ${
+                    isError ? 'text-red-600' : 'text-[#B58B34]'
+                  }`}
                 >
                   {message}
                 </p>
@@ -338,9 +408,21 @@ export default function LoginModal({
               {/* SUBMIT */}
               <button
                 type="submit"
-                className="h-[50px] w-full rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E] active:scale-[0.99]"
+                disabled={isSubmitting}
+                className="flex h-[50px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isLogin ? 'Log in' : 'Sign up'}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin text-white" />
+                    <span>
+                      {isLogin ? 'Logging in...' : 'Creating account...'}
+                    </span>
+                  </>
+                ) : isLogin ? (
+                  'Log in'
+                ) : (
+                  'Sign up'
+                )}
               </button>
             </form>
           )}
@@ -360,6 +442,7 @@ export default function LoginModal({
                   Don't have an account?{' '}
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => switchForm('signup')}
                     className="font-bold text-[#B58B34] hover:text-[#8F6C20]"
                   >
@@ -371,6 +454,7 @@ export default function LoginModal({
                   Already have an account?{' '}
                   <button
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => switchForm('login')}
                     className="font-bold text-[#B58B34] hover:text-[#8F6C20]"
                   >
