@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   UserRound,
@@ -10,6 +11,58 @@ import {
 import TermsAndConditions from './TermsAndConditions';
 import ForgotPassword from './ForgotPassword';
 import { useAuth } from '../context/AuthContext';
+
+const inputClass =
+  'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40 disabled:opacity-60';
+
+const labelClass =
+  'mb-[6px] block text-[13px] font-medium text-[#102747]';
+
+// FIX: Component is outside LoginModal to prevent losing focus.
+function PasswordInput({
+  id,
+  label,
+  value,
+  onChange,
+  visible,
+  onToggle,
+  placeholder,
+  autoComplete,
+  isSubmitting,
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className={labelClass}>
+        {label}
+      </label>
+
+      <div className="relative">
+        <input
+          id={id}
+          type={visible ? 'text' : 'password'}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          required
+          minLength={8}
+          disabled={isSubmitting}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className={`${inputClass} pr-[45px]`}
+        />
+
+        <button
+          type="button"
+          onClick={onToggle}
+          disabled={isSubmitting}
+          aria-label={visible ? 'Hide password' : 'Show password'}
+          className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
+        >
+          {visible ? <EyeOff size={19} /> : <Eye size={19} />}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function LoginModal({
   onClose,
@@ -110,54 +163,6 @@ export default function LoginModal({
       setIsSubmitting(false);
     }
   };
-
-  const inputClass =
-    'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40 disabled:opacity-60';
-
-  const labelClass =
-    'mb-[6px] block text-[13px] font-medium text-[#102747]';
-
-  const PasswordInput = ({
-    id,
-    label,
-    value,
-    onChange,
-    visible,
-    onToggle,
-    placeholder,
-    autoComplete,
-  }) => (
-    <div>
-      <label htmlFor={id} className={labelClass}>
-        {label}
-      </label>
-
-      <div className="relative">
-        <input
-          id={id}
-          type={visible ? 'text' : 'password'}
-          placeholder={placeholder}
-          autoComplete={autoComplete}
-          required
-          minLength={8}
-          disabled={isSubmitting}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className={`${inputClass} pr-[45px]`}
-        />
-
-        <button
-          type="button"
-          onClick={onToggle}
-          disabled={isSubmitting}
-          aria-label={visible ? 'Hide password' : 'Show password'}
-          className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
-        >
-          {visible ? <EyeOff size={19} /> : <Eye size={19} />}
-        </button>
-      </div>
-    </div>
-  );
 
   return (
     <div
@@ -358,6 +363,7 @@ export default function LoginModal({
                   onToggle={() =>
                     setShowConfirmPassword(!showConfirmPassword)
                   }
+                  isSubmitting={isSubmitting}
                 />
               )}
 
