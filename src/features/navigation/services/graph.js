@@ -32,14 +32,9 @@ const GATE1_LANES = [
   { re: /^Entrance walkway/i, flow: 'out' }, // travel allowed away from Gate 1
 ];
 
-<<<<<<< HEAD
-// All routes to the Javier Building pass through its lobby: the lobby column's stretch inside the
-// building footprint. The graph tags its midpoint so routing can force a stop there.
-=======
 // Routes that enter or leave the Javier area (Javier Building + Gymnasium + Garden) pass through the lobby:
 // the lobby column's stretch inside the building footprint. The graph tags its midpoint so routing can
 // force a stop there. Routes that stay inside the area never use it (see routingService.findPath).
->>>>>>> 6a902cf (fixed routing in javier)
 export const JAVIER_BUILDING = 'Javier Building';
 export const JAVIER_LOBBY_TAG = 'node:JAVIER_LOBBY';
 const LOBBY_LINE = /^Lobby (column )?to courtyard ring/i;

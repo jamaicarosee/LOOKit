@@ -1400,6 +1400,752 @@
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE West 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09942021,
+            14.57334274
+          ],
+          [
+            121.09942021,
+            14.57341455
+          ],
+          [
+            121.09945177,
+            14.57341455
+          ],
+          [
+            121.09945177,
+            14.57334274
+          ]
+        ]
+      },
+      "id": 41
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE West 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09942021,
+            14.57334274
+          ],
+          [
+            121.09942021,
+            14.57333103
+          ],
+          [
+            121.09942021,
+            14.5733125
+          ],
+          [
+            121.09946505,
+            14.5733125
+          ]
+        ]
+      },
+      "id": 42
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE West 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09945177,
+            14.57334274
+          ],
+          [
+            121.09945177,
+            14.57333103
+          ],
+          [
+            121.09945177,
+            14.5733125
+          ],
+          [
+            121.09946505,
+            14.5733125
+          ]
+        ]
+      },
+      "id": 43
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE East 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10020934,
+            14.57334274
+          ],
+          [
+            121.10020934,
+            14.57341455
+          ],
+          [
+            121.10017777,
+            14.57341455
+          ],
+          [
+            121.10017777,
+            14.57334274
+          ]
+        ]
+      },
+      "id": 44
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE East 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10020934,
+            14.57334274
+          ],
+          [
+            121.10020934,
+            14.57333103
+          ],
+          [
+            121.10020934,
+            14.5733125
+          ],
+          [
+            121.10016324,
+            14.5733125
+          ]
+        ]
+      },
+      "id": 45
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "MAE East 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "M.A.E Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10017777,
+            14.57334274
+          ],
+          [
+            121.10017777,
+            14.57333103
+          ],
+          [
+            121.10017777,
+            14.5733125
+          ],
+          [
+            121.10016324,
+            14.5733125
+          ]
+        ]
+      },
+      "id": 46
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CED 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "CED Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10033967,
+            14.57326487
+          ],
+          [
+            121.10030615,
+            14.57326487
+          ],
+          [
+            121.10030615,
+            14.57328135
+          ],
+          [
+            121.10033967,
+            14.57328135
+          ]
+        ]
+      },
+      "id": 47
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CED 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "CED Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10033967,
+            14.57326487
+          ],
+          [
+            121.10035138,
+            14.57326487
+          ],
+          [
+            121.10035138,
+            14.57333133
+          ],
+          [
+            121.10034694,
+            14.57333133
+          ]
+        ]
+      },
+      "id": 48
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CED 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "CED Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10033967,
+            14.57328135
+          ],
+          [
+            121.10035138,
+            14.57328135
+          ],
+          [
+            121.10035138,
+            14.57333133
+          ],
+          [
+            121.10034694,
+            14.57333133
+          ]
+        ]
+      },
+      "id": 49
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CAS North 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "CAS Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10055515,
+            14.57335342
+          ],
+          [
+            121.10058011,
+            14.57335342
+          ],
+          [
+            121.10058011,
+            14.57332468
+          ],
+          [
+            121.10055515,
+            14.57332468
+          ]
+        ]
+      },
+      "id": 50
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CAS North 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "CAS Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10055515,
+            14.57335342
+          ],
+          [
+            121.10054344,
+            14.57335342
+          ],
+          [
+            121.10054344,
+            14.57334927
+          ],
+          [
+            121.10053515,
+            14.57334927
+          ]
+        ]
+      },
+      "id": 51
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "CAS North 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "CAS Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10055515,
+            14.57332468
+          ],
+          [
+            121.10054344,
+            14.57332468
+          ],
+          [
+            121.10054344,
+            14.57330109
+          ],
+          [
+            121.10053515,
+            14.57330109
+          ]
+        ]
+      },
+      "id": 52
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier West 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09945993,
+            14.57271215
+          ],
+          [
+            121.0993772,
+            14.57271215
+          ],
+          [
+            121.0993772,
+            14.57266415
+          ],
+          [
+            121.09945993,
+            14.57266415
+          ]
+        ]
+      },
+      "id": 53
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier West 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09945993,
+            14.57271215
+          ],
+          [
+            121.09947164,
+            14.57271215
+          ],
+          [
+            121.09947164,
+            14.57273615
+          ],
+          [
+            121.0994902,
+            14.57273615
+          ]
+        ]
+      },
+      "id": 54
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier West 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09945993,
+            14.57266415
+          ],
+          [
+            121.09947164,
+            14.57266415
+          ],
+          [
+            121.09947164,
+            14.57273615
+          ],
+          [
+            121.0994902,
+            14.57273615
+          ]
+        ]
+      },
+      "id": 55
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier East 2nd-Floor Staircase \u2014 Stair Run",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10043856,
+            14.57271215
+          ],
+          [
+            121.10052128,
+            14.57271215
+          ],
+          [
+            121.10052128,
+            14.57266415
+          ],
+          [
+            121.10043856,
+            14.57266415
+          ]
+        ]
+      },
+      "id": 56
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier East 2nd-Floor Staircase \u2014 Entry Link",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10043856,
+            14.57271215
+          ],
+          [
+            121.10042685,
+            14.57271215
+          ],
+          [
+            121.10042685,
+            14.57273615
+          ],
+          [
+            121.10040829,
+            14.57273615
+          ]
+        ]
+      },
+      "id": 57
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Javier East 2nd-Floor Staircase \u2014 Exit Link",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10043856,
+            14.57266415
+          ],
+          [
+            121.10042685,
+            14.57266415
+          ],
+          [
+            121.10042685,
+            14.57265
+          ],
+          [
+            121.10040829,
+            14.57265
+          ]
+        ]
+      },
+      "id": 58
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Central BFMU 2nd-Floor Staircase Landing \u2014 Stair Run",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09991912,
+            14.57288016
+          ],
+          [
+            121.09991912,
+            14.57282078
+          ],
+          [
+            121.09997936,
+            14.57282078
+          ],
+          [
+            121.09997936,
+            14.57288016
+          ]
+        ]
+      },
+      "id": 59
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Central BFMU 2nd-Floor Staircase Landing \u2014 Lobby to Hallway",
+        "building": "Javier Building",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.09994926,
+            14.57288016
+          ],
+          [
+            121.09994926,
+            14.57293087
+          ]
+        ]
+      },
+      "id": 61
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Canteen West 2nd-Floor Staircase \u2014 Link",
+        "building": "Canteen Wing",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.10018673,
+            14.57257445
+          ],
+          [
+            121.10018673,
+            14.57259445
+          ]
+        ]
+      },
+      "id": 62
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "highway": "footway",
+        "type": "pedestrian_path",
+        "floor_level": 2,
+        "level": "2",
+        "name": "Canteen East 2nd-Floor Staircase \u2014 Link",
+        "building": "Canteen Wing",
+        "stair_path": true,
+        "campus": "Rizal Technological University - Pasig Branch"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.100386,
+            14.57257445
+          ],
+          [
+            121.100386,
+            14.57259445
+          ]
+        ]
+      },
+      "id": 63
     }
   ]
 }
