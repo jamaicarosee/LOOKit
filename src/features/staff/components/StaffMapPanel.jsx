@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigation, X, MapPin, Info } from 'lucide-react';
+import { X, MapPin, Info } from 'lucide-react';
 import CampusMapPreview from '../../dashboard/components/CampusMapPreview';
 import { getInitials } from '../data/staffData';
 
@@ -85,9 +85,8 @@ export default function StaffMapPanel({ staff, location, isDesktop, onClose, onS
           type="button"
           disabled={!isReady}
           onClick={() => onShowPath(result.loc)}
-          className="mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-[#0B1E36] py-3 text-sm font-bold text-white transition hover:bg-[#152B47] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          className="mt-3 w-full flex items-center justify-center rounded-xl bg-[#0B1E36] py-3 text-sm font-bold text-white transition hover:bg-[#152B47] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <Navigation className="w-4 h-4" />
           Show path
         </button>
       </div>

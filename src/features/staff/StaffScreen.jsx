@@ -81,13 +81,17 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
 
       {selected ? (
         <>
+          {/* Same look as the "Search" header: round arrow button + bold uppercase title */}
           <button
             type="button"
             onClick={closeSelection}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white text-sm font-bold text-[#0B1E36] border-b border-gray-100 shrink-0"
+            aria-label="Back to staff list"
+            className="flex items-center gap-3 px-5 pt-1 pb-3 bg-white shrink-0 text-left"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to staff list
+            <span className="w-10 h-10 rounded-full bg-white border border-gray-200 text-[#0B1E36] flex items-center justify-center shadow-sm">
+              <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
+            </span>
+            <span className="text-lg font-black uppercase tracking-tight text-[#0B2545]">Back</span>
           </button>
           <div className="relative flex-1 min-h-0">{mapPanel}</div>
         </>
