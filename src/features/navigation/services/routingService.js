@@ -47,12 +47,26 @@ function resolveNodes(graph, loc) {
   return { ids, exact: false };
 }
 
+<<<<<<< HEAD
 // Every route into the Javier Building passes through its lobby (routes that start inside it are exempt)
 const inJavier = (loc) => loc?.building === JAVIER_BUILDING;
 
 function findPath(graph, from, to, emergency, sources, targets, mode) {
   const lobby = graph.tags.get(JAVIER_LOBBY_TAG);
   if (!emergency && lobby !== undefined && inJavier(to) && !inJavier(from)) {
+=======
+// The Javier Building lobby is only the way in or out of the Javier area.
+//   outside -> inside, inside -> outside : must pass through the lobby
+//   inside -> inside                     : shortest path, never forced through the lobby
+// The Gymnasium and the Garden sit inside the Javier vicinity, so they count as "inside".
+const JAVIER_AREA = new Set([JAVIER_BUILDING, 'Gymnasium', 'Garden']);
+const inJavier = (loc) => JAVIER_AREA.has(loc?.building);
+
+function findPath(graph, from, to, emergency, sources, targets, mode) {
+  const lobby = graph.tags.get(JAVIER_LOBBY_TAG);
+  // Emergency routes always take the shortest way to the nearest gate
+  if (!emergency && lobby !== undefined && inJavier(from) !== inJavier(to)) {
+>>>>>>> 6a902cf (fixed routing in javier)
     return shortestPathVia(graph, sources, lobby, targets, mode);
   }
   return shortestPath(graph, sources, targets, mode);
