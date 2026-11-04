@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Users, Info } from 'lucide-react';
 import { useAboutNav } from '../../about/AboutNavContext';
+import { useStaffNav } from '../../staff/StaffNavContext';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
 // Same look as the dashboard dock but without the university title block
 export default function SearchBottomNav({ onSelectNav }) {
   const { openAbout } = useAboutNav();
+  const { openStaff } = useStaffNav();
   return (
     <footer className="bg-white pt-3 pb-5 px-6 flex justify-center border-t border-gray-100 shrink-0">
       <nav className="grid grid-cols-3 gap-3.5 w-full max-w-xs">
@@ -20,7 +22,11 @@ export default function SearchBottomNav({ onSelectNav }) {
             <button
               key={item.id}
               type="button"
-              onClick={() => (item.id === 'about' ? openAbout() : onSelectNav(item.id))}
+              onClick={() => {
+                if (item.id === 'about') openAbout();
+                else if (item.id === 'staff') openStaff();
+                else onSelectNav(item.id);
+              }}
               className="flex flex-col items-center justify-center py-3 px-2 rounded-2xl bg-[#0B1E36] text-white hover:bg-[#152B47] transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0B1E36]"
             >
               <Icon className="w-5 h-5 mb-1 stroke-[2.2]" />
