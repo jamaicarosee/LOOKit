@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Users, Info, User } from 'lucide-react';
 import { useAboutNav } from '../../../about/AboutNavContext';
+import { useStaffNav } from '../../../staff/StaffNavContext';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -10,6 +11,7 @@ const NAV_ITEMS = [
 
 export default function DesktopTopNav({ activeNav, setActiveNav, onProfileClick }) {
   const { openAbout } = useAboutNav();
+  const { openStaff } = useStaffNav();
   return (
     <header className="w-full h-20 bg-[#0B1E36] px-8 flex items-center justify-between shrink-0 select-none z-20">
       {/* Left: Clipped Brand Logo */}
@@ -31,7 +33,11 @@ export default function DesktopTopNav({ activeNav, setActiveNav, onProfileClick 
             <button
               key={item.id}
               type="button"
-              onClick={() => (item.id === 'about' ? openAbout() : setActiveNav(item.id))}
+              onClick={() => {
+                if (item.id === 'about') openAbout();
+                else if (item.id === 'staff') openStaff();
+                else setActiveNav(item.id);
+              }}
               className={`flex flex-col items-center justify-center transition-all duration-200 ${
                 isActive
                   ? 'bg-[#E5EEF7] text-[#0B1E36] px-9 py-1.5 rounded-2xl shadow-sm font-semibold'

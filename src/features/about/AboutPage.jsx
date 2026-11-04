@@ -7,15 +7,18 @@ import AboutIntroCard from './components/AboutIntroCard';
 import KeyFeatures from './components/KeyFeatures';
 import OtherInformation from './components/OtherInformation';
 import AboutFooter from './components/AboutFooter';
+import { useStaffNav } from '../staff/StaffNavContext';
 
 // About screen. Desktop-first: two columns on wide screens, single column
 // inside the phone frame (matches the Figma) on small screens.
 export default function AboutPage({ onBackToMap, onProfileClick }) {
   const { isDesktop } = useViewport(1024);
+  const { openStaff } = useStaffNav();
 
   const handleNav = (id) => {
     if (id === 'map') onBackToMap();
-    // 'staff' has no screen yet; 'about' is the current page
+    if (id === 'staff') openStaff();
+    // 'about' is the current page
   };
 
   if (isDesktop) {

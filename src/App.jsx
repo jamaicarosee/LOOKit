@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardMobileView from './features/dashboard/DashboardMobileView';
 import DashboardDesktopView from './features/dashboard/DashboardDesktopView';
 import NavigationFlow from './features/navigation/NavigationFlow';
@@ -8,18 +8,28 @@ import AboutPage from './features/about/AboutPage';
 import { AboutNavProvider } from './features/about/AboutNavContext';
 import AccountInfo from './features/account/AccountInfo';
 import { AuthProvider, useAuth } from './features/login/context/AuthContext';
+import StaffScreen from './features/staff/StaffScreen';
+import { StaffNavProvider } from './features/staff/StaffNavContext';
 
 function AppContent() {
   const { isDesktop } = useViewport(1024);
-  const { user, profile, isAuthenticated, logout } = useAuth();
+  const { user, profile, isAuthenticated, authLoading, logout } = useAuth();
 
   const [screen, setScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginRequired, setLoginRequired] = useState(false);
+  const [pendingStaff, setPendingStaff] = useState(false); // guest clicked Staff, waiting for login
+  const [navTarget, setNavTarget] = useState(null); // destination pre-filled in Directions (from Staff)
+  const [navOrigin, setNavOrigin] = useState('dashboard'); // where Directions' back button returns to
 
-  const openSearch = () => setScreen('navigation');
+  const openSearch = () => {
+    setNavTarget(null);
+    setNavOrigin('dashboard');
+    setScreen('navigation');
+  };
   const openAbout = () => setScreen('about');
   const closeSearch = () => setScreen('dashboard');
+  const closeNavigation = () => setScreen(navOrigin);
 
   const openLogin = () => {
     if (isAuthenticated) {
@@ -46,6 +56,36 @@ function AppContent() {
     return true;
   };
 
+  // Staff Directory: guests must log in first (same login modal as navigation)
+  const openStaff = () => {
+    if (authLoading) return;
+    if (!isAuthenticated) {
+      setPendingStaff(true);
+      requireLogin();
+      return;
+    }
+    setScreen('staff');
+  };
+
+  // Staff -> "Show path": open Directions with the office already filled in as the destination
+  const openRouteTo = (location) => {
+    setNavTarget(location);
+    setNavOrigin('staff');
+    setScreen('navigation');
+  };
+
+  // After the login modal closes: go to Staff if they logged in, otherwise forget the request
+  useEffect(() => {
+    if (!pendingStaff || showLoginModal) return;
+    if (isAuthenticated) setScreen('staff');
+    setPendingStaff(false);
+  }, [pendingStaff, showLoginModal, isAuthenticated]);
+
+  // Logged out while on the Staff page (e.g. session ended): back to the map
+  useEffect(() => {
+    if (screen === 'staff' && !authLoading && !isAuthenticated) setScreen('dashboard');
+  }, [screen, authLoading, isAuthenticated]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -66,6 +106,7 @@ function AppContent() {
 
   return (
     <AboutNavProvider onOpenAbout={openAbout}>
+    <StaffNavProvider onOpenStaff={openStaff}>
 
       {screen === 'about' && (
         <main className={mainClass}>
@@ -79,13 +120,25 @@ function AppContent() {
       {screen === 'navigation' && (
         <main className={mainClass}>
           <NavigationFlow
-            onBackToMap={closeSearch}
+            key={navTarget?.id || 'blank'}
+            initialTo={navTarget}
+            onBackToMap={closeNavigation}
             onNavSelect={(id) => {
               if (id === 'map') closeSearch();
             }}
             onProfileClick={openLogin}
             isAuthenticated={isAuthenticated}
             requireLogin={requireLogin}
+          />
+        </main>
+      )}
+
+      {screen === 'staff' && isAuthenticated && (
+        <main className={mainClass}>
+          <StaffScreen
+            onBackToMap={closeSearch}
+            onProfileClick={openLogin}
+            onShowPath={openRouteTo}
           />
         </main>
       )}
@@ -128,6 +181,7 @@ function AppContent() {
         />
       )}
 
+    </StaffNavProvider>
     </AboutNavProvider>
   );
 }
