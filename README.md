@@ -1,16 +1,111 @@
-# React + Vite
+# LOOKit
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+LOOKit is a campus wayfinding web app for Rizal Technological University, Pasig Campus. It combines an interactive campus map, indoor floor plans with step-by-step directions, a staff directory, and an admin dashboard.
 
-Currently, two official plugins are available:
+Built with React, Vite, Tailwind CSS, Mapbox GL and Supabase.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Map:** campus overview with building filters (All, M.A.E, CED, CAS, Javier, Canteen) and a 2D/3D toggle.
+- **Directions:** search for a room or building and get a route across floors (1F to 6F) with step-by-step guidance.
+- **Staff directory:** searchable list of staff and offices, with a map card and "Show path" for each person. Requires login.
+- **About:** information about the app.
+- **Admin dashboard:** visible only to users whose role is `admin` (see below).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Admin dashboard
 
-## Expanding the Oxlint configuration
+Admins see an **Admin** button in the navigation. The dashboard has five tabs:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+| Tab | What it does |
+| --- | --- |
+| **Map** | Type an office or room in **From** to see it highlighted and pinned on its floor plan. Enter a new name in **To** and press **Apply change** to rename the location. |
+| **Directory** | Choose **Update staff**, **Add staff** or **Delete staff**. A live preview of the staff directory sits next to the form, and clicking a card selects that person. |
+| **Overview** | Placeholder. |
+| **Users** | Placeholder. |
+| **Audit Log** | Placeholder. |
+
+Changes are saved to Supabase (`staff_members` and `location`). The public Staff page reads from the same `staff_members` table and falls back to the built-in list in `src/features/staff/data/staffData.js` if the table is empty or fails to load.
+
+## Getting started
+
+### Requirements
+
+- Node.js 20 or newer
+- A Supabase project
+- A Mapbox access token
+
+### Install and run
+
+```bash
+npm install
+npm run dev
+```
+
+### Environment variables
+
+Create a `.env` file in the project root:
+
+```env
+VITE_SUPABASE_URL=your-supabase-project-url
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_FASTAPI_BASE_URL=your-backend-url
+VITE_MAPBOX_ACCESS_TOKEN=your-mapbox-token
+```
+
+Never put a Supabase service-role key in the frontend.
+
+### Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Lint with oxlint |
+| `npm run check:routes` | Validate routing data |
+
+## Supabase setup
+
+### Tables used
+
+- `staff_members`: `employee_number`, `department_id`, `office_location_id`, `first_name`, `last_name`, `role`, `email`
+- `departments`: `departmentid`, `name`
+- `location`: `locationid`, `floorid`, `name`, `type`, `x_coordinate`, `y_coordinate`, `code`, `label`, `building_code`
+- `users`: `id`, `full_name`, `email`, `created_at`, `role` (linked to `auth.users`; `role = 'admin'` grants admin access)
+
+### Row-level security
+
+The admin tabs write directly from the browser, so Supabase must only allow admins to write. `supabase/admin_policies.sql` creates:
+
+- an `is_admin()` helper that checks `public.users.role`
+- read access to `staff_members`, `departments` and `location` for signed-in users
+- write access to `staff_members`, and update access to `location`, for admins only
+
+Run it once in the Supabase SQL editor, then check **Authentication → Policies**. If an older "allow all" policy exists on any of these tables, drop it, because Supabase allows an action if any policy allows it.
+
+To make someone an admin, set `role = 'admin'` on their row in `public.users`.
+
+## Project structure
+
+```
+src/
+  features/
+    about/        About page
+    account/      Account info and logout
+    admin/        Admin dashboard (tabs, forms, floor-plan map)
+    dashboard/    Home map, top navigation, building filters
+    directions/   Route map, floor tabs, step-by-step panel
+    login/        Login, registration, auth context
+    navigation/   Routing graph, location search, step builder
+    search/       Directions search screens
+    staff/        Staff directory, Supabase service and hook
+  services/       Supabase and API clients
+public/data/      Campus, floor and path GeoJSON
+supabase/         SQL for row-level security policies
+```
+
+## Known limitations
+
+- Room names on the map and in Directions come from the static files in `public/data/`. Renaming a location in the admin dashboard updates the database, but the map shows the new name only after that data is loaded from Supabase.
+- The admin Map tab highlights and pins a location only if it can be matched to the campus data by `code` or name.
+- Overview, Users and Audit Log are not built yet.
