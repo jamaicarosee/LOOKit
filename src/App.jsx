@@ -168,10 +168,14 @@ function AppContent() {
             }
           >
 <<<<<<< HEAD
+<<<<<<< HEAD
             <AdminScreen onBackToMap={closeSearch} />
 =======
             <AdminScreen onBackToMap={closeSearch} onProfileClick={openLogin} />
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+            <AdminScreen onBackToMap={closeSearch} onProfileClick={openLogin} />
+>>>>>>> fb8d2b8 (updated admin dashboard)
           </Suspense>
         </main>
       )}

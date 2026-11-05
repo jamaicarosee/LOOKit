@@ -10,9 +10,13 @@ import StaffDirectoryDesktop from './StaffDirectoryDesktop';
 import StaffDirectoryMobile from './StaffDirectoryMobile';
 import useStaffLocation from './hooks/useStaffLocation';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import useStaffData from './hooks/useStaffData';
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+import useStaffData from './hooks/useStaffData';
+>>>>>>> fb8d2b8 (updated admin dashboard)
 
 /**
  * Staff Directory screen (only reachable when logged in; App.jsx checks the login).
@@ -26,9 +30,13 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
   const [selected, setSelected] = useState(null);
   const location = useStaffLocation(selected);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   const { staff } = useStaffData(); // Supabase, falls back to the built-in list
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+  const { staff } = useStaffData(); // Supabase, falls back to the built-in list
+>>>>>>> fb8d2b8 (updated admin dashboard)
 
   const closeSelection = () => setSelected(null);
 
@@ -71,9 +79,13 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
           >
             <StaffDirectoryDesktop
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
               staff={staff}
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+              staff={staff}
+>>>>>>> fb8d2b8 (updated admin dashboard)
               searchQuery={searchQuery}
               onSelectStaff={setSelected}
               selectedId={selected?.id}
@@ -111,10 +123,14 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
         <>
           <StaffSearchBar value={searchQuery} onChange={setSearchQuery} />
 <<<<<<< HEAD
+<<<<<<< HEAD
           <StaffDirectoryMobile searchQuery={searchQuery} onSelectStaff={setSelected} />
 =======
           <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+          <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
+>>>>>>> fb8d2b8 (updated admin dashboard)
         </>
       )}
 

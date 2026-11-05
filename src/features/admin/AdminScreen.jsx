@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { useViewport } from '../dashboard/hooks/useViewport';
 import { useAuth } from '../login/context/AuthContext';
 =======
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
 import { ArrowLeft } from 'lucide-react';
 import { useViewport } from '../dashboard/hooks/useViewport';
 import DesktopTopNav from '../dashboard/components/desktop/DesktopTopNav';
 import MobileTopBar from '../dashboard/components/MobileTopBar';
 import MobileBottomSheet from '../dashboard/components/MobileBottomSheet';
+<<<<<<< HEAD
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
 import { ADMIN_SECTIONS } from './adminSections';
 import Overview from './sections/Overview';
 import MapEditor from './sections/MapEditor';
@@ -19,6 +25,7 @@ import AuditLog from './sections/AuditLog';
 
 const VIEWS = { overview: Overview, map: MapEditor, users: Users, staff: Staff, audit: AuditLog };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 // Admin dashboard shell. Desktop: sidebar + content. Phone: top bar + scrollable tabs
 // inside the same max-w-md column as the other screens.
@@ -88,6 +95,8 @@ export default function AdminScreen({ onBackToMap }) {
           </div>
         </main>
 =======
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
 // Admin dashboard. Same top navigation as the Staff page, then the back button + "Admin" title,
 // then the tab band (Map, Directory, then the rest). Phone: top bar, scrollable tabs and the bottom nav.
 // App.jsx only renders this for admins; Supabase policies still decide who can write.
@@ -166,12 +175,16 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
             <View isDesktop />
           </div>
         </div>
+<<<<<<< HEAD
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
       </div>
     );
   }
 
   return (
+<<<<<<< HEAD
 <<<<<<< HEAD
     <div className="w-full h-[100dvh] max-w-md mx-auto bg-[#F8F9F9] flex flex-col overflow-hidden shadow-2xl">
       <header className="bg-[#0B1E36] text-white px-4 h-16 flex items-center gap-3 shrink-0">
@@ -214,6 +227,8 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
         <View />
       </div>
 =======
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
     <div className="w-full h-[100dvh] max-w-md mx-auto bg-white flex flex-col overflow-hidden shadow-2xl">
       <MobileTopBar onProfileClick={onProfileClick} />
       <div className="flex items-center gap-3 px-5 pt-1 pb-3 shrink-0">
@@ -225,7 +240,10 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
         <View isDesktop={false} />
       </div>
       <MobileBottomSheet activeNav="admin" onSelectNav={handleNav} />
+<<<<<<< HEAD
 >>>>>>> bc9a15c (admin dashboard improved interface)
+=======
+>>>>>>> fb8d2b8 (updated admin dashboard)
     </div>
   );
 }
