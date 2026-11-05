@@ -18,13 +18,16 @@ export async function verifyAndFetchProfile(accessToken) {
       },
     });
 
-    if (response.data && !('role' in response.data)) {
+    // The backend may wrap the row as { user: {...} }; accept both shapes
+    const profile = response.data?.user ?? response.data;
+
+    if (profile && !('role' in profile)) {
       console.warn(
         "[LOOKit Auth] /api/auth/me returned no 'role' field. The backend must include public.users.role, otherwise the Admin button never appears."
       );
     }
 
-    return response.data;
+    return profile;
   } catch (error) {
     console.warn(
       '[LOOKit Auth] Backend profile verification warning:',
