@@ -1,4 +1,5 @@
 import axios from "axios";
+import { supabase } from "./supabaseClient";
 
 const baseURL = import.meta.env.VITE_FASTAPI_BASE_URL;
 

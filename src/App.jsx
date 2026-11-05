@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import DashboardMobileView from './features/dashboard/DashboardMobileView';
 import DashboardDesktopView from './features/dashboard/DashboardDesktopView';
 import NavigationFlow from './features/navigation/NavigationFlow';
@@ -10,10 +10,14 @@ import AccountInfo from './features/account/AccountInfo';
 import { AuthProvider, useAuth } from './features/login/context/AuthContext';
 import StaffScreen from './features/staff/StaffScreen';
 import { StaffNavProvider } from './features/staff/StaffNavContext';
+import { AdminNavProvider } from './features/admin/AdminNavContext';
+
+// Loaded on demand so normal users never download the admin dashboard
+const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
 
 function AppContent() {
   const { isDesktop } = useViewport(1024);
-  const { user, profile, isAuthenticated, authLoading, logout } = useAuth();
+  const { user, profile, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
 
   const [screen, setScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -28,6 +32,11 @@ function AppContent() {
     setScreen('navigation');
   };
   const openAbout = () => setScreen('about');
+  // Admin button is only shown to admins; this re-checks so a stale click can't open it
+  const openAdmin = () => {
+    if (authLoading || !isAdmin) return;
+    setScreen('admin');
+  };
   const closeSearch = () => setScreen('dashboard');
   const closeNavigation = () => setScreen(navOrigin);
 
@@ -86,6 +95,11 @@ function AppContent() {
     if (screen === 'staff' && !authLoading && !isAuthenticated) setScreen('dashboard');
   }, [screen, authLoading, isAuthenticated]);
 
+  // Not an admin (logged out, role removed, tampering): back to the map
+  useEffect(() => {
+    if (screen === 'admin' && !authLoading && !isAdmin) setScreen('dashboard');
+  }, [screen, authLoading, isAdmin]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -107,6 +121,7 @@ function AppContent() {
   return (
     <AboutNavProvider onOpenAbout={openAbout}>
     <StaffNavProvider onOpenStaff={openStaff}>
+    <AdminNavProvider onOpenAdmin={openAdmin} isAdmin={isAdmin}>
 
       {screen === 'about' && (
         <main className={mainClass}>
@@ -140,6 +155,20 @@ function AppContent() {
             onProfileClick={openLogin}
             onShowPath={openRouteTo}
           />
+        </main>
+      )}
+
+      {screen === 'admin' && isAdmin && (
+        <main className={mainClass}>
+          <Suspense
+            fallback={
+              <div className="w-full h-full flex items-center justify-center text-sm font-semibold text-slate-500">
+                Loading admin dashboard…
+              </div>
+            }
+          >
+            <AdminScreen onBackToMap={closeSearch} />
+          </Suspense>
         </main>
       )}
 
@@ -181,6 +210,7 @@ function AppContent() {
         />
       )}
 
+    </AdminNavProvider>
     </StaffNavProvider>
     </AboutNavProvider>
   );

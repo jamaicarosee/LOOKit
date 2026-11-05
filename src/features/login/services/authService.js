@@ -18,6 +18,12 @@ export async function verifyAndFetchProfile(accessToken) {
       },
     });
 
+    if (response.data && !('role' in response.data)) {
+      console.warn(
+        "[LOOKit Auth] /api/auth/me returned no 'role' field. The backend must include public.users.role, otherwise the Admin button never appears."
+      );
+    }
+
     return response.data;
   } catch (error) {
     console.warn(

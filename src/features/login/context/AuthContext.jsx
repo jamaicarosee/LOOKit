@@ -56,8 +56,11 @@ export function AuthProvider({ children }) {
           );
 
           if (isMounted) {
-            setProfile(
-              backendProfile || {
+            // A failed refetch must not wipe the known profile of the same user: SIGNED_IN also
+            // fires when the tab regains focus, and losing the profile would drop the admin role
+            setProfile((prev) =>
+              backendProfile ||
+              (prev?.id === currentSession.user.id && prev) || {
                 id: currentSession.user.id,
                 email: currentSession.user.email,
                 full_name: currentSession.user.user_metadata?.full_name || '',
@@ -105,6 +108,9 @@ export function AuthProvider({ children }) {
     session,
     authLoading,
     isAuthenticated: Boolean(user && session),
+    // Role comes from the backend profile (public.users.role), never from the email.
+    // False while auth is loading or the profile has not arrived, so the button never flashes.
+    isAdmin: !authLoading && Boolean(user && session) && profile?.role === 'admin',
     login,
     register,
     logout,

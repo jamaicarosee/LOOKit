@@ -2,6 +2,8 @@ import React from 'react';
 import { MapPin, Users, Info, User } from 'lucide-react';
 import { useAboutNav } from '../../../about/AboutNavContext';
 import { useStaffNav } from '../../../staff/StaffNavContext';
+import { useAdminNav } from '../../../admin/AdminNavContext';
+import { ADMIN_NAV_ITEM } from '../../../admin/adminNavItem';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -12,6 +14,8 @@ const NAV_ITEMS = [
 export default function DesktopTopNav({ activeNav, setActiveNav, onProfileClick }) {
   const { openAbout } = useAboutNav();
   const { openStaff } = useStaffNav();
+  const { openAdmin, isAdmin } = useAdminNav();
+  const navItems = isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
   return (
     <header className="w-full h-20 bg-[#0B1E36] px-8 flex items-center justify-between shrink-0 select-none z-20">
       {/* Left: Clipped Brand Logo */}
@@ -24,8 +28,8 @@ export default function DesktopTopNav({ activeNav, setActiveNav, onProfileClick 
       </div>
 
       {/* Center: Navigation Action Tabs */}
-      <nav className="flex items-center gap-12 lg:gap-16">
-        {NAV_ITEMS.map((item) => {
+      <nav className={`flex items-center ${isAdmin ? 'gap-8 lg:gap-12' : 'gap-12 lg:gap-16'}`}>
+        {navItems.map((item) => {
           const IconComponent = item.icon;
           const isActive = activeNav === item.id;
 
@@ -36,6 +40,7 @@ export default function DesktopTopNav({ activeNav, setActiveNav, onProfileClick 
               onClick={() => {
                 if (item.id === 'about') openAbout();
                 else if (item.id === 'staff') openStaff();
+                else if (item.id === 'admin') openAdmin();
                 else setActiveNav(item.id);
               }}
               className={`flex flex-col items-center justify-center transition-all duration-200 ${

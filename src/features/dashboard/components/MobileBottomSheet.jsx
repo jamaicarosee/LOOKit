@@ -2,6 +2,8 @@ import React from 'react';
 import { MapPin, Users, Info } from 'lucide-react';
 import { useAboutNav } from '../../about/AboutNavContext';
 import { useStaffNav } from '../../staff/StaffNavContext';
+import { useAdminNav } from '../../admin/AdminNavContext';
+import { ADMIN_NAV_ITEM } from '../../admin/adminNavItem';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -12,6 +14,8 @@ const NAV_ITEMS = [
 export default function MobileBottomSheet({ activeNav, onSelectNav }) {
   const { openAbout } = useAboutNav();
   const { openStaff } = useStaffNav();
+  const { openAdmin, isAdmin } = useAdminNav();
+  const navItems = isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
   return (
     <footer className="bg-white pt-4 pb-5 px-6 flex flex-col items-center justify-between border-t border-gray-100 shrink-0">
       {/* University Name */}
@@ -25,8 +29,8 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
       </div>
 
       {/* 3 Bottom Action Pill Buttons */}
-      <nav className="grid grid-cols-3 gap-3.5 w-full max-w-xs">
-        {NAV_ITEMS.map((item) => {
+      <nav className={`grid ${isAdmin ? 'grid-cols-4 gap-2.5' : 'grid-cols-3 gap-3.5'} w-full max-w-xs`}>
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeNav === item.id;
 
@@ -37,6 +41,7 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
               onClick={() => {
                 if (item.id === 'about') openAbout();
                 else if (item.id === 'staff') openStaff();
+                else if (item.id === 'admin') openAdmin();
                 else onSelectNav(item.id);
               }}
               className={`flex flex-col items-center justify-center py-3 px-2 rounded-2xl transition-all active:scale-95 shadow-sm ${
