@@ -1,0 +1,516 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "id": 5500,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE 5th-Floor Main Corridor",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09943599,
+      14.57332258
+     ],
+     [
+      121.09950424,
+      14.57332258
+     ],
+     [
+      121.09957764,
+      14.57332258
+     ],
+     [
+      121.09965103,
+      14.57332258
+     ],
+     [
+      121.09972441,
+      14.57332258
+     ],
+     [
+      121.0997978,
+      14.57332258
+     ],
+     [
+      121.09987119,
+      14.57332258
+     ],
+     [
+      121.09994411,
+      14.57332258
+     ],
+     [
+      121.10001705,
+      14.57332258
+     ],
+     [
+      121.100062,
+      14.57332258
+     ],
+     [
+      121.10007896,
+      14.57332258
+     ],
+     [
+      121.10010603,
+      14.57332258
+     ],
+     [
+      121.10014319,
+      14.57332258
+     ],
+     [
+      121.10019355,
+      14.57332258
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5501,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE West Stairs Link",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09943599,
+      14.57332258
+     ],
+     [
+      121.09943599,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5502,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE East Stairs Link",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10019355,
+      14.57332258
+     ],
+     [
+      121.10019355,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5503,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E501",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09950424,
+      14.57332258
+     ],
+     [
+      121.09950424,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5504,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E502",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09957764,
+      14.57332258
+     ],
+     [
+      121.09957764,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5505,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E503",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09965103,
+      14.57332258
+     ],
+     [
+      121.09965103,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5506,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E504",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09972441,
+      14.57332258
+     ],
+     [
+      121.09972441,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5507,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E505",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.0997978,
+      14.57332258
+     ],
+     [
+      121.0997978,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5508,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E506",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09987119,
+      14.57332258
+     ],
+     [
+      121.09987119,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5509,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E507",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09994411,
+      14.57332258
+     ],
+     [
+      121.09994411,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5510,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 E508",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10001705,
+      14.57332258
+     ],
+     [
+      121.10001705,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5511,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 FACULTY CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.100062,
+      14.57332258
+     ],
+     [
+      121.100062,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5512,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 FACULTY CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10007896,
+      14.57332258
+     ],
+     [
+      121.10007896,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5513,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 GENT'S CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10010603,
+      14.57332258
+     ],
+     [
+      121.10010603,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5514,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "MAE Entrance \u2014 LADY'S CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10014319,
+      14.57332258
+     ],
+     [
+      121.10014319,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5515,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "CED Gym Interior Walkway",
+    "building": "CED Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10031094,
+      14.57328959
+     ],
+     [
+      121.10031094,
+      14.57334
+     ],
+     [
+      121.10037558,
+      14.57334
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 5516,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 5,
+    "level": "5",
+    "name": "CED Storage Entrance",
+    "building": "CED Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.1002846,
+      14.57328959
+     ],
+     [
+      121.1002846,
+      14.57327311
+     ]
+    ]
+   }
+  }
+ ]
+}
