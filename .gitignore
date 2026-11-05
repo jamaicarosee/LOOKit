@@ -1,0 +1,41 @@
+#ENV
+.env
+.env*.local
+*.env
+
+#Python Bytecode, Compilations & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.cpython-*.pyc
+
+#Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+site-packages/
+
+#Code Editors, IDEs & OS Metadata
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+#Testing, Coverage & Profiling
+scripts/tmp/
+scripts/*.log
+scripts/*.prof
+scripts/debug_*.json
+scripts/geo_diagnostics_*.geojson
+graph_debug_*.json
+geo_diagnostics_*.geojson
+
+#Temporary Files
+tmp/
+temp/
