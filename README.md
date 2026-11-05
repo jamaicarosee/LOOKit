@@ -41,17 +41,6 @@ npm install
 npm run dev
 ```
 
-### Environment variables
-
-Create a `.env` file in the project root:
-
-```env
-VITE_SUPABASE_URL=your-supabase-project-url
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-VITE_FASTAPI_BASE_URL=your-backend-url
-VITE_MAPBOX_ACCESS_TOKEN=your-mapbox-token
-```
-
 Never put a Supabase service-role key in the frontend.
 
 ### Scripts
