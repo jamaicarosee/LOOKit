@@ -9,6 +9,10 @@ import StaffMapPanel from './components/StaffMapPanel';
 import StaffDirectoryDesktop from './StaffDirectoryDesktop';
 import StaffDirectoryMobile from './StaffDirectoryMobile';
 import useStaffLocation from './hooks/useStaffLocation';
+<<<<<<< HEAD
+=======
+import useStaffData from './hooks/useStaffData';
+>>>>>>> bc9a15c (admin dashboard improved interface)
 
 /**
  * Staff Directory screen (only reachable when logged in; App.jsx checks the login).
@@ -21,6 +25,10 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState(null);
   const location = useStaffLocation(selected);
+<<<<<<< HEAD
+=======
+  const { staff } = useStaffData(); // Supabase, falls back to the built-in list
+>>>>>>> bc9a15c (admin dashboard improved interface)
 
   const closeSelection = () => setSelected(null);
 
@@ -62,6 +70,10 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
             }`}
           >
             <StaffDirectoryDesktop
+<<<<<<< HEAD
+=======
+              staff={staff}
+>>>>>>> bc9a15c (admin dashboard improved interface)
               searchQuery={searchQuery}
               onSelectStaff={setSelected}
               selectedId={selected?.id}
@@ -98,7 +110,11 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
       ) : (
         <>
           <StaffSearchBar value={searchQuery} onChange={setSearchQuery} />
+<<<<<<< HEAD
           <StaffDirectoryMobile searchQuery={searchQuery} onSelectStaff={setSelected} />
+=======
+          <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
+>>>>>>> bc9a15c (admin dashboard improved interface)
         </>
       )}
 

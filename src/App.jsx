@@ -167,7 +167,11 @@ function AppContent() {
               </div>
             }
           >
+<<<<<<< HEAD
             <AdminScreen onBackToMap={closeSearch} />
+=======
+            <AdminScreen onBackToMap={closeSearch} onProfileClick={openLogin} />
+>>>>>>> bc9a15c (admin dashboard improved interface)
           </Suspense>
         </main>
       )}
