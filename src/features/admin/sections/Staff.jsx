@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React from 'react';
-import SectionPlaceholder from '../components/SectionPlaceholder';
-
-export default function Staff() {
-  return <SectionPlaceholder title="Staff" description="Manage staff entries and office links. Coming in a later step." />;
-=======
-=======
->>>>>>> fb8d2b8 (updated admin dashboard)
 import React, { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import StaffList from '../../staff/components/StaffList';
@@ -300,8 +290,4 @@ export default function Staff() {
       </section>
     </div>
   );
-<<<<<<< HEAD
->>>>>>> bc9a15c (admin dashboard improved interface)
-=======
->>>>>>> fb8d2b8 (updated admin dashboard)
 }

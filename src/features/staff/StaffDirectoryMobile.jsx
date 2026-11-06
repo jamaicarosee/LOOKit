@@ -2,18 +2,8 @@ import React, { useMemo } from 'react';
 import StaffList from './components/StaffList';
 import { STAFF_DATA, filterStaff } from './data/staffData';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-export default function StaffDirectoryMobile({ searchQuery, onSelectStaff, selectedId }) {
-  const visibleStaff = useMemo(() => filterStaff(STAFF_DATA, searchQuery), [searchQuery]);
-=======
 export default function StaffDirectoryMobile({ searchQuery, onSelectStaff, selectedId, staff = STAFF_DATA }) {
   const visibleStaff = useMemo(() => filterStaff(staff, searchQuery), [staff, searchQuery]);
->>>>>>> bc9a15c (admin dashboard improved interface)
-=======
-export default function StaffDirectoryMobile({ searchQuery, onSelectStaff, selectedId, staff = STAFF_DATA }) {
-  const visibleStaff = useMemo(() => filterStaff(staff, searchQuery), [staff, searchQuery]);
->>>>>>> fb8d2b8 (updated admin dashboard)
 
   return (
     <div className="flex-1 min-h-0 overflow-y-auto bg-[#F8F9F9] px-5 py-5">

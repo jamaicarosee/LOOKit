@@ -1,7 +1,7 @@
 // Route computation: resolves locations to graph nodes, runs Dijkstra and builds steps.
 // getRoute() is the only entry point the UI uses, so a FastAPI backend can replace it later.
 
-import axios from 'axios';
+import { apiClient } from '../../../services/apiClient';
 import { USE_REMOTE_ROUTING, API_BASE_URL } from '../constants';
 import { fetchCampusData } from './dataService';
 import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
@@ -140,7 +140,11 @@ async function getLocalRoute(from, to, options) {
 // --- Remote routing (kept behind the same interface) ---
 
 async function getRemoteRoute(from, to, options) {
-  const { data } = await axios.post(`${API_BASE_URL}/route`, { from, to, ...options });
+  const { data } = await apiClient.post('/api/navigation/route', {
+    from,
+    to,
+    ...options,
+  });
   if (!data) return null;
   return {
     distanceMeters: data.distanceMeters,
@@ -155,18 +159,23 @@ async function getRemoteRoute(from, to, options) {
     end: data.end,
     warnings: data.warnings || [],
     options,
-    from,
-    to,
+    from: data.from || from,
+    to: data.to || to,
   };
 }
 
-// Returns a RouteResult, or null when no walkable path exists. Throws only on real errors.
+// Returns a RouteResult, or null when no walkable path exists.
 export async function getRoute(fromLocation, toLocation, options = {}) {
-  return USE_REMOTE_ROUTING
-    ? getRemoteRoute(fromLocation, toLocation, options)
-    : getLocalRoute(fromLocation, toLocation, options);
+  if (!USE_REMOTE_ROUTING) {
+    return getLocalRoute(fromLocation, toLocation, options);
+  }
+  try {
+    return await getRemoteRoute(fromLocation, toLocation, options);
+  } catch (err) {
+    console.warn('[LOOKit Routing] FastAPI unreachable, falling back to local graph:', err.message);
+    return getLocalRoute(fromLocation, toLocation, options);
+  }
 }
-
 /*
  * Sample calls (verified against the bundled GeoJSON):
  *

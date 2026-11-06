@@ -12,8 +12,9 @@ export const COLORS = {
 };
 
 // --- Routing ---
-export const USE_REMOTE_ROUTING = false; // flip when the FastAPI backend exists
-export const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || '';
+export const USE_REMOTE_ROUTING = true; // Connected to FastAPI backend
+export const API_BASE_URL =
+  import.meta.env?.VITE_FASTAPI_BASE_URL || import.meta.env?.VITE_API_BASE_URL || '';
 export const WALKING_SPEED_MPS = 1.25;
 export const RAMP_SPEED_MPS = 0.9;
 export const STAIRS_SECONDS_PER_FLOOR = 22;

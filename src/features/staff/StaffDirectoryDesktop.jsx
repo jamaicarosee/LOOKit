@@ -4,18 +4,8 @@ import { STAFF_DATA, filterStaff } from './data/staffData';
 
 // `split` = a staff member is selected and the map is shown beside the list,
 // so the list switches to one narrow column.
-<<<<<<< HEAD
-<<<<<<< HEAD
-export default function StaffDirectoryDesktop({ searchQuery, onSelectStaff, selectedId, split = false }) {
-  const visibleStaff = useMemo(() => filterStaff(STAFF_DATA, searchQuery), [searchQuery]);
-=======
 export default function StaffDirectoryDesktop({ searchQuery, onSelectStaff, selectedId, split = false, staff = STAFF_DATA }) {
   const visibleStaff = useMemo(() => filterStaff(staff, searchQuery), [staff, searchQuery]);
->>>>>>> bc9a15c (admin dashboard improved interface)
-=======
-export default function StaffDirectoryDesktop({ searchQuery, onSelectStaff, selectedId, split = false, staff = STAFF_DATA }) {
-  const visibleStaff = useMemo(() => filterStaff(staff, searchQuery), [staff, searchQuery]);
->>>>>>> fb8d2b8 (updated admin dashboard)
 
   return (
     <div className="flex-1 min-h-0 w-full overflow-y-auto bg-[#F8F9F9]">

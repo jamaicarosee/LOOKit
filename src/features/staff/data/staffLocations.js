@@ -58,6 +58,10 @@ const BUILDING_FILTER = {
 // What we know about a person's place, before looking at the map data.
 // kind: 'office' (their own office) | 'college' (college main office) | 'building' (building only)
 export function getLocationRef(staff) {
+  // 1. Prio: Database-assigned room code (from FastAPI joined with location table)
+  if (staff.room_code) return { kind: 'office', code: staff.room_code };
+
+  // 2. Fallback: Hardcoded dictionary mapping
   const own = OFFICE_ROOMS[staff.office];
   if (own) return { kind: 'office', code: own };
 
