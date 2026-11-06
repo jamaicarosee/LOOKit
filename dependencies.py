@@ -4,7 +4,10 @@ from database import supabase
 
 security = HTTPBearer()
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> dict:
     """
     Validates Supabase Bearer JWT via Supabase Auth and returns user identity.
     """
@@ -21,24 +24,69 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         if not user_response or not user_response.user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired authentication credentials."
+                detail="Invalid or expired authentication credentials.",
             )
 
         user = user_response.user
         return {
             "id": user.id,
             "email": user.email,
-            "metadata": user.user_metadata or {}
+            "metadata": user.user_metadata or {},
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
         error_msg = str(e)
         if "expired" in error_msg.lower():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Session has expired. Please sign in again."
+                detail="Session has expired. Please sign in again.",
             )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Authentication failed: {error_msg}"
+            detail=f"Authentication failed: {error_msg}",
         )
+
+
+def get_current_user_profile(
+    user: dict = Depends(get_current_user),
+) -> dict:
+    """
+    Fetches the full user profile (including role) from public.users.
+    """
+    try:
+        response = (
+            supabase.table("users")
+            .select("id, full_name, email, created_at, role")
+            .eq("id", user["id"])
+            .maybe_single()
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to query user profile: {str(e)}",
+        )
+
+    if not response or not response.data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User profile not found in public.users.",
+        )
+
+    return response.data
+
+
+def require_admin(
+    profile: dict = Depends(get_current_user_profile),
+) -> dict:
+    """
+    Guard dependency that restricts endpoint access strictly to users with role == 'admin'.
+    """
+    if profile.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges are required to access this resource.",
+        )
+    return profile
