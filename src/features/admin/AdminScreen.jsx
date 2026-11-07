@@ -15,11 +15,19 @@ const VIEWS = { overview: Overview, map: MapEditor, users: Users, staff: Staff, 
 
 
 // Admin dashboard. Same top navigation as the Staff page, then the back button + "Admin" title,
+<<<<<<< HEAD
 // then the tab band (Map, Directory, then the rest). Phone: top bar, scrollable tabs and the bottom nav.
 // App.jsx only renders this for admins; Supabase policies still decide who can write.
 export default function AdminScreen({ onBackToMap, onProfileClick }) {
   const { isDesktop } = useViewport(1024);
   const [section, setSection] = useState('map');
+=======
+// then the tab band (Overview, Map, Directory, Users, Audit Log). Phone: top bar, scrollable tabs and the bottom nav.
+// App.jsx only renders this for admins; Supabase policies still decide who can write.
+export default function AdminScreen({ onBackToMap, onProfileClick }) {
+  const { isDesktop } = useViewport(1024);
+  const [section, setSection] = useState('overview');
+>>>>>>> d6a3a47 (updated user, overview, audit logs)
 
   const View = VIEWS[section];
 
@@ -89,7 +97,11 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
         <section className="w-full bg-[#0B1E36] py-3.5 px-8 shrink-0 select-none z-20">{renderTabs(true)}</section>
         <div className="flex-1 min-h-0 overflow-y-auto">
           <div className="max-w-6xl mx-auto px-8 lg:px-16 py-6">
+<<<<<<< HEAD
             <View isDesktop />
+=======
+            <View isDesktop onNavigate={setSection} />
+>>>>>>> d6a3a47 (updated user, overview, audit logs)
           </div>
         </div>
       </div>
@@ -105,7 +117,11 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
       </div>
       <div className="bg-[#0B1E36] px-4 py-2.5 shrink-0 shadow-sm">{renderTabs(false)}</div>
       <div className="flex-1 min-h-0 overflow-y-auto bg-[#F8F9F9] px-5 py-5">
+<<<<<<< HEAD
         <View isDesktop={false} />
+=======
+        <View isDesktop={false} onNavigate={setSection} />
+>>>>>>> d6a3a47 (updated user, overview, audit logs)
       </div>
       <MobileBottomSheet activeNav="admin" onSelectNav={handleNav} />
     </div>

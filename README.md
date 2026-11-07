@@ -18,6 +18,7 @@ Admins see an **Admin** button in the navigation. The dashboard has five tabs:
 
 | Tab | What it does |
 | --- | --- |
+<<<<<<< HEAD
 | **Map** | Type an office or room in **From** to see it highlighted and pinned on its floor plan. Enter a new name in **To** and press **Apply change** to rename the location. |
 | **Directory** | Choose **Update staff**, **Add staff** or **Delete staff**. A live preview of the staff directory sits next to the form, and clicking a card selects that person. |
 | **Overview** | Placeholder. |
@@ -25,6 +26,15 @@ Admins see an **Admin** button in the navigation. The dashboard has five tabs:
 | **Audit Log** | Placeholder. |
 
 Changes are saved to Supabase (`staff_members` and `location`). The public Staff page reads from the same `staff_members` table and falls back to the built-in list in `src/features/staff/data/staffData.js` if the table is empty or fails to load.
+=======
+| **Overview** | Read-only summary with three panels: a compact campus map, the first staff entries and the list of users. Each panel has a **View** link that opens its full tab. |
+| **Map** | Type an office or room in **From** to see it highlighted and pinned on its floor plan. Enter a new name in **To** and press **Apply change** to rename the location. |
+| **Directory** | Choose **Update staff**, **Add staff** or **Delete staff**. A live preview of the staff directory sits next to the form, and clicking a card selects that person. |
+| **Users** | Choose **Update user**, **Add user** or **Delete user**. The list next to the form is searchable and clicking a card selects that user. **Delete user** deactivates the account (it shows as Inactive and can be reactivated); use **Show inactive** to list inactive users. The backend refuses to deactivate yourself or the last admin and the message is shown in the form. |
+| **Audit Log** | Read-only list of recorded actions, newest first, with date and time, who, action, what changed (before → after for updates) and Success/Failed status. Search, filter by action, entity, status and date range, and use **Load more** for older entries. |
+
+Map and Directory changes are saved to Supabase (`staff_members` and `location`). Users and the Audit Log use the FastAPI endpoints `/api/users` and `/api/audit`; the app also reports logins, failed logins and logouts to `/api/audit/*`, and signs out accounts the backend reports as deactivated. The public Staff page reads from the same `staff_members` table and falls back to the built-in list in `src/features/staff/data/staffData.js` if the table is empty or fails to load.
+>>>>>>> d6a3a47 (updated user, overview, audit logs)
 
 ## Getting started
 
@@ -97,4 +107,8 @@ supabase/         SQL for row-level security policies
 
 - Room names on the map and in Directions come from the static files in `public/data/`. Renaming a location in the admin dashboard updates the database, but the map shows the new name only after that data is loaded from Supabase.
 - The admin Map tab highlights and pins a location only if it can be matched to the campus data by `code` or name.
+<<<<<<< HEAD
 - Overview, Users and Audit Log are not built yet.
+=======
+- Login, failed-login and logout reports are sent without waiting for the answer, so a backend outage never blocks signing in or out, but those events are then missing from the Audit Log.
+>>>>>>> d6a3a47 (updated user, overview, audit logs)
