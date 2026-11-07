@@ -1,8 +1,16 @@
 from typing import Optional
+<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from database import supabase
 from dependencies import require_admin
+=======
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from pydantic import BaseModel
+from database import supabase
+from dependencies import require_admin
+from services.audit_service import diff, error_text, get_client_ip, log_audit
+>>>>>>> 0892d3b (updated for admin dashboard)
 
 router = APIRouter(prefix="/api/staff", tags=["Staff"])
 
@@ -108,6 +116,7 @@ def get_admin_locations():
     }
 
 
+<<<<<<< HEAD
 # --- Protected Admin CRUD Endpoints ---
 
 @router.post("")
@@ -134,4 +143,94 @@ def update_staff(employee_number: int, payload: StaffUpdate, _admin: dict = Depe
 def delete_staff(employee_number: int, _admin: dict = Depends(require_admin)):
     """Admin-only: Deletes a staff member."""
     res = supabase.table("staff_members").delete().eq("employee_number", employee_number).execute()
+=======
+# --- Audit helpers ---
+
+STAFF_AUDIT_FIELDS = ("first_name", "last_name", "role", "email", "department_id", "office_location_id")
+
+
+def _staff_label(row: Optional[dict]) -> Optional[str]:
+    row = row or {}
+    meta = row.get("metadata")
+    full_name = meta.get("full_name") if isinstance(meta, dict) else None
+    return full_name or f"{row.get('first_name') or ''} {row.get('last_name') or ''}".strip() or None
+
+
+def _fetch_staff_row(employee_number: int) -> Optional[dict]:
+    """Best-effort read used only for audit context. Never raises."""
+    try:
+        res = supabase.table("staff_members").select("*").eq("employee_number", employee_number).limit(1).execute()
+        return res.data[0] if res.data else None
+    except Exception as exc:
+        print(f"[LOOKit Audit] Could not read staff row {employee_number} for audit context: {exc}")
+        return None
+
+
+# --- Protected Admin CRUD Endpoints ---
+
+@router.post("")
+def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(require_admin)):
+    """Admin-only: Adds a new staff member."""
+    ip = get_client_ip(request)
+    data = payload.dict(exclude_none=True)
+    try:
+        res = supabase.table("staff_members").insert(data).execute()
+        if not res.data:
+            raise HTTPException(status_code=400, detail="Failed to add staff member.")
+    except HTTPException as exc:
+        log_audit(admin, "CREATE", "staff", entity_id=data.get("employee_number"), entity_label=_staff_label(data),
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    except Exception as exc:
+        log_audit(admin, "CREATE", "staff", entity_id=data.get("employee_number"), entity_label=_staff_label(data),
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    row = res.data[0]
+    log_audit(admin, "CREATE", "staff", entity_id=row.get("employee_number"),
+              entity_label=_staff_label(row) or _staff_label(data),
+              changes=diff({}, data), ip=ip)
+    return {"status": "added", "staff": row}
+
+@router.put("/{employee_number}")
+def update_staff(employee_number: int, payload: StaffUpdate, request: Request, admin: dict = Depends(require_admin)):
+    """Admin-only: Updates an existing staff member."""
+    ip = get_client_ip(request)
+    data = payload.dict(exclude_unset=True)
+    before = None
+    try:
+        if not data:
+            raise HTTPException(status_code=400, detail="No fields provided to update.")
+        before = _fetch_staff_row(employee_number)
+        res = supabase.table("staff_members").update(data).eq("employee_number", employee_number).execute()
+        if not res.data:
+            raise HTTPException(status_code=400, detail="Staff update failed.")
+    except HTTPException as exc:
+        log_audit(admin, "UPDATE", "staff", entity_id=employee_number, entity_label=_staff_label(before),
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    except Exception as exc:
+        log_audit(admin, "UPDATE", "staff", entity_id=employee_number, entity_label=_staff_label(before),
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    after = res.data[0]
+    log_audit(admin, "UPDATE", "staff", entity_id=employee_number,
+              entity_label=_staff_label(after) or _staff_label(before),
+              changes=diff(before or {}, data), ip=ip)
+    return {"status": "updated", "staff": after}
+
+@router.delete("/{employee_number}")
+def delete_staff(employee_number: int, request: Request, admin: dict = Depends(require_admin)):
+    """Admin-only: Deletes a staff member."""
+    ip = get_client_ip(request)
+    before = _fetch_staff_row(employee_number)
+    try:
+        res = supabase.table("staff_members").delete().eq("employee_number", employee_number).execute()
+    except Exception as exc:
+        log_audit(admin, "DELETE", "staff", entity_id=employee_number, entity_label=_staff_label(before),
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    label = _staff_label(before) or ("(no matching row)" if not res.data else None)
+    snapshot = {f: {"from": before.get(f), "to": None} for f in STAFF_AUDIT_FIELDS if f in before} if before else None
+    log_audit(admin, "DELETE", "staff", entity_id=employee_number, entity_label=label, changes=snapshot, ip=ip)
+>>>>>>> 0892d3b (updated for admin dashboard)
     return {"status": "deleted", "data": res.data}

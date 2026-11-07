@@ -1,9 +1,17 @@
 from typing import Any, Optional
+<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+=======
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+>>>>>>> 0892d3b (updated for admin dashboard)
 from pydantic import BaseModel, Field
 
 from database import supabase
 from dependencies import require_admin
+<<<<<<< HEAD
+=======
+from services.audit_service import diff, error_text, get_client_ip, log_audit
+>>>>>>> 0892d3b (updated for admin dashboard)
 from services.graph_service import campus_graph_service
 
 router = APIRouter(prefix="/api/navigation", tags=["Navigation"])
@@ -104,12 +112,28 @@ def reload_navigation_graph(_admin: dict = Depends(require_admin)):
     return {"status": "reloaded", **stats}
 
 
+<<<<<<< HEAD
 @router.put("/locations/{location_id}")
 def rename_map_location(location_id: int, payload: LocationRename, _admin: dict = Depends(require_admin)):
+=======
+def _fetch_location_row(location_id: int) -> Optional[dict]:
+    """Best-effort read used only for audit context. Never raises."""
+    try:
+        res = supabase.table("location").select("locationid, name, code").eq("locationid", location_id).limit(1).execute()
+        return res.data[0] if res.data else None
+    except Exception as exc:
+        print(f"[LOOKit Audit] Could not read location {location_id} for audit context: {exc}")
+        return None
+
+
+@router.put("/locations/{location_id}")
+def rename_map_location(location_id: int, payload: LocationRename, request: Request, admin: dict = Depends(require_admin)):
+>>>>>>> 0892d3b (updated for admin dashboard)
     """
     Admin-only: Renames the location in the database and automatically refreshes 
     the in-memory routing graph so the whole system immediately sees the change.
     """
+<<<<<<< HEAD
     new_name = payload.name.strip()
     res = supabase.table("location").update({"name": new_name}).eq("locationid", location_id).select().execute()
     
@@ -122,4 +146,38 @@ def rename_map_location(location_id: int, payload: LocationRename, _admin: dict 
     # Auto-trigger graph reload so navigation engine learns the new name immediately
     campus_graph_service.reload_graph()
     
+=======
+    ip = get_client_ip(request)
+    new_name = payload.name.strip()
+    before = _fetch_location_row(location_id)
+    old_name = before.get("name") if before else None
+    try:
+        res = supabase.table("location").update({"name": new_name}).eq("locationid", location_id).execute()
+
+        if not res.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Location not found or update failed."
+            )
+    except HTTPException as exc:
+        log_audit(admin, "UPDATE", "location", entity_id=location_id, entity_label=old_name,
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+    except Exception as exc:
+        log_audit(admin, "UPDATE", "location", entity_id=location_id, entity_label=old_name,
+                  status="failed", error=error_text(exc), ip=ip)
+        raise
+
+    log_audit(admin, "UPDATE", "location", entity_id=location_id, entity_label=new_name,
+              changes=diff({"name": old_name}, {"name": new_name}), ip=ip)
+
+    # Auto-trigger graph reload so navigation engine learns the new name immediately
+    try:
+        campus_graph_service.reload_graph()
+    except Exception as exc:
+        log_audit(admin, "UPDATE", "location", entity_id=location_id, entity_label=new_name,
+                  status="failed", error=f"Location renamed, but graph reload failed: {error_text(exc)}", ip=ip)
+        raise
+
+>>>>>>> 0892d3b (updated for admin dashboard)
     return {"status": "renamed", "location": res.data[0]}

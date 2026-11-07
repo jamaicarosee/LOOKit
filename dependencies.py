@@ -58,7 +58,11 @@ def get_current_user_profile(
     try:
         response = (
             supabase.table("users")
+<<<<<<< HEAD
             .select("id, full_name, email, created_at, role")
+=======
+            .select("id, full_name, email, created_at, role, is_active, must_change_password")
+>>>>>>> 0892d3b (updated for admin dashboard)
             .eq("id", user["id"])
             .maybe_single()
             .execute()
@@ -75,6 +79,16 @@ def get_current_user_profile(
             detail="User profile not found in public.users.",
         )
 
+<<<<<<< HEAD
+=======
+    # Deactivated accounts are blocked immediately, even if their JWT is still valid.
+    if not response.data.get("is_active", True):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This account has been deactivated.",
+        )
+
+>>>>>>> 0892d3b (updated for admin dashboard)
     return response.data
 
 
@@ -89,4 +103,13 @@ def require_admin(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin privileges are required to access this resource.",
         )
+<<<<<<< HEAD
+=======
+    # Admin-created accounts start with a temporary password that must be changed first.
+    if profile.get("must_change_password"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You must change your temporary password before using admin features.",
+        )
+>>>>>>> 0892d3b (updated for admin dashboard)
     return profile

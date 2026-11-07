@@ -2,7 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import our modular routers
+<<<<<<< HEAD
 from routers import auth, navigation, staff
+=======
+from routers import audit, auth, navigation, staff, users
+>>>>>>> 0892d3b (updated for admin dashboard)
 
 # Import graph service to initialize it on startup
 from services.graph_service import campus_graph_service
@@ -34,6 +38,11 @@ def startup_event():
 app.include_router(auth.router)
 app.include_router(navigation.router)
 app.include_router(staff.router)
+<<<<<<< HEAD
+=======
+app.include_router(users.router)
+app.include_router(audit.router)
+>>>>>>> 0892d3b (updated for admin dashboard)
 
 @app.get("/")
 def root():
