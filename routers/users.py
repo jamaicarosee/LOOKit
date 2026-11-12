@@ -17,13 +17,11 @@ USER_COLUMNS = (
     "deactivated_at, deactivated_by, must_change_password"
 )
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-BAN_FOREVER = "876000h"  # ~100 years; Supabase has no "permanent" ban value
+BAN_FOREVER = "876000h"
 MIN_PASSWORD_LENGTH = 8
-MAX_PASSWORD_LENGTH = 72  # bcrypt ignores everything past 72 bytes
+MAX_PASSWORD_LENGTH = 72
 LIST_FETCH_LIMIT = 5000
 
-
-# --- Pydantic Models ---
 
 def _clean_name(value: str) -> str:
     value = " ".join(value.split())
@@ -33,13 +31,11 @@ def _clean_name(value: str) -> str:
         raise ValueError("full_name must be 200 characters or fewer")
     return value
 
-
 def _clean_email(value: str) -> str:
     value = value.strip().lower()
     if len(value) > 254 or not EMAIL_RE.match(value):
         raise ValueError("Invalid email address")
     return value
-
 
 class UserCreate(BaseModel):
     full_name: str
@@ -66,7 +62,6 @@ class UserCreate(BaseModel):
             raise ValueError(f"Password must be at most {MAX_PASSWORD_LENGTH} characters")
         return value
 
-
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     email: Optional[str] = None
@@ -83,8 +78,6 @@ class UserUpdate(BaseModel):
         return None if value is None else _clean_email(value)
 
 
-# --- Helpers ---
-
 def _public(row: dict) -> dict:
     return {
         "id": row.get("id"),
@@ -97,7 +90,6 @@ def _public(row: dict) -> dict:
         "must_change_password": row.get("must_change_password"),
     }
 
-
 def _label(row: dict) -> str:
     name = row.get("full_name") or ""
     email = row.get("email") or ""
@@ -105,22 +97,13 @@ def _label(row: dict) -> str:
         return f"{name} ({email})"
     return name or email or str(row.get("id") or "")
 
-
 def _fetch_user(uid: str) -> Optional[dict]:
     res = supabase.table("users").select(USER_COLUMNS).eq("id", uid).limit(1).execute()
     return res.data[0] if res and res.data else None
 
-
 def _other_active_admins(exclude_id: str) -> int:
-    res = (
-        supabase.table("users")
-        .select("id")
-        .eq("role", "admin")
-        .eq("is_active", True)
-        .execute()
-    )
+    res = supabase.table("users").select("id").eq("role", "admin").eq("is_active", True).execute()
     return len([r for r in (res.data or []) if r["id"] != exclude_id])
-
 
 def _email_taken(email: str, exclude_id: Optional[str] = None) -> bool:
     query = supabase.table("users").select("id").eq("email", email)
@@ -129,86 +112,60 @@ def _email_taken(email: str, exclude_id: Optional[str] = None) -> bool:
     res = query.limit(1).execute()
     return bool(res and res.data)
 
-
 def _is_duplicate_email_error(exc: Exception) -> bool:
     if getattr(exc, "code", None) == "email_exists":
         return True
     msg = str(exc).lower()
     return "already" in msg and ("registered" in msg or "exists" in msg)
 
-
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
-
 def _failure(admin: dict, action: str, uid: Optional[str], label: Optional[str],
              changes: Optional[dict], ip: Optional[str], exc: Exception) -> HTTPException:
-    """Logs the failed attempt and returns the HTTPException to raise."""
     log_audit(
         admin, action, "user", entity_id=uid, entity_label=label,
         changes=changes, status="failed", error=error_text(exc), ip=ip,
     )
     if isinstance(exc, HTTPException):
         return exc
-    return HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail=f"Operation failed: {exc}",
-    )
-
+    return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Operation failed: {exc}")
 
 def _raise(err: HTTPException, original: Exception):
     if err is original:
         raise err
     raise err from original
 
-
-# --- Endpoints ---
-
 @router.get("")
-def list_users(
-    include_inactive: bool = False,
-    q: Optional[str] = None,
-    _admin: dict = Depends(require_admin),
-):
-    """Admin-only: lists users (active only by default), sorted by full name."""
+def list_users(include_inactive: bool = False, q: Optional[str] = None, _admin: dict = Depends(require_admin)):
     try:
         query = supabase.table("users").select(USER_COLUMNS)
         if not include_inactive:
             query = query.eq("is_active", True)
         res = query.limit(LIST_FETCH_LIMIT).execute()
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to fetch users: {str(e)}",
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch users: {str(e)}")
 
     rows = res.data or []
     needle = (q or "").strip().casefold()
     if needle:
-        rows = [
-            r for r in rows
-            if needle in (r.get("full_name") or "").casefold()
-            or needle in (r.get("email") or "").casefold()
-        ]
+        rows = [r for r in rows if needle in (r.get("full_name") or "").casefold() or needle in (r.get("email") or "").casefold()]
     rows.sort(key=lambda r: ((r.get("full_name") or "").casefold(), (r.get("email") or "").casefold()))
     return {"users": [_public(r) for r in rows]}
 
-
 @router.post("")
 def create_user(payload: UserCreate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: creates an Auth user (confirmed) plus its public.users row."""
     ip = get_client_ip(request)
     label = f"{payload.full_name} ({payload.email})"
     changes = {
         "full_name": {"from": None, "to": payload.full_name},
         "email": {"from": None, "to": payload.email},
         "role": {"from": None, "to": payload.role},
-    }  # never include the password
+    }
     new_id = None
     try:
         if _email_taken(payload.email):
             raise HTTPException(status_code=409, detail="A user with this email already exists.")
-
         try:
             created = supabase.auth.admin.create_user({
                 "email": payload.email,
@@ -239,7 +196,6 @@ def create_user(payload: UserCreate, request: Request, admin: dict = Depends(req
             if not res.data:
                 raise RuntimeError("Upsert returned no row.")
         except Exception as exc:
-            # Don't leave an orphan Auth account behind.
             try:
                 supabase.auth.admin.delete_user(new_id)
             except Exception as cleanup_exc:
@@ -251,10 +207,8 @@ def create_user(payload: UserCreate, request: Request, admin: dict = Depends(req
     except Exception as exc:
         _raise(_failure(admin, "CREATE", new_id, label, changes, ip, exc), exc)
 
-
 @router.put("/{user_id}")
 def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: updates name / email / role. Auth email and name are kept in sync."""
     uid = str(user_id)
     ip = get_client_ip(request)
     label = uid
@@ -278,12 +232,11 @@ def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dic
 
         changes = diff(before, data)
         if not changes:
-            return {"status": "updated", "user": _public(before)}  # nothing to change, nothing to log
+            return {"status": "updated", "user": _public(before)}
 
         if "email" in changes and _email_taken(data["email"], exclude_id=uid):
             raise HTTPException(status_code=409, detail="A user with this email already exists.")
 
-        # 1) Keep Supabase Auth in sync first (it is the stricter system).
         auth_attrs: dict = {}
         auth_restore: dict = {}
         if "email" in changes:
@@ -302,14 +255,8 @@ def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dic
                     raise HTTPException(status_code=409, detail="A user with this email already exists.")
                 raise HTTPException(status_code=400, detail=f"Could not update the auth account: {exc}")
 
-        # 2) Update public.users; roll Auth back if this fails.
         try:
-            res = (
-                supabase.table("users")
-                .update({k: v for k, v in data.items() if k in changes})
-                .eq("id", uid)
-                .execute()
-            )
+            res = supabase.table("users").update({k: v for k, v in data.items() if k in changes}).eq("id", uid).execute()
             if not res.data:
                 raise RuntimeError("Update returned no row.")
         except Exception as exc:
@@ -329,7 +276,7 @@ def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dic
 
 @router.delete("/{user_id}")
 def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only SOFT delete: marks the user inactive and bans the Auth account. Row is kept."""
+    """Admin-only SOFT delete: archives the user, marks inactive, and bans the Auth account."""
     uid = str(user_id)
     ip = get_client_ip(request)
     label = uid
@@ -347,23 +294,29 @@ def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
         if before.get("role") == "admin" and _other_active_admins(uid) == 0:
             raise HTTPException(status_code=400, detail="Cannot deactivate the last active admin.")
 
-        # DB first: is_active is what blocks existing tokens immediately.
-        res = (
-            supabase.table("users")
-            .update({"is_active": False, "deactivated_at": _now_iso(), "deactivated_by": admin["id"]})
-            .eq("id", uid)
-            .execute()
-        )
+        # ARCHIVE LOGIC: Insert to archived_users table first
+        archive_payload = {
+            "original_user_id": uid,
+            "full_name": before.get("full_name"),
+            "email": before.get("email"),
+            "role": before.get("role"),
+            "archived_by": admin["id"]
+        }
+        try:
+            supabase.table("archived_users").insert(archive_payload).execute()
+        except Exception as archive_exc:
+            print(f"[LOOKit Users] Failed to archive user {uid}: {archive_exc}")
+            raise HTTPException(status_code=500, detail="Failed to archive user data before deactivation.")
+
+        res = supabase.table("users").update({"is_active": False, "deactivated_at": _now_iso(), "deactivated_by": admin["id"]}).eq("id", uid).execute()
         if not res.data:
             raise HTTPException(status_code=500, detail="Failed to deactivate the user.")
 
         try:
             supabase.auth.admin.update_user_by_id(uid, {"ban_duration": BAN_FOREVER})
         except Exception as exc:
-            try:  # revert so DB and Auth never disagree
-                supabase.table("users").update(
-                    {"is_active": True, "deactivated_at": None, "deactivated_by": None}
-                ).eq("id", uid).execute()
+            try:  
+                supabase.table("users").update({"is_active": True, "deactivated_at": None, "deactivated_by": None}).eq("id", uid).execute()
             except Exception as revert_exc:
                 print(f"[LOOKit Users] Could not revert deactivation of {uid}: {revert_exc}")
             raise HTTPException(status_code=502, detail=f"Could not ban the account in Supabase Auth: {exc}")
@@ -373,10 +326,8 @@ def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
     except Exception as exc:
         _raise(_failure(admin, "DEACTIVATE", uid, label, changes, ip, exc), exc)
 
-
 @router.post("/{user_id}/reactivate")
 def reactivate_user(user_id: UUID, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: restores a deactivated user and lifts the Auth ban."""
     uid = str(user_id)
     ip = get_client_ip(request)
     label = uid
@@ -390,23 +341,17 @@ def reactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
         if before.get("is_active"):
             raise HTTPException(status_code=400, detail="This user is already active.")
 
-        # Lift the ban first; only then let the profile become active.
         try:
             supabase.auth.admin.update_user_by_id(uid, {"ban_duration": "none"})
         except Exception as exc:
             raise HTTPException(status_code=502, detail=f"Could not lift the ban in Supabase Auth: {exc}")
 
         try:
-            res = (
-                supabase.table("users")
-                .update({"is_active": True, "deactivated_at": None, "deactivated_by": None})
-                .eq("id", uid)
-                .execute()
-            )
+            res = supabase.table("users").update({"is_active": True, "deactivated_at": None, "deactivated_by": None}).eq("id", uid).execute()
             if not res.data:
                 raise RuntimeError("Update returned no row.")
         except Exception as exc:
-            try:  # re-ban so DB and Auth never disagree
+            try:  
                 supabase.auth.admin.update_user_by_id(uid, {"ban_duration": BAN_FOREVER})
             except Exception as revert_exc:
                 print(f"[LOOKit Users] Could not re-ban {uid} after failed reactivation: {revert_exc}")

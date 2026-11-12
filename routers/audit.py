@@ -1,3 +1,5 @@
+import csv
+import io
 import re
 import threading
 import time
@@ -6,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, field_validator
 
 from database import supabase
@@ -174,6 +177,80 @@ def list_audit_entries(
     entries = res.data or []
     total = res.count if getattr(res, "count", None) is not None else len(entries)
     return {"entries": entries, "total": total}
+
+
+@router.get("/export")
+def export_audit_logs(
+    q: Optional[str] = Query(default=None),
+    action: Optional[str] = None,
+    entity_type: Optional[str] = None,
+    status_filter: Optional[str] = Query(default=None, alias="status"),
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    _admin: dict = Depends(require_admin),
+):
+    """Admin-only: Exports audit logs to CSV (Excel readable) based on active filters."""
+    action_val = _choice(action, VALID_ACTIONS, "action", upper=True) if action else None
+    entity_type_val = _choice(entity_type, VALID_ENTITY_TYPES, "entity_type") if entity_type else None
+    status_val = _choice(status_filter, VALID_STATUSES, "status") if status_filter else None
+
+    try:
+        query = supabase.table("audit_log").select(ENTRY_COLUMNS)
+        if action_val:
+            query = query.eq("action", action_val)
+        if entity_type_val:
+            query = query.eq("entity_type", entity_type_val)
+        if status_val:
+            query = query.eq("status", status_val)
+
+        if date_from:
+            start, _ = _parse_bound(date_from, "date_from")
+            query = query.gte("created_at", start.isoformat())
+        if date_to:
+            end, date_only = _parse_bound(date_to, "date_to")
+            if date_only:
+                query = query.lt("created_at", (end + timedelta(days=1)).isoformat())
+            else:
+                query = query.lte("created_at", end.isoformat())
+
+        needle = re.sub(r'[,()"\\*%]', " ", q or "").strip()
+        if needle:
+            query = query.or_(
+                f"actor_email.ilike.*{needle}*,entity_label.ilike.*{needle}*,entity_id.ilike.*{needle}*"
+            )
+
+        # Get 10,000 records only for excel export
+        res = query.order("created_at", desc=True).limit(10000).execute()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Export failed: {str(e)}")
+
+    entries = res.data or []
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Excel Headers
+    writer.writerow(["Date", "Time", "Actor Email", "Action", "Entity Type", "Entity Label", "Status", "Error Message", "IP Address"])
+
+    for e in entries:
+        dt = datetime.fromisoformat(e["created_at"].replace("Z", "+00:00"))
+        writer.writerow([
+            dt.strftime("%Y-%m-%d"),
+            dt.strftime("%H:%M:%S"),
+            e.get("actor_email") or "",
+            e.get("action") or "",
+            e.get("entity_type") or "",
+            e.get("entity_label") or "",
+            e.get("status") or "",
+            e.get("error_message") or "",
+            e.get("ip_address") or ""
+        ])
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=lookit_audit_logs.csv"}
+    )
 
 
 # --- Client-reported auth events ---

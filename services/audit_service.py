@@ -7,14 +7,14 @@ import json
 import os
 import uuid
 from typing import Any, Optional
-
 from fastapi import Request
-
 from database import supabase
 
+# UPDATED VALID ACTIONS FOR RESET PASSWORD
 VALID_ACTIONS = (
     "LOGIN", "LOGIN_FAILED", "LOGOUT",
     "CREATE", "UPDATE", "DEACTIVATE", "REACTIVATE", "DELETE",
+    "PASSWORD_RESET_REQUEST"
 )
 VALID_ENTITY_TYPES = ("auth", "user", "staff", "location")
 VALID_STATUSES = ("success", "failed")

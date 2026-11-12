@@ -1,16 +1,19 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, Depends
-from dependencies import get_current_user_profile, require_admin
-=======
-from fastapi import APIRouter, Depends, HTTPException, Request
+import time
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, field_validator
-
 from database import supabase
 from dependencies import get_current_user_profile, require_admin
 from services.audit_service import error_text, get_client_ip, log_audit
->>>>>>> 0892d3b (updated for admin dashboard)
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
+
+# Rate limit for Forgot Password (10mins)
+_reset_cooldowns = {}
+_RESET_COOLDOWN_SECONDS = 300
+
+class ForgotPasswordPayload(BaseModel):
+    email: str
+    redirect_to: str
 
 
 @router.get("/me")
@@ -29,9 +32,6 @@ def verify_admin_status(admin_profile: dict = Depends(require_admin)):
     return {
         "is_admin": True,
         "user": admin_profile,
-<<<<<<< HEAD
-    }
-=======
     }
 
 
@@ -56,8 +56,6 @@ def change_password(
 ):
     """
     Signed-in user: sets a new password and clears the must_change_password flag.
-    The flag is only cleared here, after the backend itself changed the password,
-    so a client cannot dismiss the forced change without actually changing it.
     """
     ip = get_client_ip(request)
     was_forced = bool(profile.get("must_change_password"))
@@ -87,4 +85,45 @@ def change_password(
 
     log_audit(profile, "UPDATE", "user", entity_id=profile["id"], entity_label=label, changes=changes, ip=ip)
     return {"status": "password_changed"}
->>>>>>> 0892d3b (updated for admin dashboard)
+
+
+@router.post("/forgot-password")
+def forgot_password(payload: ForgotPasswordPayload, request: Request):
+    """
+   Email request with 10 minutes cooldown per accounts.
+    """
+    ip = get_client_ip(request)
+    email = payload.email.strip().lower()
+    now = time.monotonic()
+
+    # 1. Check for 5 mins cooldown
+    last_request = _reset_cooldowns.get(email)
+    if last_request and (now - last_request) < _RESET_COOLDOWN_SECONDS:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Request Timed Out, try again later!."
+        )
+    
+    # 2. Verify if the email is registered and the user using it is active
+    res = supabase.table("users").select("id, is_active").eq("email", email).execute()
+    if not res.data:
+        # Cooldown
+        _reset_cooldowns[email] = now
+        return {"status": "sent"}
+
+    user_row = res.data[0]
+    if not user_row.get("is_active"):
+        raise HTTPException(status_code=403, detail="This account has been deactivated.")
+
+    # 3. Get reset link via Supabase Auth
+    try:
+        supabase.auth.reset_password_email(email, options={"redirect_to": payload.redirect_to})
+        _reset_cooldowns[email] = now
+        log_audit({"id": user_row["id"], "email": email}, "PASSWORD_RESET_REQUEST", "auth",
+                  entity_id=user_row["id"], entity_label=email, ip=ip)
+    except Exception as exc:
+        log_audit({"id": user_row["id"], "email": email}, "PASSWORD_RESET_REQUEST", "auth",
+                  entity_id=user_row["id"], entity_label=email, status="failed", error=str(exc), ip=ip)
+        raise HTTPException(status_code=500, detail="Failed to send reset email.")
+
+    return {"status": "sent"}
