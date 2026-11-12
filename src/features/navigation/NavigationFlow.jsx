@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import SearchMobileView from '../search/SearchMobileView';
 import DirectionsMobileView from '../directions/DirectionsMobileView';
 import useRouteInputs, { saveRecent } from '../search/hooks/useRouteInputs';
+import { apiClient } from '../../services/apiClient'; // 1. Import apiClient
 
 export default function NavigationFlow({
   onBackToMap,
@@ -14,9 +14,29 @@ export default function NavigationFlow({
   requireLogin = () => false,
 }) {
   const inputs = useRouteInputs({ initialFrom, initialTo });
-
   const [screen, setScreen] = useState('search');
   const [request, setRequest] = useState(null);
+
+  const saveToRecentSearchesDatabase = async (destination) => {
+    if (!destination) return;
+    try {
+      
+      const isString = typeof destination === 'string';
+      const loc_name = isString 
+        ? destination 
+        : (destination.name || destination.fullName || 'Selected Location');
+      const loc_id = isString 
+        ? null 
+        : (destination.id || destination.locationid || null);
+
+      await apiClient.post('/api/navigation/recent-searches', {
+        location_id: loc_id,
+        location_name: loc_name
+      });
+    } catch (error) {
+      console.warn("Background task: Failed to save recent search to database", error);
+    }
+  };
 
   const run = (from, to) => {
     setRequest({
@@ -27,14 +47,12 @@ export default function NavigationFlow({
         pwd: inputs.pwd,
       },
     });
-
     setScreen('directions');
   };
 
   const start = async () => {
     if (!inputs.canNavigate) return;
 
-    // Require login before starting navigation.
     if (!isAuthenticated) {
       requireLogin();
       return;
@@ -42,15 +60,13 @@ export default function NavigationFlow({
 
     const resolved = await inputs.resolvePending();
 
-    if (
-      !resolved ||
-      (!inputs.emergency && resolved.from.id === resolved.to.id)
-    ) {
+    if (!resolved || (!inputs.emergency && resolved.from.id === resolved.to.id)) {
       return;
     }
 
     if (!inputs.emergency) {
-      saveRecent(resolved.from, resolved.to);
+      saveRecent(resolved.from, resolved.to); // Keeps existing local storage logic if needed
+      saveToRecentSearchesDatabase(resolved.to); // 3. Wire into the start button flow
     }
 
     run(resolved.from, resolved.to);
@@ -68,6 +84,8 @@ export default function NavigationFlow({
         requireLogin();
         return;
       }
+
+      saveToRecentSearchesDatabase(room); // 4. Wire into the quick-pick destination flow
 
       setRequest({
         from: inputs.from,

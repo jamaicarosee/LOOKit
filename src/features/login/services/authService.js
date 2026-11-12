@@ -1,17 +1,10 @@
 import { supabase } from '../../../services/supabaseClient';
 import { apiClient } from '../../../services/apiClient';
-<<<<<<< HEAD
-
-const KEEP_SIGNED_IN_KEY = 'lookit_keep_signed_in';
-const SESSION_ACTIVE_KEY = 'lookit_browser_session_active';
-=======
 import { reportLogin, reportLoginFailed, reportLogout } from '../../admin/data/auditService';
-
 const KEEP_SIGNED_IN_KEY = 'lookit_keep_signed_in';
 const SESSION_ACTIVE_KEY = 'lookit_browser_session_active';
 const DEACTIVATED_MESSAGE = 'This account has been deactivated. Please contact an administrator.';
 
-// Signs out locally without reporting a logout (used when the backend refuses a deactivated account)
 async function clearSession() {
   localStorage.removeItem(KEEP_SIGNED_IN_KEY);
   sessionStorage.removeItem(SESSION_ACTIVE_KEY);
@@ -21,20 +14,8 @@ async function clearSession() {
     console.warn('[LOOKit Auth] Sign-out after deactivation failed:', err);
   }
 }
->>>>>>> d6a3a47 (updated user, overview, audit logs)
 
-/**
- * Verifies the Supabase JWT access token against FastAPI GET /api/auth/me
- * and returns the user profile from public.users.
-<<<<<<< HEAD
- */
-export async function verifyAndFetchProfile(accessToken) {
-=======
- * If the backend answers 403 "deactivated", the user is signed out and the call throws when
- * `throwOnDeactivated` is set (sign-in / session restore), otherwise it returns null.
- */
 export async function verifyAndFetchProfile(accessToken, { throwOnDeactivated = false } = {}) {
->>>>>>> d6a3a47 (updated user, overview, audit logs)
   if (!accessToken) return null;
 
   try {
@@ -44,7 +25,6 @@ export async function verifyAndFetchProfile(accessToken, { throwOnDeactivated = 
       },
     });
 
-    // The backend may wrap the row as { user: {...} }; accept both shapes
     const profile = response.data?.user ?? response.data;
 
     if (profile && !('role' in profile)) {
@@ -55,8 +35,6 @@ export async function verifyAndFetchProfile(accessToken, { throwOnDeactivated = 
 
     return profile;
   } catch (error) {
-<<<<<<< HEAD
-=======
     const detail = error.response?.data?.detail;
     if (error.response?.status === 403 && /deactivated/i.test(typeof detail === 'string' ? detail : '')) {
       await clearSession();
@@ -64,7 +42,6 @@ export async function verifyAndFetchProfile(accessToken, { throwOnDeactivated = 
       return null;
     }
 
->>>>>>> d6a3a47 (updated user, overview, audit logs)
     console.warn(
       '[LOOKit Auth] Backend profile verification warning:',
       error.response?.data?.detail || error.message
@@ -73,9 +50,6 @@ export async function verifyAndFetchProfile(accessToken, { throwOnDeactivated = 
   }
 }
 
-/**
- * Authenticates an existing user and validates their account.
- */
 export async function signInUser({ email, password, keepSignedIn = true }) {
   const normalizedEmail = email.trim().toLowerCase();
 
@@ -85,10 +59,7 @@ export async function signInUser({ email, password, keepSignedIn = true }) {
   });
 
   if (error) {
-<<<<<<< HEAD
-=======
-    reportLoginFailed(normalizedEmail); // audit log, fire-and-forget
->>>>>>> d6a3a47 (updated user, overview, audit logs)
+    reportLoginFailed(normalizedEmail);
     const rawMsg = error.message?.toLowerCase() || '';
     if (rawMsg.includes('invalid login credentials')) {
       throw new Error('Invalid email or password. Please check your account credentials.');
@@ -103,18 +74,12 @@ export async function signInUser({ email, password, keepSignedIn = true }) {
     throw new Error('Account validation failed. No active session was returned.');
   }
 
-  // Persist "Keep me signed in" preference
   localStorage.setItem(KEEP_SIGNED_IN_KEY, keepSignedIn ? 'true' : 'false');
   sessionStorage.setItem(SESSION_ACTIVE_KEY, 'true');
 
-  // Verify token and load profile from FastAPI (/api/auth/me)
-<<<<<<< HEAD
-  const backendProfile = await verifyAndFetchProfile(data.session.access_token);
-=======
   const backendProfile = await verifyAndFetchProfile(data.session.access_token, { throwOnDeactivated: true });
 
-  reportLogin(data.session.access_token); // audit log, fire-and-forget
->>>>>>> d6a3a47 (updated user, overview, audit logs)
+  reportLogin(data.session.access_token);
 
   return {
     user: data.user,
@@ -127,9 +92,6 @@ export async function signInUser({ email, password, keepSignedIn = true }) {
   };
 }
 
-/**
- * Registers a new user in Supabase Auth and passes full_name to trigger public.users insertion.
- */
 export async function signUpUser({ fullName, email, password }) {
   const trimmedName = fullName.trim();
   const normalizedEmail = email.trim().toLowerCase();
@@ -152,7 +114,6 @@ export async function signUpUser({ fullName, email, password }) {
     throw new Error(error.message || 'Unable to create account. Please try again.');
   }
 
-  // Supabase returns an empty identities array if the email is already taken (when email enumeration protection is on)
   if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
     throw new Error('An account with this email already exists. Please log in instead.');
   }
@@ -176,36 +137,20 @@ export async function signUpUser({ fullName, email, password }) {
   };
 }
 
-/**
- * Signs out the current user and clears persistence flags.
- */
-<<<<<<< HEAD
-export async function signOutUser() {
-=======
 export async function signOutUser({ skipAudit = false } = {}) {
-  if (!skipAudit) reportLogout(); // audit log, fire-and-forget; must start before signOut
->>>>>>> d6a3a47 (updated user, overview, audit logs)
+  if (!skipAudit) reportLogout();
   localStorage.removeItem(KEEP_SIGNED_IN_KEY);
   sessionStorage.removeItem(SESSION_ACTIVE_KEY);
   const { error } = await supabase.auth.signOut();
   if (error) throw new Error(error.message);
 }
 
-/**
- * Checks if a non-persistent session should be cleared after browser restart,
- * otherwise restores the current session.
- */
 export async function initializeAuthSession() {
   const keepSignedIn = localStorage.getItem(KEEP_SIGNED_IN_KEY);
   const isBrowserSessionActive = sessionStorage.getItem(SESSION_ACTIVE_KEY);
 
-  // If user unchecked "Keep me signed in" and closed the browser tab/window
   if (keepSignedIn === 'false' && !isBrowserSessionActive) {
-<<<<<<< HEAD
-    await signOutUser();
-=======
     await signOutUser({ skipAudit: true });
->>>>>>> d6a3a47 (updated user, overview, audit logs)
     return { user: null, session: null, profile: null };
   }
 
@@ -215,18 +160,13 @@ export async function initializeAuthSession() {
   }
 
   sessionStorage.setItem(SESSION_ACTIVE_KEY, 'true');
-<<<<<<< HEAD
-  const profile = await verifyAndFetchProfile(data.session.access_token);
-=======
   let profile;
   try {
     profile = await verifyAndFetchProfile(data.session.access_token, { throwOnDeactivated: true });
   } catch (err) {
-    // Deactivated account: already signed out by verifyAndFetchProfile
     console.warn('[LOOKit Auth]', err.message);
     return { user: null, session: null, profile: null };
   }
->>>>>>> d6a3a47 (updated user, overview, audit logs)
 
   return {
     user: data.session.user,
@@ -237,6 +177,30 @@ export async function initializeAuthSession() {
       full_name: data.session.user.user_metadata?.full_name || '',
     },
   };
+}
+
+// --- Password Recovery Additions ---
+
+export async function requestPasswordReset(email) {
+  try {
+    await apiClient.post('/api/auth/forgot-password', { 
+      email, 
+      redirect_to: window.location.origin 
+    });
+  } catch (error) {
+    const detail = error.response?.data?.detail;
+    throw new Error(typeof detail === 'string' ? detail : 'Unable to send reset link.');
+  }
+}
+
+export async function submitNewPassword(newPassword) {
+  try {
+    await apiClient.post('/api/auth/change-password', { new_password: newPassword });
+    await signOutUser({ skipAudit: true }); // Clear session so the user must log in properly
+  } catch (error) {
+    const detail = error.response?.data?.detail;
+    throw new Error(typeof detail === 'string' ? detail : 'Failed to reset password.');
+  }
 }
 
 export { supabase };

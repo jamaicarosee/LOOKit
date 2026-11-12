@@ -1,18 +1,12 @@
-<<<<<<< HEAD
-import React from 'react';
-import SectionPlaceholder from '../components/SectionPlaceholder';
-
-export default function AuditLog() {
-  return <SectionPlaceholder title="Audit Log" description="Every admin action will be listed here. Coming in a later step." />;
-=======
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchAudit } from '../data/auditService';
+import React, { useEffect, useRef, useState } from 'react';
+import { Download } from 'lucide-react';
+import { fetchAudit, exportAuditExcel } from '../data/auditService';
 import { errorMessage } from '../data/usersService';
 import useDebouncedValue from '../hooks/useDebouncedValue';
 import StatusPill from '../components/StatusPill';
-import { Field, TextInput, SelectInput, PrimaryButton, Notice } from '../components/AdminControls';
+import { Field, TextInput, SelectInput, Notice } from '../components/AdminControls';
 
-const PAGE_SIZE = 25;
+const DISPLAY_LIMIT = 10; 
 const EMPTY_FILTERS = { q: '', action: '', entityType: '', status: '', dateFrom: '', dateTo: '' };
 
 const humanize = (s = '') => {
@@ -36,8 +30,6 @@ function formatValue(field, value) {
   return typeof value === 'object' ? JSON.stringify(value) : String(value);
 }
 
-// Turns the entry's `changes` into [{ field, before, after }]. Expects { field: { before, after } }
-// and also copes with { before: {...}, after: {...} } and { field: [before, after] }.
 function describeChanges(changes) {
   if (!changes || typeof changes !== 'object') return [];
   const isMap = (v) => v && typeof v === 'object' && !Array.isArray(v);
@@ -55,7 +47,6 @@ function describeChanges(changes) {
   });
 }
 
-// "What changed" cell: entity + label, and before → after for updates
 function WhatChanged({ entry }) {
   const rows = /update/i.test(entry.action || '') ? describeChanges(entry.changes) : [];
   return (
@@ -88,12 +79,11 @@ function StatusCell({ entry }) {
   );
 }
 
-// Audit Log tab: read-only list of recorded actions (GET /api/audit), newest first.
 export default function AuditLog({ isDesktop }) {
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const applied = useDebouncedValue(filters, 350);
   const [data, setData] = useState({ entries: [], total: 0, status: 'loading' });
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [notice, setNotice] = useState(null);
   const requestRef = useRef(0);
 
@@ -105,8 +95,10 @@ export default function AuditLog({ isDesktop }) {
     const id = ++requestRef.current;
     setData((d) => ({ ...d, status: 'loading' }));
     setNotice(null);
-    fetchAudit({ ...applied, q: applied.q.trim(), limit: PAGE_SIZE, offset: 0 })
-      .then((res) => id === requestRef.current && setData({ entries: res.entries, total: res.total, status: 'ready' }))
+    
+    // Strictly fetching only the latest 10 logs for the UI
+    fetchAudit({ ...applied, q: applied.q.trim(), limit: DISPLAY_LIMIT, offset: 0 })
+      .then((res) => id === requestRef.current && setData({ entries: res.entries.slice(0, DISPLAY_LIMIT), total: res.total, status: 'ready' }))
       .catch((err) => {
         console.error('[LOOKit Admin] Could not load the audit log:', err);
         if (id !== requestRef.current) return;
@@ -115,20 +107,17 @@ export default function AuditLog({ isDesktop }) {
       });
   }, [applied, rangeInvalid]);
 
-  const loadMore = useCallback(async () => {
-    const id = requestRef.current;
-    setLoadingMore(true);
+  const handleExport = async () => {
+    setExporting(true);
     setNotice(null);
     try {
-      const res = await fetchAudit({ ...applied, q: applied.q.trim(), limit: PAGE_SIZE, offset: data.entries.length });
-      if (id === requestRef.current) setData((d) => ({ ...d, entries: [...d.entries, ...res.entries], total: res.total }));
+      await exportAuditExcel(applied);
     } catch (err) {
-      console.error('[LOOKit Admin] Could not load more audit entries:', err);
-      setNotice({ type: 'error', text: errorMessage(err, 'Could not load more entries.') });
+      setNotice({ type: 'error', text: 'Failed to export logs to Excel.' });
     } finally {
-      setLoadingMore(false);
+      setExporting(false);
     }
-  }, [applied, data.entries.length]);
+  };
 
   const { entries, total, status } = data;
   const hasFilters = Object.values(filters).some(Boolean);
@@ -139,12 +128,7 @@ export default function AuditLog({ isDesktop }) {
     <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-6">
       <div className="col-span-2">
         <Field label="Search">
-          <TextInput
-            type="search"
-            value={filters.q}
-            onChange={(e) => setFilter('q', e.target.value)}
-            placeholder="Actor, action or item"
-          />
+          <TextInput type="search" value={filters.q} onChange={(e) => setFilter('q', e.target.value)} placeholder="Actor, action or item" />
         </Field>
       </div>
       <Field label="Action">
@@ -247,9 +231,21 @@ export default function AuditLog({ isDesktop }) {
   return (
     <section aria-labelledby="audit-title" className="min-w-0 rounded-md border border-[#0B1E36] bg-[#F8F9F9]">
       <div className="px-5 py-5 lg:px-8">
-        <h2 id="audit-title" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">
-          Audit Log
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+          <h2 id="audit-title" className="text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">
+            Audit Log
+          </h2>
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={exporting}
+            className="flex items-center gap-2 rounded-lg bg-[#0B1E36] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#0B1E36] disabled:opacity-50"
+          >
+            <Download className="h-4 w-4" />
+            {exporting ? 'Exporting...' : 'Export to Excel'}
+          </button>
+        </div>
+        
         {filterBar}
         {rangeInvalid && <Notice notice={{ type: 'error', text: 'The start date is after the end date.' }} />}
         {!rangeInvalid && <Notice notice={notice} />}
@@ -262,20 +258,12 @@ export default function AuditLog({ isDesktop }) {
 
         {entries.length > 0 && (
           <div className="mt-5 space-y-3">
-            <p className="text-xs text-slate-500">
-              Showing {entries.length} of {total}
+            <p className="text-xs font-semibold text-[#0B1E36] rounded-md bg-[#E5EEF7] p-3">
+              Showing the latest {entries.length} of {total} transactions. Please click "Export to Excel" to download and view the complete audit history.
             </p>
-            {entries.length < total && (
-              <div className="max-w-xs">
-                <PrimaryButton onClick={loadMore} disabled={loadingMore}>
-                  {loadingMore ? 'Loading…' : 'Load more'}
-                </PrimaryButton>
-              </div>
-            )}
           </div>
         )}
       </div>
     </section>
   );
->>>>>>> d6a3a47 (updated user, overview, audit logs)
 }

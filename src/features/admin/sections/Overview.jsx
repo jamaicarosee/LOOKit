@@ -1,10 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-import SectionPlaceholder from '../components/SectionPlaceholder';
-
-export default function Overview() {
-  return <SectionPlaceholder title="Overview" description="Counts for users, rooms, buildings and staff arrive in a later step." />;
-=======
 import { ChevronRight } from 'lucide-react';
 import CampusMapPreview from '../../dashboard/components/CampusMapPreview';
 import StaffList from '../../staff/components/StaffList';
@@ -87,5 +81,4 @@ export default function Overview({ onNavigate }) {
       </Panel>
     </div>
   );
->>>>>>> d6a3a47 (updated user, overview, audit logs)
 }

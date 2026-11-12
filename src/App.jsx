@@ -11,9 +11,13 @@ import { AuthProvider, useAuth } from './features/login/context/AuthContext';
 import StaffScreen from './features/staff/StaffScreen';
 import { StaffNavProvider } from './features/staff/StaffNavContext';
 import { AdminNavProvider } from './features/admin/AdminNavContext';
+import { supabase } from './services/supabaseClient'; 
+import ResetPassword from './features/login/components/ResetPassword'; 
 
 // Loaded on demand so normal users never download the admin dashboard
 const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
+
+
 
 function AppContent() {
   const { isDesktop } = useViewport(1024);
@@ -22,9 +26,13 @@ function AppContent() {
   const [screen, setScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginRequired, setLoginRequired] = useState(false);
-  const [pendingStaff, setPendingStaff] = useState(false); // guest clicked Staff, waiting for login
-  const [navTarget, setNavTarget] = useState(null); // destination pre-filled in Directions (from Staff)
-  const [navOrigin, setNavOrigin] = useState('dashboard'); // where Directions' back button returns to
+  const [pendingStaff, setPendingStaff] = useState(false);
+  const [navTarget, setNavTarget] = useState(null);
+  const [navOrigin, setNavOrigin] = useState('dashboard');
+  
+  // Bagong state para sa Reset Password Modal
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetError, setResetError] = useState(false);
 
   const openSearch = () => {
     setNavTarget(null);
@@ -32,7 +40,6 @@ function AppContent() {
     setScreen('navigation');
   };
   const openAbout = () => setScreen('about');
-  // Admin button is only shown to admins; this re-checks so a stale click can't open it
   const openAdmin = () => {
     if (authLoading || !isAdmin) return;
     setScreen('admin');
@@ -54,18 +61,15 @@ function AppContent() {
     setLoginRequired(false);
   };
 
-  // Guest must log in before navigation.
   const requireLogin = () => {
     if (!isAuthenticated) {
       setLoginRequired(true);
       setShowLoginModal(true);
       return false;
     }
-
     return true;
   };
 
-  // Staff Directory: guests must log in first (same login modal as navigation)
   const openStaff = () => {
     if (authLoading) return;
     if (!isAuthenticated) {
@@ -76,26 +80,57 @@ function AppContent() {
     setScreen('staff');
   };
 
-  // Staff -> "Show path": open Directions with the office already filled in as the destination
   const openRouteTo = (location) => {
     setNavTarget(location);
     setNavOrigin('staff');
     setScreen('navigation');
   };
 
-  // After the login modal closes: go to Staff if they logged in, otherwise forget the request
+  //PASSWORD_RECOVERY event
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const type = params.get('type');
+
+    if (token && type === 'recovery') {
+  
+      window.history.replaceState(null, '', window.location.pathname);
+
+      // 2. Verify token
+      supabase.auth.verifyOtp({ token_hash: token, type: 'recovery' })
+        .then(async ({ error }) => {
+          if (error) {
+            // Check if there is active session
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+              // Can be back if the 5 mins session is not done
+              setShowResetModal(true);
+              setShowLoginModal(false);
+            } else {
+              // Expired or Invalid
+              setResetError(true);
+              await supabase.auth.signOut(); // Make sure no login happened
+            }
+          } else {
+            // Success for first click
+            setShowResetModal(true);
+            setShowLoginModal(false);
+          }
+        });
+    }
+  }, []);
+
   useEffect(() => {
     if (!pendingStaff || showLoginModal) return;
     if (isAuthenticated) setScreen('staff');
     setPendingStaff(false);
   }, [pendingStaff, showLoginModal, isAuthenticated]);
 
-  // Logged out while on the Staff page (e.g. session ended): back to the map
   useEffect(() => {
     if (screen === 'staff' && !authLoading && !isAuthenticated) setScreen('dashboard');
   }, [screen, authLoading, isAuthenticated]);
 
-  // Not an admin (logged out, role removed, tampering): back to the map
   useEffect(() => {
     if (screen === 'admin' && !authLoading && !isAdmin) setScreen('dashboard');
   }, [screen, authLoading, isAdmin]);
@@ -125,10 +160,7 @@ function AppContent() {
 
       {screen === 'about' && (
         <main className={mainClass}>
-          <AboutPage
-            onBackToMap={closeSearch}
-            onProfileClick={openLogin}
-          />
+          <AboutPage onBackToMap={closeSearch} onProfileClick={openLogin} />
         </main>
       )}
 
@@ -187,27 +219,53 @@ function AppContent() {
         <>
           {isDesktop ? (
             <main className="w-screen h-[100dvh] bg-[#F8F9F9] overflow-hidden">
-              <DashboardDesktopView
-                onOpenSearch={openSearch}
-                onLoginClick={openLogin}
-              />
+              <DashboardDesktopView onOpenSearch={openSearch} onLoginClick={openLogin} />
             </main>
           ) : (
             <main className="w-screen h-[100dvh] bg-slate-900 flex items-center justify-center overflow-hidden">
-              <DashboardMobileView
-                onOpenSearch={openSearch}
-                onLoginClick={openLogin}
-              />
+              <DashboardMobileView onOpenSearch={openSearch} onLoginClick={openLogin} />
             </main>
           )}
         </>
       )}
 
       {showLoginModal && (
-        <LoginModal
-          onClose={closeLogin}
-          loginRequired={loginRequired}
+        <LoginModal onClose={closeLogin} loginRequired={loginRequired} />
+      )}
+
+      {/* Reset Password Modal */}
+      {showResetModal && (
+        <ResetPassword 
+          onClose={async () => {
+            setShowResetModal(false);
+            await supabase.auth.signOut(); // SECURITY: No ghost logins
+          }} 
+          onBackToLogin={async () => {
+            setShowResetModal(false);
+            await supabase.auth.signOut(); // SECURITY: No ghost logins
+            openLogin(); 
+          }} 
         />
+      )}
+
+      {/* Pop-up message*/}
+      {resetError && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#102747]/60 px-3">
+          <div className="w-full max-w-[400px] rounded-[20px] bg-white p-6 text-center shadow-xl">
+             <div className="mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-red-100">
+               <span className="text-[30px] font-bold text-red-600">!</span>
+             </div>
+             <h3 className="mb-2 text-[19px] font-bold text-[#102747]">Expired reset password</h3>
+             <p className="mb-6 text-[14px] text-[#61738A]">This reset link has expired or is invalid. Please request a new one.</p>
+             <button 
+               type="button" 
+               onClick={() => setResetError(false)} 
+               className="h-[50px] w-full rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E]"
+             >
+               Close
+             </button>
+          </div>
+        </div>
       )}
 
     </AdminNavProvider>
