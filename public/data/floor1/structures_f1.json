@@ -1135,5 +1135,171 @@
         ]
       ]
     }
+  },
+  {
+    "id": "PWD-RAMP-LOBBY-WEST",
+    "type": "ramp",
+    "name": "PWD RAMP (Lobby West)",
+    "full_name": "Javier Lobby Wheelchair Accessible PWD Ramp (West)",
+    "building": "Javier Building",
+    "direction": "south",
+    "label": "PWD RAMP",
+    "slices": 6,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.09992677,
+      14.57300385,
+      121.09993326,
+      14.57303279
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09992677,
+            14.57303279
+          ],
+          [
+            121.09992677,
+            14.57300385
+          ],
+          [
+            121.09993326,
+            14.57300385
+          ],
+          [
+            121.09993326,
+            14.57303279
+          ],
+          [
+            121.09992677,
+            14.57303279
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "PWD-RAMP-LOBBY-EAST",
+    "type": "ramp",
+    "name": "PWD RAMP (Lobby East)",
+    "full_name": "Javier Lobby Wheelchair Accessible PWD Ramp (East)",
+    "building": "Javier Building",
+    "direction": "south",
+    "label": "PWD RAMP",
+    "slices": 6,
+    "start_height": 0.05,
+    "target_height": 1.2,
+    "bounds": [
+      121.09997225,
+      14.57300385,
+      121.09997874,
+      14.57303279
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09997225,
+            14.57303279
+          ],
+          [
+            121.09997225,
+            14.57300385
+          ],
+          [
+            121.09997874,
+            14.57300385
+          ],
+          [
+            121.09997874,
+            14.57303279
+          ],
+          [
+            121.09997225,
+            14.57303279
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "id": "STAIRS-LOBBY-ENTRANCE",
+    "type": "stairs",
+    "name": "Lobby Entrance Stairs",
+    "full_name": "Javier Lobby Entrance Stairs (between the PWD ramps)",
+    "building": "Javier Building",
+    "direction": "south",
+    "layout": "straight",
+    "steps": 6,
+    "start_height": 0.0,
+    "target_height": 1.2,
+    "step_increment": 0.2,
+    "bounds": [
+      121.09994162,
+      14.57301557,
+      121.09996389,
+      14.57303279
+    ],
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            121.09994162,
+            14.57303279
+          ],
+          [
+            121.09994162,
+            14.57301557
+          ],
+          [
+            121.09996389,
+            14.57301557
+          ],
+          [
+            121.09996389,
+            14.57303279
+          ],
+          [
+            121.09994162,
+            14.57303279
+          ]
+        ]
+      ]
+    },
+    "flights": [
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09994162,
+          14.57302418,
+          121.09996389,
+          14.57303279
+        ],
+        "steps": 3,
+        "direction": "south",
+        "start_step": 1,
+        "start_height": 0.2,
+        "target_height": 0.6
+      },
+      {
+        "kind": "steps",
+        "bounds": [
+          121.09994162,
+          14.57301557,
+          121.09996389,
+          14.57302418
+        ],
+        "steps": 3,
+        "direction": "south",
+        "start_step": 4,
+        "start_height": 0.8,
+        "target_height": 1.2
+      }
+    ]
   }
 ]
