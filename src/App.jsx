@@ -24,6 +24,7 @@ function AppContent() {
   const { user, profile, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
 
   const [screen, setScreen] = useState('dashboard');
+  const [previousScreen, setPreviousScreen] = useState('dashboard');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginRequired, setLoginRequired] = useState(false);
   const [pendingStaff, setPendingStaff] = useState(false);
@@ -48,13 +49,14 @@ function AppContent() {
   const closeNavigation = () => setScreen(navOrigin);
 
   const openLogin = () => {
-    if (isAuthenticated) {
-      setScreen('account');
-    } else {
-      setLoginRequired(false);
-      setShowLoginModal(true);
-    }
-  };
+  if (isAuthenticated) {
+    setPreviousScreen(screen);
+    setScreen('account');
+  } else {
+    setLoginRequired(false);
+    setShowLoginModal(true);
+  }
+};
 
   const closeLogin = () => {
     setShowLoginModal(false);
@@ -207,13 +209,13 @@ function AppContent() {
       {screen === 'account' && isAuthenticated && (
         <main className={mainClass}>
           <AccountInfo
-            user={user}
-            profile={profile}
-            onBackToMap={closeSearch}
-            onLogout={handleLogout}
-          />
-        </main>
-      )}
+          user={user}
+          profile={profile}
+          onBackToMap={() => setScreen(previousScreen)}
+          onLogout={handleLogout}
+        />
+      </main>
+    )}
 
       {screen === 'dashboard' && (
         <>

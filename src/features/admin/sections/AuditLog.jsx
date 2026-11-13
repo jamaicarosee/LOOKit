@@ -1,19 +1,55 @@
+
 import React, { useEffect, useRef, useState } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Search } from 'lucide-react';
 import { fetchAudit, exportAuditExcel } from '../data/auditService';
 import { errorMessage } from '../data/usersService';
 import useDebouncedValue from '../hooks/useDebouncedValue';
 import StatusPill from '../components/StatusPill';
-import { Field, TextInput, SelectInput, Notice } from '../components/AdminControls';
+import { Notice } from '../components/AdminControls';
 
-const DISPLAY_LIMIT = 10; 
-const EMPTY_FILTERS = { q: '', action: '', entityType: '', status: '', dateFrom: '', dateTo: '' };
+const DISPLAY_LIMIT = 10;
 
 const humanize = (s = '') => {
   const t = String(s).replace(/[_-]+/g, ' ').trim();
   return t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
 };
+
 const isFailed = (status) => /fail|error/i.test(status || '');
+
+// Highlight matching search text in light blue.
+function Highlight({ text, search }) {
+  const value = String(text ?? '');
+  const keyword = search.trim();
+
+  if (!keyword) return value;
+
+  const index = value.toLowerCase().indexOf(keyword.toLowerCase());
+  if (index === -1) return value;
+
+  const parts = [];
+  let start = 0;
+  let match = index;
+
+  while (match !== -1) {
+    if (match > start) parts.push(value.slice(start, match));
+
+    parts.push(
+      <mark
+        key={match}
+        className="rounded-[3px] bg-[#BFDBFE] px-0.5 text-[#0B1E36]"
+      >
+        {value.slice(match, match + keyword.length)}
+      </mark>
+    );
+
+    start = match + keyword.length;
+    match = value.toLowerCase().indexOf(keyword.toLowerCase(), start);
+  }
+
+  if (start < value.length) parts.push(value.slice(start));
+
+  return <>{parts}</>;
+}
 
 function formatWhen(iso) {
   const d = new Date(iso);
@@ -33,12 +69,14 @@ function formatValue(field, value) {
 function describeChanges(changes) {
   if (!changes || typeof changes !== 'object') return [];
   const isMap = (v) => v && typeof v === 'object' && !Array.isArray(v);
+
   if (isMap(changes.before) && isMap(changes.after)) {
     const keys = [...new Set([...Object.keys(changes.before), ...Object.keys(changes.after)])];
     return keys
       .filter((k) => JSON.stringify(changes.before[k]) !== JSON.stringify(changes.after[k]))
       .map((k) => ({ field: k, before: changes.before[k], after: changes.after[k] }));
   }
+
   return Object.entries(changes).map(([field, v]) => {
     if (Array.isArray(v) && v.length === 2) return { field, before: v[0], after: v[1] };
     if (isMap(v) && ('before' in v || 'after' in v)) return { field, before: v.before, after: v.after };
@@ -47,20 +85,28 @@ function describeChanges(changes) {
   });
 }
 
-function WhatChanged({ entry }) {
+function WhatChanged({ entry, search }) {
   const rows = /update/i.test(entry.action || '') ? describeChanges(entry.changes) : [];
+
   return (
     <div className="min-w-0">
       <p className="text-sm font-semibold text-[#0B1E36] break-words">
-        {humanize(entry.entity_type)}
-        {entry.entity_label ? <span className="font-normal text-slate-600"> · {entry.entity_label}</span> : null}
+        <Highlight text={humanize(entry.entity_type)} search={search} />
+        {entry.entity_label ? (
+          <span className="font-normal text-slate-600">
+            {' · '}<Highlight text={entry.entity_label} search={search} />
+          </span>
+        ) : null}
       </p>
       {rows.length > 0 && (
         <ul className="mt-1 space-y-0.5">
           {rows.map((r) => (
             <li key={r.field} className="text-xs text-slate-500 break-words">
-              <span className="font-semibold text-[#0B1E36]">{humanize(r.field)}:</span> {formatValue(r.field, r.before)} →{' '}
-              {formatValue(r.field, r.after)}
+              <span className="font-semibold text-[#0B1E36]">
+                <Highlight text={humanize(r.field)} search={search} />:
+              </span>{' '}
+              <Highlight text={formatValue(r.field, r.before)} search={search} /> →{' '}
+              <Highlight text={formatValue(r.field, r.after)} search={search} />
             </li>
           ))}
         </ul>
@@ -69,49 +115,57 @@ function WhatChanged({ entry }) {
   );
 }
 
-function StatusCell({ entry }) {
+function StatusCell({ entry, search }) {
   const failed = isFailed(entry.status);
+  const label = failed ? 'Failed' : 'Success';
+
   return (
     <div>
-      <StatusPill tone={failed ? 'error' : 'success'}>{failed ? 'Failed' : 'Success'}</StatusPill>
-      {failed && entry.error_message && <p className="mt-1 text-xs text-red-800 break-words">{entry.error_message}</p>}
+      <StatusPill tone={failed ? 'error' : 'success'}>
+        <Highlight text={label} search={search} />
+      </StatusPill>
+      {failed && entry.error_message && (
+        <p className="mt-1 text-xs text-red-800 break-words">
+          <Highlight text={entry.error_message} search={search} />
+        </p>
+      )}
     </div>
   );
 }
 
 export default function AuditLog({ isDesktop }) {
-  const [filters, setFilters] = useState(EMPTY_FILTERS);
-  const applied = useDebouncedValue(filters, 350);
+  const [search, setSearch] = useState('');
+  const appliedSearch = useDebouncedValue(search, 350);
   const [data, setData] = useState({ entries: [], total: 0, status: 'loading' });
   const [exporting, setExporting] = useState(false);
   const [notice, setNotice] = useState(null);
   const requestRef = useRef(0);
 
-  const setFilter = (key, value) => setFilters((f) => ({ ...f, [key]: value }));
-  const rangeInvalid = Boolean(applied.dateFrom && applied.dateTo && applied.dateFrom > applied.dateTo);
-
   useEffect(() => {
-    if (rangeInvalid) return;
     const id = ++requestRef.current;
     setData((d) => ({ ...d, status: 'loading' }));
     setNotice(null);
-    
-    // Strictly fetching only the latest 10 logs for the UI
-    fetchAudit({ ...applied, q: applied.q.trim(), limit: DISPLAY_LIMIT, offset: 0 })
-      .then((res) => id === requestRef.current && setData({ entries: res.entries.slice(0, DISPLAY_LIMIT), total: res.total, status: 'ready' }))
+
+    fetchAudit({ q: appliedSearch.trim(), limit: DISPLAY_LIMIT, offset: 0 })
+      .then((res) => {
+        if (id !== requestRef.current) return;
+        setData({ entries: res.entries.slice(0, DISPLAY_LIMIT), total: res.total, status: 'ready' });
+      })
       .catch((err) => {
         console.error('[LOOKit Admin] Could not load the audit log:', err);
         if (id !== requestRef.current) return;
         setData((d) => ({ ...d, status: 'error' }));
         setNotice({ type: 'error', text: errorMessage(err, 'Could not load the audit log.') });
       });
-  }, [applied, rangeInvalid]);
+
+    return () => { requestRef.current += 1; };
+  }, [appliedSearch]);
 
   const handleExport = async () => {
     setExporting(true);
     setNotice(null);
     try {
-      await exportAuditExcel(applied);
+      await exportAuditExcel({ q: search.trim() });
     } catch (err) {
       setNotice({ type: 'error', text: 'Failed to export logs to Excel.' });
     } finally {
@@ -120,53 +174,35 @@ export default function AuditLog({ isDesktop }) {
   };
 
   const { entries, total, status } = data;
-  const hasFilters = Object.values(filters).some(Boolean);
-  const actionOptions = [...new Set(entries.map((e) => e.action).filter(Boolean))];
-  const entityOptions = [...new Set(entries.map((e) => e.entity_type).filter(Boolean))];
 
-  const filterBar = (
-    <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-6">
-      <div className="col-span-2">
-        <Field label="Search">
-          <TextInput type="search" value={filters.q} onChange={(e) => setFilter('q', e.target.value)} placeholder="Actor, action or item" />
-        </Field>
+  // Original Staff page search bar styling
+  const searchBar = isDesktop ? (
+    <div className="mb-5 w-full">
+      <div className="w-full h-14 bg-[#E5EEF7] rounded-full px-6 flex items-center gap-3 shadow-inner focus-within:ring-2 focus-within:ring-[#0B1E36]/20 transition">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search records"
+          aria-label="Search audit records"
+          className="w-full min-w-0 bg-transparent text-sm text-[#0B1E36] placeholder-[#64748B] focus:outline-none font-medium"
+        />
+        <Search className="w-5 h-5 text-[#475569] shrink-0 stroke-[2]" />
       </div>
-      <Field label="Action">
-        <TextInput list="audit-actions" value={filters.action} onChange={(e) => setFilter('action', e.target.value)} placeholder="Any" />
-        <datalist id="audit-actions">
-          {actionOptions.map((a) => (
-            <option key={a} value={a} />
-          ))}
-        </datalist>
-      </Field>
-      <Field label="Entity">
-        <TextInput list="audit-entities" value={filters.entityType} onChange={(e) => setFilter('entityType', e.target.value)} placeholder="Any" />
-        <datalist id="audit-entities">
-          {entityOptions.map((a) => (
-            <option key={a} value={a} />
-          ))}
-        </datalist>
-      </Field>
-      <Field label="Status">
-        <SelectInput value={filters.status} onChange={(e) => setFilter('status', e.target.value)}>
-          <option value="">Any</option>
-          <option value="success">Success</option>
-          <option value="failed">Failed</option>
-        </SelectInput>
-      </Field>
-      <Field label="From">
-        <TextInput type="date" value={filters.dateFrom} max={filters.dateTo || undefined} onChange={(e) => setFilter('dateFrom', e.target.value)} />
-      </Field>
-      <Field label="To">
-        <TextInput type="date" value={filters.dateTo} min={filters.dateFrom || undefined} onChange={(e) => setFilter('dateTo', e.target.value)} />
-      </Field>
-      {hasFilters && (
-        <div className="col-span-2 lg:col-span-6">
-          <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="text-xs font-bold text-[#0B1E36] hover:underline">
-            Clear filters
-          </button>
-        </div>
-      )}
+    </div>
+  ) : (
+    <div className="mb-5 w-full">
+      <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-[#E5EEF7] text-[#4A5568] shadow-inner transition-colors focus-within:bg-[#DBE7F3]">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search records"
+          aria-label="Search audit records"
+          className="w-full min-w-0 bg-transparent text-xs font-medium text-gray-800 placeholder-[#607289] focus:outline-none"
+        />
+        <Search className="w-4 h-4 text-[#4A5568] shrink-0 stroke-[2.2]" />
+      </div>
     </div>
   );
 
@@ -188,16 +224,22 @@ export default function AuditLog({ isDesktop }) {
             return (
               <tr key={e.id} className="border-b border-slate-100 align-top">
                 <td className="whitespace-nowrap py-3 pr-4 text-xs text-slate-600">
-                  <span className="block font-semibold text-[#0B1E36]">{w.date}</span>
-                  {w.time}
+                  <span className="block font-semibold text-[#0B1E36]">
+                    <Highlight text={w.date} search={search} />
+                  </span>
+                  <Highlight text={w.time} search={search} />
                 </td>
-                <td className="py-3 pr-4 text-sm text-[#0B1E36] break-all">{e.actor_email || '—'}</td>
-                <td className="py-3 pr-4 text-sm font-semibold text-[#0B1E36]">{humanize(e.action)}</td>
+                <td className="py-3 pr-4 text-sm text-[#0B1E36] break-all">
+                  <Highlight text={e.actor_email || '—'} search={search} />
+                </td>
+                <td className="py-3 pr-4 text-sm font-semibold text-[#0B1E36]">
+                  <Highlight text={humanize(e.action)} search={search} />
+                </td>
                 <td className="py-3 pr-4">
-                  <WhatChanged entry={e} />
+                  <WhatChanged entry={e} search={search} />
                 </td>
                 <td className="py-3">
-                  <StatusCell entry={e} />
+                  <StatusCell entry={e} search={search} />
                 </td>
               </tr>
             );
@@ -215,13 +257,17 @@ export default function AuditLog({ isDesktop }) {
           <article key={e.id} className="space-y-2 rounded-xl bg-white px-4 py-3 shadow-md">
             <div className="flex items-start justify-between gap-3">
               <p className="text-[11px] text-slate-500">
-                {w.date} · {w.time}
+                <Highlight text={`${w.date} · ${w.time}`} search={search} />
               </p>
-              <StatusCell entry={e} />
+              <StatusCell entry={e} search={search} />
             </div>
-            <p className="text-sm font-extrabold text-[#0B1E36]">{humanize(e.action)}</p>
-            <p className="text-xs text-slate-500 break-all">{e.actor_email || '—'}</p>
-            <WhatChanged entry={e} />
+            <p className="text-sm font-extrabold text-[#0B1E36]">
+              <Highlight text={humanize(e.action)} search={search} />
+            </p>
+            <p className="text-xs text-slate-500 break-all">
+              <Highlight text={e.actor_email || '—'} search={search} />
+            </p>
+            <WhatChanged entry={e} search={search} />
           </article>
         );
       })}
@@ -239,21 +285,23 @@ export default function AuditLog({ isDesktop }) {
             type="button"
             onClick={handleExport}
             disabled={exporting}
-            className="flex items-center gap-2 rounded-lg bg-[#0B1E36] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#0B1E36] disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-[#0B1E36] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#142F50] disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
             {exporting ? 'Exporting...' : 'Export to Excel'}
           </button>
         </div>
-        
-        {filterBar}
-        {rangeInvalid && <Notice notice={{ type: 'error', text: 'The start date is after the end date.' }} />}
-        {!rangeInvalid && <Notice notice={notice} />}
 
-        {!rangeInvalid && status === 'loading' && entries.length === 0 && <p className="text-sm text-slate-500">Loading audit log…</p>}
-        {!rangeInvalid && status === 'ready' && entries.length === 0 && <p className="text-sm text-slate-500">No entries found.</p>}
+        {searchBar}
+        <Notice notice={notice} />
+
+        {status === 'loading' && entries.length === 0 && <p className="text-sm text-slate-500">Loading audit log…</p>}
+        {status === 'ready' && entries.length === 0 && <p className="text-sm text-slate-500">No records found.</p>}
+
         {entries.length > 0 && (
-          <div className={status === 'loading' ? 'opacity-60 transition-opacity' : ''}>{isDesktop ? table : cards}</div>
+          <div className={status === 'loading' ? 'opacity-60 transition-opacity' : ''}>
+            {isDesktop ? table : cards}
+          </div>
         )}
 
         {entries.length > 0 && (
