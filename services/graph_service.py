@@ -16,7 +16,6 @@ from services.geo_utils import (
     haversine,
     line_length,
     project_on_line,
-    project_on_segment,
     bounds_center,
     polygon_centroid,
     point_in_polygon,
@@ -28,9 +27,8 @@ from services.step_builder import build_route_result, STAIRS_LENGTH_M
 
 FLOORS = [1, 2, 3, 4, 5, 6]
 
-# Tunables matching graph.js
 NODE_TOL_M = 0.8
-SNAP_TOL_M = 3.0
+SNAP_TOL_M = 1.2
 STAIR_ATTACH_MAX_M = 16.0
 STAIR_MATCH_MAX_M = 8.0
 ROOM_ATTACH_MAX_M = 60.0
@@ -153,7 +151,7 @@ def _rise_line(
         "oneway": False,
         "building": struct.get("building"),
         "coords": [a, b],
-        "snapTol": 8.0,
+        "snapTol": 1.5,
     }
 
 
@@ -181,7 +179,6 @@ def _planarize(lines: List[Dict[str, Any]]) -> Dict[str, Any]:
     inserts = []
     extensions = []
 
-    # Mid-segment crossings
     for i in range(len(items)):
         for j in range(i + 1, len(items)):
             A = items[i]
@@ -215,13 +212,12 @@ def _planarize(lines: List[Dict[str, Any]]) -> Dict[str, Any]:
                         }
                     )
 
-    # T-junction dead-end snapping
     for A in items:
         for at_start in (True, False):
             e = A["verts"][0] if at_start else A["verts"][-1]
-            special = (not A.get("snapStartOnly")) or at_start
-            tol = (A.get("snapTol") if A.get("snapTol") is not None else SNAP_TOL_M) if special else SNAP_TOL_M
-            flt = A.get("snapFilter") if special else None
+            # Restrict snap tolerance to 1.5m to eliminate phantom diagonal bridges
+            tol = 1.5
+            flt = A.get("snapFilter")
             best = None
             for B in items:
                 if B is A or B.get("kind") == "door" or (flt and not flt(B)):
@@ -370,7 +366,6 @@ def assign_room_ids(raw: Dict[str, Any]) -> Dict[int, str]:
 
 
 def load_raw_geojson(data_dir: Path) -> Dict[str, Any]:
-    """Reads all static GeoJSON files from the frontend public/data directory."""
     def read_json(rel_path: str) -> Optional[Dict[str, Any]]:
         full = data_dir / rel_path
         if not full.exists():
@@ -393,7 +388,6 @@ def load_raw_geojson(data_dir: Path) -> Dict[str, Any]:
 
 
 def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
-    """Builds the planar multi-floor routing graph and location index from raw GeoJSON."""
     nodes: List[Dict[str, Any]] = []
     edges: List[Dict[str, Any]] = []
     tags: Dict[str, int] = {}
@@ -464,27 +458,26 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
             ramp = _is_ramp_name(name)
             is_conn = bool(re.match(r"^Connector", name, re.I))
             is_spur = bool(re.search(r"(Access|Entrance) — ", name))
+            is_entrance_stairs = bool(re.search(r"(entrance stair|lobby.*entrance|central.*entrance)", name, re.I))
+            
+            # Classify entrance stairs and central lobby steps correctly
+            kind = "ramp" if ramp else ("entrance-stairs" if is_entrance_stairs else "walk")
+            
             own_lines.append(
                 {
                     "id": p.get("id") or f"f{floor}_path_{i}",
                     "name": name,
-                    "kind": "ramp" if ramp else "walk",
+                    "kind": kind,
                     "zone": "outdoor" if (floor == 1 and not re.search(r"corridor", name, re.I) and not ramp) else "indoor",
                     "oneway": False,
                     "building": p.get("building"),
                     "spur": is_spur,
                     "coords": [[c[0], c[1]] for c in f["geometry"]["coordinates"]],
-                    "snapTol": 10.0 if (is_conn or is_spur) else None,
-                    "snapFilter": (
-                        (lambda t: t.get("kind") == "ramp" or bool(re.search(r"corridor", t.get("name") or "", re.I)))
-                        if is_conn
-                        else None
-                    ),
+                    "snapTol": 1.2,
                     "snapStartOnly": is_conn,
                 }
             )
 
-        # Drop redundant macro lines on floor 1
         combined = list(own_lines)
         if floor == 1:
             ground = [l for l in own_lines if l.get("kind") != "door"]
@@ -507,7 +500,6 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
                 if keep:
                     combined.append(m)
 
-        # Dedupe lines
         base: List[Dict[str, Any]] = []
         for l in combined:
             is_dup = False
@@ -524,7 +516,6 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
             if not is_dup:
                 base.append(l)
 
-        # Apply Gate 1 lanes and Javier Lobby mark on floor 1
         if floor == 1:
             if gate1_geom:
                 new_base = []
@@ -564,6 +555,8 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
                 for l in base:
                     if not LOBBY_LINE_RE.search(l.get("name") or ""):
                         continue
+                    # Central approach to lobby contains steps: tag as entrance-stairs so PWD diverts to ramps
+                    l["kind"] = "entrance-stairs"
                     first_pt = None
                     last_pt = None
                     for i_c in range(len(l["coords"]) - 1):
@@ -654,7 +647,6 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
 
         add_planar(floor, [*base, *extra])
 
-    # Vertical stair links across consecutive floors
     for floor in FLOORS:
         lower = [
             s
@@ -699,7 +691,6 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
                 }
             )
 
-    # Build searchable locations index matching locationService.js
     locations: List[Dict[str, Any]] = []
 
     def building_for(b_name: Optional[str], coord: List[float]) -> Optional[str]:
@@ -736,7 +727,7 @@ def build_graph_from_raw(raw: Dict[str, Any]) -> Dict[str, Any]:
                 "fullName": p["name"],
                 "type": "building",
                 "building": p["name"],
-                "floor": None,
+                "floor": 1,
                 "floors": p.get("floors") or 0,
                 "coordinates": polygon_centroid(f["geometry"]),
                 "geometry": f["geometry"],
@@ -831,7 +822,6 @@ class CampusGraphService:
         return None
 
     def _fetch_all_rows(self, table_name: str, page_size: int = 1000) -> List[Dict[str, Any]]:
-        """Bypasses PostgREST 1000-row limit by paginating through the table."""
         all_rows = []
         offset = 0
         while True:
@@ -844,8 +834,6 @@ class CampusGraphService:
         return all_rows
 
     def reload_graph(self) -> Dict[str, Any]:
-        """Loads graph & searchable locations from Supabase (or local GeoJSON if DB is empty)."""
-        # Try loading from Supabase first using the pagination helper
         try:
             loc_rows = self._fetch_all_rows("location")
             edge_rows = self._fetch_all_rows("path_segments")
@@ -856,11 +844,9 @@ class CampusGraphService:
 
         data_dir = self._find_geojson_dir()
         
-        # Priority 1: Hydrate from Supabase if data exists
         if loc_rows and edge_rows:
             print(f"[Graph Service] Hydrating routing graph strictly from Supabase DB ({len(loc_rows)} locations, {len(edge_rows)} edges)...")
             self._hydrate_from_supabase(loc_rows, edge_rows, bldg_rows)
-        # Priority 2: Fallback to GeoJSON files if DB is empty
         elif data_dir:
             print(f"[Graph Service] DB empty. Falling back to GeoJSON from {data_dir}...")
             raw = load_raw_geojson(data_dir)
@@ -873,7 +859,15 @@ class CampusGraphService:
             self.campus_features = built["campusFeatures"]
             self.site_features = built["siteFeatures"]
 
-        self.locations_by_id = {str(loc["id"]): loc for loc in self.locations}
+        self.locations_by_id = {}
+        for loc in self.locations:
+            if loc.get("id"):
+                self.locations_by_id[str(loc["id"])] = loc
+            if loc.get("code") and str(loc["code"]) not in self.locations_by_id:
+                self.locations_by_id[str(loc["code"])] = loc
+            if loc.get("locationId") and str(loc["locationId"]) not in self.locations_by_id:
+                self.locations_by_id[str(loc["locationId"])] = loc
+
         self.building_geometry = {
             f["properties"]["name"]: f["geometry"]
             for f in self.campus_features
@@ -892,7 +886,6 @@ class CampusGraphService:
         edge_rows: List[Dict[str, Any]],
         bldg_rows: List[Dict[str, Any]],
     ):
-        """Rebuilds the in-memory planar graph and POI list strictly from Supabase tables."""
         self.nodes = []
         self.edges = []
         self.tags = {}
@@ -933,17 +926,21 @@ class CampusGraphService:
                         self.tags[tag] = idx
 
             if role in ("searchable_poi", "both"):
-                poi = meta.get("poi") or {
-                    "id": r.get("code") or str(r["locationid"]),
-                    "name": r.get("label") or r["name"],
-                    "fullName": r["name"],
-                    "type": r["type"],
+                raw_id = r.get("code") or str(r["locationid"])
+                # Live database column overrides stale JSON metadata
+                clean_name = r.get("label") or r.get("name")
+                poi = {
+                    "id": raw_id,
+                    "name": clean_name,
+                    "fullName": r.get("name"),
+                    "type": r.get("type"),
                     "building": r.get("building_code"),
                     "floor": floor_lvl,
                     "code": r.get("code"),
                     "coordinates": coord,
                     "geometry": meta.get("geometry"),
-                    "keywords": meta.get("keywords") or _norm(f"{r['name']} {r.get('code') or ''}"),
+                    "keywords": _norm(f"{r.get('name')} {r.get('code') or ''} {clean_name}"),
+                    "locationId": r["locationid"],
                 }
                 self.locations.append(poi)
                 if poi.get("type") in ("gate", "parking") and poi.get("geometry"):
@@ -960,15 +957,36 @@ class CampusGraphService:
             b_idx = db_id_to_node_idx.get(e["end_location_id"])
             if a_idx is None or b_idx is None:
                 continue
+
+            # Drop old rogue diagonal edge 37 if it exists in DB
+            edge_name = e.get("name") or "Path"
+            dist_val = float(e.get("distance") or 0.0)
+            if edge_name == "Connector 2" and abs(dist_val - 9.65) < 0.1:
+                continue
+
             meta = e.get("metadata") or {}
             coords = e.get("coords") or [self.nodes[a_idx]["coord"], self.nodes[b_idx]["coord"]]
+            
+            a_coord = self.nodes[a_idx]["coord"]
+            b_coord = self.nodes[b_idx]["coord"]
+            if len(coords) >= 2:
+                d_a0 = haversine(coords[0], a_coord)
+                d_a1 = haversine(coords[-1], a_coord)
+                if d_a1 < d_a0:
+                    coords = list(reversed(coords))
+
+            kind = e.get("kind") or "walk"
+            # Central approach to lobby or corridor steps treated as entrance-stairs
+            if LOBBY_LINE_RE.search(edge_name):
+                kind = "entrance-stairs"
+
             self.edges.append(
                 {
                     "id": len(self.edges),
                     "lineId": meta.get("lineId") or f"edge_{e['pathid']}",
-                    "name": e.get("name") or "Path",
+                    "name": edge_name,
                     "stairName": meta.get("stairName"),
-                    "kind": e.get("kind") or "walk",
+                    "kind": kind,
                     "zone": e.get("zone") or "indoor",
                     "oneway": bool(e.get("oneway", False)),
                     "building": meta.get("building"),
@@ -978,8 +996,8 @@ class CampusGraphService:
                     "floor": e.get("floor_from") or 1,
                     "floorTo": e.get("floor_to") or (e.get("floor_from") or 1),
                     "coords": coords,
-                    "coordsTo": meta.get("coordsTo") or ([self.nodes[b_idx]["coord"]] if e.get("kind") == "stairs" else None),
-                    "len": float(e.get("distance") or 0.0),
+                    "coordsTo": meta.get("coordsTo") or ([b_coord] if kind == "stairs" else None),
+                    "len": dist_val,
                 }
             )
 
@@ -996,7 +1014,7 @@ class CampusGraphService:
     # --- Search & Directory methods ---
 
     def _score_entry(self, loc: Dict[str, Any], q: str) -> int:
-        fields = [_norm(loc.get("name")), _norm(loc.get("fullName")), _norm(loc.get("building"))]
+        fields = [_norm(loc.get("name")), _norm(loc.get("fullName")), _norm(loc.get("building")), _norm(loc.get("code"))]
         best = 0
         for f in fields:
             if not f:
@@ -1040,9 +1058,9 @@ class CampusGraphService:
     def resolve_location_object(self, loc_or_query: Any) -> Optional[Dict[str, Any]]:
         self.ensure_loaded()
         if isinstance(loc_or_query, dict):
-            loc_id = loc_or_query.get("id")
-            if loc_id and loc_id in self.locations_by_id:
-                return self.locations_by_id[loc_id]
+            loc_id = loc_or_query.get("id") or loc_or_query.get("code") or loc_or_query.get("locationId")
+            if loc_id and str(loc_id) in self.locations_by_id:
+                return self.locations_by_id[str(loc_id)]
             return loc_or_query
         if isinstance(loc_or_query, str):
             if loc_or_query in self.locations_by_id:
@@ -1052,6 +1070,20 @@ class CampusGraphService:
         return None
 
     # --- Dijkstra & Routing methods ---
+
+    def _nodes_near_coord(self, coord: List[float], floor: int, max_dist: float = 60.0) -> List[int]:
+        scored = [
+            (haversine(n["coord"], coord), n["id"])
+            for n in self.nodes
+            if n["floor"] == floor
+        ]
+        scored.sort(key=lambda x: x[0])
+        if not scored:
+            return []
+        min_d = scored[0][0]
+        if min_d > max_dist:
+            return [scored[0][1]]
+        return [nid for d, nid in scored if d <= min_d + 3.0][:5]
 
     def _nodes_near_geometry(
         self, geometry: Dict[str, Any], floor: int = 1, slack: float = 6.0, max_nodes: int = 8
@@ -1068,23 +1100,51 @@ class CampusGraphService:
         return [nid for d, nid in scored if d <= min_d + slack][:max_nodes]
 
     def _resolve_nodes(self, loc: Dict[str, Any]) -> Dict[str, Any]:
-        if loc.get("type") == "room":
-            own = self.tags.get(f"room:{loc.get('id')}")
-            if own is not None:
-                return {"ids": [own], "exact": True}
-        if loc.get("geometry"):
-            ids = self._nodes_near_geometry(loc["geometry"])
+        target_floor = loc.get("floor") or 1
+        
+        for candidate_key in [loc.get("id"), loc.get("code")]:
+            if not candidate_key:
+                continue
+            for prefix in (f"room:{candidate_key}", f"room:{candidate_key}@F{target_floor}"):
+                if prefix in self.tags:
+                    return {"ids": [self.tags[prefix]], "exact": True}
+
+        if loc.get("coordinates"):
+            ids = self._nodes_near_coord(loc["coordinates"], floor=target_floor)
             if ids:
                 return {"ids": ids, "exact": loc.get("type") != "room"}
+
+        if loc.get("geometry"):
+            ids = self._nodes_near_geometry(loc["geometry"], floor=target_floor)
+            if ids:
+                return {"ids": ids, "exact": loc.get("type") != "room"}
+
         b_geom = self.building_geometry.get(loc.get("building") or "")
-        ids = self._nodes_near_geometry(b_geom) if b_geom else []
+        ids = self._nodes_near_geometry(b_geom, floor=target_floor) if b_geom else []
         return {"ids": ids, "exact": False}
 
     def _edge_distance(self, edge: Dict[str, Any], mode: Dict[str, Any]) -> float:
-        is_stairs = edge.get("kind") in ("stairs", "entrance-stairs")
-        if is_stairs and mode.get("avoidStairs"):
-            return float("inf")
-        return STAIRS_LENGTH_M if edge.get("kind") == "stairs" else float(edge.get("len", 0.0))
+        kind = edge.get("kind", "walk")
+        avoid_stairs = mode.get("avoidStairs", False)
+
+        # Entrance stairs: heavily penalize in PWD mode so ramps are strictly chosen
+        if kind == "entrance-stairs":
+            if avoid_stairs:
+                return 10000.0
+            return float(edge.get("len", 0.0))
+
+        # Inter-floor stairs: heavily penalize in PWD mode so elevators/ramps are chosen if available
+        if kind == "stairs":
+            if avoid_stairs:
+                return 600.0
+            return STAIRS_LENGTH_M
+
+        # PWD ramps: prioritize in PWD mode
+        if kind == "ramp":
+            base_len = float(edge.get("len", 0.0))
+            return base_len * (0.8 if avoid_stairs else 1.0)
+
+        return float(edge.get("len", 0.0))
 
     def _shortest_path(
         self, sources: List[int], targets: List[int], mode: Dict[str, Any]
@@ -1161,8 +1221,11 @@ class CampusGraphService:
     ) -> Optional[Dict[str, Any]]:
         lobby = self.tags.get(JAVIER_LOBBY_TAG)
         in_javier = lambda loc: bool(loc and loc.get("building") in JAVIER_AREA)
-        if not emergency and lobby is not None and in_javier(from_loc) != in_javier(to_loc):
-            return self._shortest_path_via(sources, lobby, targets, mode)
+        # Avoid forcing Javier Lobby node when PWD mode is active if lobby node is an entrance stair
+        if not emergency and not mode.get("avoidStairs") and lobby is not None and in_javier(from_loc) != in_javier(to_loc):
+            via_path = self._shortest_path_via(sources, lobby, targets, mode)
+            if via_path:
+                return via_path
         return self._shortest_path(sources, targets, mode)
 
     def _building_at(self, coord: List[float]) -> Optional[str]:
@@ -1231,15 +1294,18 @@ class CampusGraphService:
 
         mode = {"avoidStairs": pwd}
         path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
-        if not path and pwd:
-            mode = {"avoidStairs": False}
-            path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
-            if path:
-                warnings.append(
-                    "No step-free route exists in the campus data (no elevator or ramp between floors). This route uses stairs."
-                )
         if not path:
             return None
+
+        if pwd:
+            used_stairs = any(
+                st.get("edge", {}).get("kind") in ("stairs", "entrance-stairs")
+                for st in path.get("steps", [])
+            )
+            if used_stairs:
+                warnings.append(
+                    "Step-free route is active for ground entrances via PWD ramp. Inter-floor navigation requires stairs as no elevators are available."
+                )
 
         exit_name = (
             next((e["name"] for e in exits if path["target"] in e["ids"]), "the nearest exit")

@@ -8,7 +8,6 @@ from services.audit_service import diff, error_text, get_client_ip, log_audit
 router = APIRouter(prefix="/api/staff", tags=["Staff"])
 
 # --- Pydantic Models for Admin Forms ---
-
 class StaffCreate(BaseModel):
     employee_number: Optional[int] = None
     first_name: str
@@ -26,9 +25,7 @@ class StaffUpdate(BaseModel):
     department_id: Optional[int] = None
     office_location_id: Optional[int] = None
 
-
 # --- Public Endpoints ---
-
 @router.get("")
 def get_all_staff():
     """
@@ -57,6 +54,7 @@ def get_all_staff():
                 "office": dept_name,
                 "groups": meta.get("groups") or [],
                 "office_location_id": loc_id,
+                "officeLocationId": loc_id,
                 "room_code": room_code,
                 # Extra fields required by the Admin Update form
                 "firstName": row.get("first_name", ""),
@@ -88,9 +86,7 @@ def get_staff_sections():
         ]
     }
 
-
 # --- Admin GET Endpoints (Form Dropdowns) ---
-
 @router.get("/departments")
 def get_departments():
     """Provides the Department dropdown data for the Admin Staff form."""
@@ -108,9 +104,7 @@ def get_admin_locations():
         ]
     }
 
-
 # --- Audit helpers ---
-
 STAFF_AUDIT_FIELDS = ("first_name", "last_name", "role", "email", "department_id", "office_location_id")
 
 
@@ -138,6 +132,9 @@ def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(requ
     """Admin-only: Adds a new staff member."""
     ip = get_client_ip(request)
     data = payload.dict(exclude_none=True)
+    # Ensure metadata full_name is populated
+    full_name = f"{data.get('first_name', '')} {data.get('last_name', '')}".strip()
+    data["metadata"] = {"full_name": full_name, "groups": ["offices"]}
     try:
         res = supabase.table("staff_members").insert(data).execute()
         if not res.data:
@@ -166,6 +163,15 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
         if not data:
             raise HTTPException(status_code=400, detail="No fields provided to update.")
         before = _fetch_staff_row(employee_number)
+        
+        # Keep metadata.full_name synchronized if names changed
+        if "first_name" in data or "last_name" in data:
+            new_fn = data.get("first_name", before.get("first_name", "") if before else "")
+            new_ln = data.get("last_name", before.get("last_name", "") if before else "")
+            current_meta = (before.get("metadata") or {}) if before else {}
+            current_meta["full_name"] = f"{new_fn} {new_ln}".strip()
+            data["metadata"] = current_meta
+
         res = supabase.table("staff_members").update(data).eq("employee_number", employee_number).execute()
         if not res.data:
             raise HTTPException(status_code=400, detail="Staff update failed.")

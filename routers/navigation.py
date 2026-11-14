@@ -15,9 +15,14 @@ class RouteRequest(BaseModel):
     to_location: Any = Field(None, alias="to")
     emergency: bool = False
     pwd: bool = False
+    accessible_only: bool = Field(False, alias="accessibleOnly")
 
     class Config:
         populate_by_name = True
+
+    @property
+    def is_pwd(self) -> bool:
+        return self.pwd or self.accessible_only
 
 class LocationRename(BaseModel):
     name: str
@@ -37,8 +42,8 @@ def get_searchable_locations(
 ):
     if all_items:
         return {"locations": campus_graph_service.get_all_locations()}
-    if q is not None:
-        return {"locations": campus_graph_service.search_locations(q, limit=limit)}
+    if q is not None and q.strip():
+        return {"locations": campus_graph_service.search_locations(q.strip(), limit=limit)}
     return {"locations": campus_graph_service.get_all_locations()}
 
 
@@ -59,7 +64,7 @@ def calculate_route_post(payload: RouteRequest):
         from_input=payload.from_location,
         to_input=payload.to_location,
         emergency=payload.emergency,
-        pwd=payload.pwd,
+        pwd=payload.is_pwd,
     )
     if not result:
         return None
@@ -71,13 +76,15 @@ def calculate_route_get(
     start: str = Query(..., description="Origin room code, id, or name"),
     destination: Optional[str] = Query(None, description="Destination room code, id, or name"),
     accessible_only: bool = Query(False, description="Step-free PWD routing"),
+    pwd: bool = Query(False, description="Alias for accessible_only"),
     emergency: bool = Query(False, description="Route to nearest emergency exit"),
 ):
+    is_pwd = accessible_only or pwd
     result = campus_graph_service.compute_route(
         from_input=start,
         to_input=destination,
         emergency=emergency,
-        pwd=accessible_only,
+        pwd=is_pwd,
     )
     if not result:
         raise HTTPException(
@@ -91,7 +98,6 @@ def calculate_route_get(
 
 @router.get("/recent-searches")
 def get_recent_searches(user: dict = Depends(get_current_user)):
-    """Fetches the logged-in user's recent searches."""
     try:
         res = supabase.table("recent_searches").select("*").eq("user_id", user["id"]).order("searched_at", desc=True).execute()
         return {"recent_searches": res.data or []}
@@ -100,8 +106,8 @@ def get_recent_searches(user: dict = Depends(get_current_user)):
 
 @router.post("/recent-searches")
 def add_recent_search(payload: RecentSearchCreate, user: dict = Depends(get_current_user)):
-    """Saves a recent search. The database trigger automatically enforces the 5-item limit."""
     try:
+        loc_id = None
         if payload.location_id is not None:
             try:
                 loc_id = int(payload.location_id)
@@ -120,7 +126,6 @@ def add_recent_search(payload: RecentSearchCreate, user: dict = Depends(get_curr
 
 @router.delete("/recent-searches/all")
 def clear_all_recent_searches(user: dict = Depends(get_current_user)):
-    """Clears all recent searches for the logged-in user."""
     try:
         supabase.table("recent_searches").delete().eq("user_id", user["id"]).execute()
         return {"status": "cleared"}
@@ -129,7 +134,6 @@ def clear_all_recent_searches(user: dict = Depends(get_current_user)):
 
 @router.delete("/recent-searches/{search_id}")
 def delete_recent_search(search_id: str, user: dict = Depends(get_current_user)):
-    """Deletes a specific recent search."""
     try:
         supabase.table("recent_searches").delete().eq("id", search_id).eq("user_id", user["id"]).execute()
         return {"status": "deleted"}
@@ -146,7 +150,7 @@ def reload_navigation_graph(_admin: dict = Depends(require_admin)):
 
 def _fetch_location_row(location_id: int) -> Optional[dict]:
     try:
-        res = supabase.table("location").select("locationid, name, code").eq("locationid", location_id).limit(1).execute()
+        res = supabase.table("location").select("locationid, name, label, metadata").eq("locationid", location_id).limit(1).execute()
         return res.data[0] if res.data else None
     except Exception as exc:
         print(f"[LOOKit Audit] Could not read location {location_id} for audit context: {exc}")
@@ -158,8 +162,22 @@ def rename_map_location(location_id: int, payload: LocationRename, request: Requ
     new_name = payload.name.strip()
     before = _fetch_location_row(location_id)
     old_name = before.get("name") if before else None
+
+    # Synchronize column and nested metadata JSON
+    meta = (before.get("metadata") or {}) if before else {}
+    if "poi" in meta and isinstance(meta["poi"], dict):
+        meta["poi"]["name"] = new_name
+        meta["poi"]["fullName"] = new_name
+    meta["base_code"] = meta.get("base_code")
+
+    update_payload = {
+        "name": new_name,
+        "label": new_name,
+        "metadata": meta,
+    }
+
     try:
-        res = supabase.table("location").update({"name": new_name}).eq("locationid", location_id).execute()
+        res = supabase.table("location").update(update_payload).eq("locationid", location_id).execute()
         if not res.data:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Location not found or update failed.")
     except Exception as exc:
