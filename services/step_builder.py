@@ -19,8 +19,12 @@ SHARP_DEG = 125.0
 
 
 def edge_cost(edge: Dict[str, Any], mode: Optional[Dict[str, Any]] = None) -> float:
+    """Travel time in seconds of one edge, or inf when mode forbids it."""
     mode = mode or {}
     kind = edge.get("kind", "walk")
+    is_stairs = kind in ("stairs", "entrance-stairs")
+    if is_stairs and mode.get("avoidStairs"):
+        return float("inf")
     length = float(edge.get("len", 0.0))
     if kind == "stairs":
         return STAIRS_SECONDS_PER_FLOOR
@@ -73,7 +77,6 @@ def _orient(edge: Dict[str, Any], forward: bool) -> Dict[str, Any]:
             "coordTo": edge["coords"][0],
         }
 
-    # Strict directional reversal: forward preserves a -> b, reverse inverts b -> a
     coords = list(edge["coords"]) if forward else list(reversed(edge["coords"]))
     return {
         **edge,
@@ -96,10 +99,6 @@ def _heading_at(coords: List[List[float]], at_end: bool) -> Optional[float]:
 
 
 def _stitch(pieces: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Connects contiguous edges cleanly without creating synthetic diagonal shortcuts.
-    Snaps micro-gaps without generating phantom edges across walls.
-    """
     out: List[Dict[str, Any]] = []
     for i, p in enumerate(pieces):
         prev = pieces[i - 1] if i > 0 else None
@@ -112,9 +111,17 @@ def _stitch(pieces: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             a = prev["coords"][-1]
             b = p["coords"][0]
             gap = haversine(a, b)
-            # Only snap micro-precision offsets (< 1.2m); never create arbitrary straight lines
-            if 0.05 < gap <= 1.2:
-                p["coords"][0] = list(a)
+            if 0.5 < gap <= 25.0:
+                out.append(
+                    {
+                        **p,
+                        "kind": "walk" if p.get("kind") in ("door", "landing") else p.get("kind"),
+                        "spur": bool(p.get("spur")),
+                        "coords": [a, b],
+                        "len": gap,
+                        "cost": gap / WALKING_SPEED_MPS,
+                    }
+                )
         out.append(p)
     return out
 
@@ -156,6 +163,10 @@ def _merge_neighbours(pieces: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Turns shortestPath output { steps: [{ edge, forward }] } into the full RouteResult
+    contract expected by the React frontend.
+    """
     mode = ctx.get("mode") or {}
     raw = [
         {**_orient(s["edge"], s["forward"]), "cost": edge_cost(s["edge"], mode)}
@@ -202,6 +213,7 @@ def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, A
         p = pieces[i]
         is_last = i == len(pieces) - 1
 
+        # Vertical stairs (merge consecutive floor transitions in the same direction)
         if p.get("kind") == "stairs":
             to_floor = p["floorTo"]
             j = i
@@ -250,6 +262,7 @@ def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, A
             or "the building"
         )
 
+        # Entrance stairs and ramps
         if p.get("kind") in ("entrance-stairs", "ramp"):
             is_ramp = p.get("kind") == "ramp"
             a_in = inside_building(p["coords"][0]) if inside_building else False
@@ -297,6 +310,7 @@ def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, A
             i += 1
             continue
 
+        # Transition from outdoor to indoor
         if last_zone == "outdoor" and p.get("zone") == "indoor":
             add_step(
                 {
@@ -347,6 +361,7 @@ def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, A
                 lead = tw["text"]
                 step_type = tw["type"]
 
+        # Fold sub-3m snapping slivers into previous step
         prev_step = steps[-1] if steps else None
         if (
             dist < 3
