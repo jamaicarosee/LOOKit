@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import StaffList from '../../staff/components/StaffList';
 import useStaffData from '../../staff/hooks/useStaffData';
@@ -18,12 +18,17 @@ export default function Staff() {
   const { staff, status, reload } = useStaffData({ fallback: false });
   const [departments, setDepartments] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [menuOpen, setMenuOpen] = useState(true);
+  
+  // Set dropdown to closed by default
+  const [menuOpen, setMenuOpen] = useState(false);
   const [action, setAction] = useState(null);
   const [targetId, setTargetId] = useState('');
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState(null);
+
+  // Search state for staff preview list
+  const [search, setSearch] = useState('');
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState({});
@@ -44,6 +49,18 @@ export default function Staff() {
   const target = staff.find((s) => String(s.id) === targetId);
   const actionLabel = ACTIONS.find((a) => a.id === action)?.label;
 
+  // Filtered staff list based on search query
+  const filteredStaff = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return staff;
+    return staff.filter((s) =>
+      (s.name || '').toLowerCase().includes(q) ||
+      (s.position || '').toLowerCase().includes(q) ||
+      (s.office || '').toLowerCase().includes(q) ||
+      (s.room_code || '').toLowerCase().includes(q)
+    );
+  }, [staff, search]);
+
   function chooseAction(id) {
     setAction(id);
     setMenuOpen(false);
@@ -56,7 +73,20 @@ export default function Staff() {
     setTargetId(id);
     setNotice(null);
     const p = staff.find((s) => String(s.id) === id);
-    setForm(p ? { ...EMPTY, firstName: p.firstName, lastName: p.lastName, role: p.position, email: p.email, departmentId: p.departmentId == null ? '' : String(p.departmentId), officeLocationId: p.officeLocationId == null ? '' : String(p.officeLocationId) } : EMPTY);
+    if (!p) {
+      setForm(EMPTY);
+      return;
+    }
+    const resolvedOfficeId = p.officeLocationId ?? p.office_location_id;
+    setForm({
+      ...EMPTY,
+      firstName: p.firstName || '',
+      lastName: p.lastName || '',
+      role: p.position || '',
+      email: p.email || '',
+      departmentId: p.departmentId == null ? '' : String(p.departmentId),
+      officeLocationId: resolvedOfficeId == null ? '' : String(resolvedOfficeId),
+    });
   }
 
   const onCardSelect = (person) => {
@@ -80,7 +110,10 @@ export default function Staff() {
   }
 
   function apply() {
-    const names = { firstName: form.firstName.trim(), lastName: form.lastName.trim() };
+    const names = {
+      firstName: (form.firstName || '').trim(),
+      lastName: (form.lastName || '').trim(),
+    };
 
     if (action === 'add') {
       if (!names.firstName || !names.lastName) return setNotice({ type: 'error', text: 'Enter a first and last name.' });
@@ -111,8 +144,22 @@ export default function Staff() {
       message: `Are you sure you want to update the details of ${names.firstName} ${names.lastName}?`,
       isDanger: false,
       confirmAction: async () => {
-        const next = { ...names, role: form.role.trim(), email: form.email.trim(), departmentId: form.departmentId, officeLocationId: form.officeLocationId };
-        const before = { firstName: target.firstName, lastName: target.lastName, role: target.position, email: target.email, departmentId: target.departmentId == null ? '' : String(target.departmentId), officeLocationId: target.officeLocationId == null ? '' : String(target.officeLocationId) };
+        const next = {
+          ...names,
+          role: (form.role || '').trim(),
+          email: (form.email || '').trim(),
+          departmentId: form.departmentId,
+          officeLocationId: form.officeLocationId
+        };
+        const beforeOfficeId = target.officeLocationId ?? target.office_location_id;
+        const before = {
+          firstName: target.firstName || '',
+          lastName: target.lastName || '',
+          role: target.position || '',
+          email: target.email || '',
+          departmentId: target.departmentId == null ? '' : String(target.departmentId),
+          officeLocationId: beforeOfficeId == null ? '' : String(beforeOfficeId),
+        };
         const patch = Object.fromEntries(Object.entries(next).filter(([k, v]) => v !== before[k]));
         if (Object.keys(patch).length === 0) return setNotice({ type: 'error', text: 'Nothing has changed yet.' });
         await run(() => updateStaff(target.id, patch), `Updated ${names.firstName} ${names.lastName}.`);
@@ -148,7 +195,7 @@ export default function Staff() {
       </Field>
     </div>
   );
-
+  
   return (
     <>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:gap-10">
@@ -156,7 +203,12 @@ export default function Staff() {
           <h2 id="dir-title" className="text-sm font-black text-[#0B1E36]">Directory</h2>
 
           <div>
-            <button type="button" aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)} className="flex w-full items-center justify-between rounded-lg bg-[#0B1E36] px-3 py-2.5 text-left text-sm font-bold text-white">
+            <button
+              type="button"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+              className="flex w-full items-center justify-between rounded-lg bg-[#0B1E36] px-3 py-2.5 text-left text-sm font-bold text-white"
+            >
               {actionLabel || 'What to do?'}
               <ChevronRight className={`h-4 w-4 transition-transform ${menuOpen ? 'rotate-90' : ''}`} />
             </button>
@@ -164,7 +216,13 @@ export default function Staff() {
               <ul className="rounded-b-lg bg-[#E5EEF7]">
                 {ACTIONS.map((a) => (
                   <li key={a.id}>
-                    <button type="button" onClick={() => chooseAction(a.id)} className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0B1E36]/70 hover:text-[#0B1E36] hover:bg-[#D5E2EE]">{a.label}</button>
+                    <button
+                      type="button"
+                      onClick={() => chooseAction(a.id)}
+                      className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0B1E36]/70 hover:text-[#0B1E36] hover:bg-[#D5E2EE]"
+                    >
+                      {a.label}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -202,10 +260,32 @@ export default function Staff() {
 
         <section aria-labelledby="dir-preview" className="min-w-0 rounded-md border border-[#0B1E36] bg-[#F8F9F9]">
           <div className="max-h-[70vh] overflow-y-auto px-5 py-5 lg:px-8">
-            <h2 id="dir-preview" className="mb-5 text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">Staff Directory</h2>
+            <h2 id="dir-preview" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">Staff Directory</h2>
+            
+            {/* Staff Search Bar matching Users tab style */}
+            <div className="mb-5">
+              <TextInput
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search staff by name, title, or office…"
+              />
+            </div>
+
             {status === 'loading' && <p className="text-sm text-slate-500">Loading staff…</p>}
             {status === 'error' && <p className="text-sm text-red-700">Could not load staff. Check connection.</p>}
-            {status === 'ready' && <StaffList staff={staff} onSelectStaff={onCardSelect} selectedId={target?.id} gridClassName="grid grid-cols-1 gap-3" headingClassName="text-xs" />}
+            {status === 'ready' && filteredStaff.length === 0 && (
+              <p className="text-sm text-slate-500 py-4">No matching staff members found.</p>
+            )}
+            {status === 'ready' && filteredStaff.length > 0 && (
+              <StaffList
+                staff={filteredStaff}
+                onSelectStaff={onCardSelect}
+                selectedId={target?.id}
+                gridClassName="grid grid-cols-1 gap-3"
+                headingClassName="text-xs"
+              />
+            )}
           </div>
         </section>
       </div>

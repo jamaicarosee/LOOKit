@@ -24,7 +24,9 @@ export default function Users() {
   const [showInactive, setShowInactive] = useState(false);
   const debouncedSearch = useDebouncedValue(search.trim());
   const { users, status, reload } = useUsersData({ q: debouncedSearch, includeInactive: showInactive });
-  const [menuOpen, setMenuOpen] = useState(true);
+  
+  // Set dropdown to closed by default
+  const [menuOpen, setMenuOpen] = useState(false);
   const [action, setAction] = useState(null);
   const [targetId, setTargetId] = useState('');
   const [targetUser, setTargetUser] = useState(null);
@@ -32,7 +34,7 @@ export default function Users() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState(null);
 
-  // New state for Confirmation Modal
+  // State for Confirmation Modal
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState({});
 
@@ -84,7 +86,6 @@ export default function Users() {
     }
   }
 
-  //  Add user logic, skip the confirmation.
   function apply() {
     const fullName = form.fullName.trim();
     const email = form.email.trim();
@@ -133,7 +134,6 @@ export default function Users() {
       return;
     }
 
-    // update logic validation
     if (!fullName) return fail('Full name cannot be empty.');
     if (!email) return fail('Email cannot be empty.');
     if (!EMAIL_RE.test(email)) return fail('Enter a valid email address.');

@@ -1,4 +1,5 @@
 import { apiClient } from '../../../services/apiClient';
+import { invalidateLocationCache } from '../../navigation/services/locationService';
 
 // Staff page sections chosen from the department name.
 const SECTION_RULES = [
@@ -22,7 +23,6 @@ const COLUMN = {
   officeLocationId: 'office_location_id',
 };
 
-// Maps frontend camelCase state to backend snake_case JSON keys
 function toRow(values) {
   const row = {};
   Object.entries(values).forEach(([key, value]) => {
@@ -33,10 +33,6 @@ function toRow(values) {
   });
   return row;
 }
-
-// ------------------------------------------------------------------
-// GET requests (Public & Admin)
-// ------------------------------------------------------------------
 
 export async function fetchStaff() {
   const response = await apiClient.get('/api/staff');
@@ -52,10 +48,6 @@ export async function fetchLocations() {
   const response = await apiClient.get('/api/staff/locations');
   return response.data?.locations || [];
 }
-
-// ------------------------------------------------------------------
-// Admin Mutations (Requires Admin JWT Bearer Token)
-// ------------------------------------------------------------------
 
 export async function addStaff({ employeeNumber, ...values }) {
   const row = toRow(values);
@@ -78,5 +70,6 @@ export async function deleteStaff(employeeNumber) {
 
 export async function renameLocation(locationId, name) {
   const response = await apiClient.put(`/api/navigation/locations/${locationId}`, { name });
+  invalidateLocationCache();
   return response.data;
 }
