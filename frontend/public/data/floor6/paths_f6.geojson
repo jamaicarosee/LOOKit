@@ -1,0 +1,458 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "id": 6500,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE 6th-Floor Main Corridor",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09943599,
+      14.57332258
+     ],
+     [
+      121.09950424,
+      14.57332258
+     ],
+     [
+      121.09957764,
+      14.57332258
+     ],
+     [
+      121.09965103,
+      14.57332258
+     ],
+     [
+      121.09972441,
+      14.57332258
+     ],
+     [
+      121.0997978,
+      14.57332258
+     ],
+     [
+      121.09987119,
+      14.57332258
+     ],
+     [
+      121.09994411,
+      14.57332258
+     ],
+     [
+      121.10001705,
+      14.57332258
+     ],
+     [
+      121.100062,
+      14.57332258
+     ],
+     [
+      121.10007896,
+      14.57332258
+     ],
+     [
+      121.10010603,
+      14.57332258
+     ],
+     [
+      121.10014319,
+      14.57332258
+     ],
+     [
+      121.10019355,
+      14.57332258
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6501,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE West Stairs Link",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09943599,
+      14.57332258
+     ],
+     [
+      121.09943599,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6502,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE East Stairs Link",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10019355,
+      14.57332258
+     ],
+     [
+      121.10019355,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6503,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E601",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09950424,
+      14.57332258
+     ],
+     [
+      121.09950424,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6504,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E602",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09957764,
+      14.57332258
+     ],
+     [
+      121.09957764,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6505,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E603",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09965103,
+      14.57332258
+     ],
+     [
+      121.09965103,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6506,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E604",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09972441,
+      14.57332258
+     ],
+     [
+      121.09972441,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6507,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E605",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.0997978,
+      14.57332258
+     ],
+     [
+      121.0997978,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6508,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E606",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09987119,
+      14.57332258
+     ],
+     [
+      121.09987119,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6509,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E607",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.09994411,
+      14.57332258
+     ],
+     [
+      121.09994411,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6510,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 E608",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10001705,
+      14.57332258
+     ],
+     [
+      121.10001705,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6511,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 FACULTY CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.100062,
+      14.57332258
+     ],
+     [
+      121.100062,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6512,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 FACULTY CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10007896,
+      14.57332258
+     ],
+     [
+      121.10007896,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6513,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 GENT'S CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10010603,
+      14.57332258
+     ],
+     [
+      121.10010603,
+      14.57334274
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": 6514,
+   "properties": {
+    "highway": "footway",
+    "type": "pedestrian_path",
+    "indoor": "corridor",
+    "floor_level": 6,
+    "level": "6",
+    "name": "MAE Entrance \u2014 LADY'S CR",
+    "building": "M.A.E Building",
+    "color": "#BDC3C7"
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      121.10014319,
+      14.57332258
+     ],
+     [
+      121.10014319,
+      14.57334274
+     ]
+    ]
+   }
+  }
+ ]
+}
