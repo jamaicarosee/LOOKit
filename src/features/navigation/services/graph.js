@@ -731,3 +731,65 @@ export function nodesNearGeometry(graph, geometry, { floor = 1, slack = 6, max =
   if (!scored.length) return [];
   return scored.filter((n) => n.d <= scored[0].d + slack).slice(0, max).map((n) => n.id);
 }
+
+
+// --- Live GPS start ---
+
+// Snaps a GPS position onto the ground-floor walkways and returns a copy of the graph with a virtual
+// start node. Its "approach" edges run from the user along the nearest walkway to each end of it, so a
+// route starts exactly where the user stands (no jump to the closest junction). The shared graph is
+// never modified, so this is safe to call on every GPS fix.
+//   -> { graph, sourceId, snapDistance } or null when no walkway is within maxSnapM
+const APPROACH_SKIP_KINDS = new Set(['door', 'landing', 'stairs']);
+
+export function attachPoint(graph, coord, { floor = 1, maxSnapM = 150, slack = 6, max = 3 } = {}) {
+  const hits = [];
+  for (const e of graph.edges) {
+    if (e.floor !== floor || e.floorTo || APPROACH_SKIP_KINDS.has(e.kind) || e.coords.length < 2) continue;
+    const r = projectOnLine(coord, e.coords);
+    if (r) hits.push({ edge: e, ...r });
+  }
+  hits.sort((a, b) => a.distance - b.distance);
+  if (!hits.length || hits[0].distance > maxSnapM) return null;
+
+  // The nearest walkway plus any others about as close (so a one-way lane never traps the start)
+  const near = hits.filter((h) => h.distance <= hits[0].distance + slack).slice(0, max);
+
+  const sourceId = graph.nodes.length;
+  const nodes = [...graph.nodes, { id: sourceId, floor, coord, virtual: true }];
+  const edges = [...graph.edges];
+  const out = [];
+  const addApproach = (h, toNode, tail) => {
+    const coords = [coord, h.point, ...tail].filter((c, i, arr) => i === 0 || c[0] !== arr[i - 1][0] || c[1] !== arr[i - 1][1]);
+    if (coords.length < 2) return;
+    const e = h.edge;
+    const edge = {
+      id: edges.length,
+      lineId: e.lineId,
+      name: e.name,
+      kind: e.kind,
+      zone: e.zone,
+      oneway: false,
+      building: e.building,
+      spur: false,
+      stairName: e.stairName,
+      a: sourceId,
+      b: toNode,
+      floor,
+      coords,
+      len: lineLength(coords),
+      virtual: true,
+    };
+    edges.push(edge);
+    out.push({ edge, to: toNode, forward: true });
+  };
+
+  for (const h of near) {
+    const e = h.edge;
+    addApproach(h, e.b, e.coords.slice(h.segmentIndex + 1)); // towards the end of the line
+    if (!e.oneway) addApproach(h, e.a, e.coords.slice(0, h.segmentIndex + 1).reverse()); // and back to its start
+  }
+  if (!out.length) return null;
+
+  return { graph: { ...graph, nodes, edges, adj: [...graph.adj, out] }, sourceId, snapDistance: hits[0].distance };
+}

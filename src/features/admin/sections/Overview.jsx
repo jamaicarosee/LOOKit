@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import CampusMapPreview from '../../dashboard/components/CampusMapPreview';
 import StaffList from '../../staff/components/StaffList';
@@ -6,17 +6,18 @@ import useStaffData from '../../staff/hooks/useStaffData';
 import useUsersData from '../hooks/useUsersData';
 import PanelBoundary from '../components/PanelBoundary';
 import StatusPill from '../components/StatusPill';
+import { MapCanvasSkeleton, StaffListSkeleton, UserRowsSkeleton } from '../components/AdminSkeletons';
 
 const STAFF_PREVIEW_COUNT = 8;
 
 function Panel({ id, title, onView, children }) {
   return (
-    <section aria-labelledby={id} className="min-w-0 rounded-md border border-[#0B1E36] bg-[#F8F9F9]">
+    <section aria-labelledby={id} className="min-w-0 rounded-md border border-[#0B2545] bg-[#F8F9F9]">
       <div className="flex items-center justify-between px-4 pt-4">
-        <h2 id={id} className="text-sm font-black text-[#0B1E36]">
+        <h2 id={id} className="text-sm font-black text-[#0B2545]">
           {title}
         </h2>
-        <button type="button" onClick={onView} className="flex items-center gap-1 text-xs font-bold text-[#0B1E36] hover:underline">
+        <button type="button" onClick={onView} className="flex items-center gap-1 text-xs font-bold text-[#0B2545] hover:underline">
           View
           <ChevronRight className="h-3.5 w-3.5" />
         </button>
@@ -27,6 +28,20 @@ function Panel({ id, title, onView, children }) {
 }
 
 const loadingText = (text) => <p className="text-sm text-slate-500">{text}</p>;
+
+// The mini map keeps a skeleton on top until Mapbox has painted. It lives inside the
+// PanelBoundary, so if the map throws, the error message replaces the skeleton too.
+function MapPanelBody() {
+  const [ready, setReady] = useState(false);
+  const handleReady = useCallback(() => setReady(true), []);
+  return (
+    <>
+      {/* Sized for a small panel, so it uses the phone zoom level */}
+      <CampusMapPreview activeFilter="all" isDesktop={false} onMapReady={handleReady} />
+      <MapCanvasSkeleton visible={!ready} />
+    </>
+  );
+}
 const errorText = (text) => <p className="text-sm text-red-700">{text}</p>;
 
 // Overview tab: three read-only panels (map, directory, users), each with its own
@@ -40,15 +55,14 @@ export default function Overview({ onNavigate }) {
       <Panel id="ov-map" title="Map" onView={() => onNavigate?.('map')}>
         <div className="relative h-72 overflow-hidden rounded-xl border border-slate-200 bg-[#E5EBF5]">
           <PanelBoundary fallback={<p className="p-4 text-sm text-red-700">Could not show the campus map.</p>}>
-            {/* Sized for a small panel, so it uses the phone zoom level */}
-            <CampusMapPreview activeFilter="all" isDesktop={false} />
+            <MapPanelBody />
           </PanelBoundary>
         </div>
       </Panel>
 
       <Panel id="ov-staff" title="Directory" onView={() => onNavigate?.('staff')}>
         <div className="max-h-72 overflow-y-auto">
-          {staffStatus === 'loading' && loadingText('Loading staff…')}
+          {staffStatus === 'loading' && <StaffListSkeleton count={3} />}
           {staffStatus === 'error' && errorText('Could not load staff. Check your connection and permissions.')}
           {staffStatus === 'ready' && (
             <StaffList staff={staff.slice(0, STAFF_PREVIEW_COUNT)} gridClassName="grid grid-cols-1 gap-3" headingClassName="text-xs" />
@@ -58,7 +72,7 @@ export default function Overview({ onNavigate }) {
 
       <Panel id="ov-users" title="Users" onView={() => onNavigate?.('users')}>
         <div className="max-h-72 overflow-y-auto">
-          {usersStatus === 'loading' && loadingText('Loading users…')}
+          {usersStatus === 'loading' && <UserRowsSkeleton count={5} />}
           {usersStatus === 'error' && errorText('Could not load users. Check your connection and permissions.')}
           {usersStatus === 'ready' && users.length === 0 && loadingText('No users found.')}
           {usersStatus === 'ready' && users.length > 0 && (
@@ -66,7 +80,7 @@ export default function Overview({ onNavigate }) {
               {users.map((u) => (
                 <li key={u.id} className={`rounded-xl bg-white px-3 py-2 shadow-sm ${u.is_active ? '' : 'opacity-70'}`}>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="min-w-0 truncate text-sm font-extrabold text-[#0B1E36]">{u.full_name || u.email}</p>
+                    <p className="min-w-0 truncate text-sm font-extrabold text-[#0B2545]">{u.full_name || u.email}</p>
                     <div className="flex shrink-0 gap-1.5">
                       <StatusPill tone="info">{u.role}</StatusPill>
                       <StatusPill tone={u.is_active ? 'success' : 'muted'}>{u.is_active ? 'Active' : 'Inactive'}</StatusPill>

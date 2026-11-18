@@ -10,6 +10,8 @@ import StaffDirectoryDesktop from './StaffDirectoryDesktop';
 import StaffDirectoryMobile from './StaffDirectoryMobile';
 import useStaffLocation from './hooks/useStaffLocation';
 import useStaffData from './hooks/useStaffData';
+import useMinLoading from '../loading/hooks/useMinLoading';
+import { StaffSearchSkeleton, StaffDirectorySkeleton } from '../loading/components/StaffContentSkeleton';
 /**
  * Staff Directory screen (only reachable when logged in; App.jsx checks the login).
  *  - Desktop: full-width list. Clicking a person splits the screen: list on the left, map on the right.
@@ -21,7 +23,9 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
   const [searchQuery, setSearchQuery] = useState('');
   const [selected, setSelected] = useState(null);
   const location = useStaffLocation(selected);
-  const { staff } = useStaffData(); // Supabase, falls back to the built-in list
+  const { staff, status } = useStaffData(); // Supabase, falls back to the built-in list
+  // Skeleton until the staff request finishes (at least 600ms, so it never just flashes by)
+  const loading = useMinLoading(status === 'loading');
 
   const closeSelection = () => setSelected(null);
 
@@ -54,7 +58,11 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
     return (
       <div className="w-screen h-[100dvh] bg-[#F8F9F9] flex flex-col overflow-hidden">
         <DesktopTopNav activeNav="staff" setActiveNav={handleNav} onProfileClick={onProfileClick} />
-        <StaffSearchBar value={searchQuery} onChange={setSearchQuery} isDesktop />
+        {loading ? (
+          <StaffSearchSkeleton isDesktop />
+        ) : (
+          <StaffSearchBar value={searchQuery} onChange={setSearchQuery} isDesktop />
+        )}
 
         <div className="flex flex-1 min-h-0">
           <div
@@ -62,13 +70,17 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
               selected ? 'w-[44%] min-w-[380px] max-w-[640px] shrink-0 border-r border-slate-200' : 'flex-1'
             }`}
           >
-            <StaffDirectoryDesktop
-              staff={staff}
-              searchQuery={searchQuery}
-              onSelectStaff={setSelected}
-              selectedId={selected?.id}
-              split={Boolean(selected)}
-            />
+            {loading ? (
+              <StaffDirectorySkeleton isDesktop />
+            ) : (
+              <StaffDirectoryDesktop
+                staff={staff}
+                searchQuery={searchQuery}
+                onSelectStaff={setSelected}
+                selectedId={selected?.id}
+                split={Boolean(selected)}
+              />
+            )}
           </div>
 
           {selected && <div className="relative flex-1 min-w-0">{mapPanel}</div>}
@@ -90,7 +102,7 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
             aria-label="Back to staff list"
             className="flex items-center gap-3 px-5 pt-1 pb-3 bg-white shrink-0 text-left"
           >
-            <span className="w-10 h-10 rounded-full bg-white border border-gray-200 text-[#0B1E36] flex items-center justify-center shadow-sm">
+            <span className="w-10 h-10 rounded-full bg-white border border-gray-200 text-[#0B2545] flex items-center justify-center shadow-sm">
               <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
             </span>
             <span className="text-lg font-black uppercase tracking-tight text-[#0B2545]">Back</span>
@@ -99,8 +111,17 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
         </>
       ) : (
         <>
-          <StaffSearchBar value={searchQuery} onChange={setSearchQuery} />
-          <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
+          {loading ? (
+            <>
+              <StaffSearchSkeleton />
+              <StaffDirectorySkeleton />
+            </>
+          ) : (
+            <>
+              <StaffSearchBar value={searchQuery} onChange={setSearchQuery} />
+              <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
+            </>
+          )}
         </>
       )}
 

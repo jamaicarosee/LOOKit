@@ -4,6 +4,8 @@ import { useAboutNav } from '../../about/AboutNavContext';
 import { useStaffNav } from '../../staff/StaffNavContext';
 import { useAdminNav } from '../../admin/AdminNavContext';
 import { ADMIN_NAV_ITEM } from '../../admin/adminNavItem';
+import { MobileNavTilesSkeleton } from '../../loading/components/NavSkeletons';
+import useNavLoading from '../../loading/hooks/useNavLoading';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -14,7 +16,8 @@ const NAV_ITEMS = [
 export default function MobileBottomSheet({ activeNav, onSelectNav }) {
   const { openAbout } = useAboutNav();
   const { openStaff } = useStaffNav();
-  const { openAdmin, isAdmin } = useAdminNav();
+  const { openAdmin, isAdmin, authLoading } = useAdminNav();
+  const navLoading = useNavLoading(authLoading);
   const navItems = isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
   return (
     <footer className="bg-white pt-4 pb-5 px-6 flex flex-col items-center justify-between border-t border-gray-100 shrink-0">
@@ -29,6 +32,9 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
       </div>
 
       {/* 3 Bottom Action Pill Buttons */}
+      {navLoading ? (
+        <MobileNavTilesSkeleton />
+      ) : (
       <nav className={`grid ${isAdmin ? 'grid-cols-4 gap-2.5' : 'grid-cols-3 gap-3.5'} w-full max-w-xs`}>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -46,8 +52,8 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
               }}
               className={`flex flex-col items-center justify-center py-3 px-2 rounded-2xl transition-all active:scale-95 shadow-sm ${
                 isActive
-                  ? 'bg-[#E5EEF7] text-[#0B1E36]'
-                  : 'bg-[#0B1E36] text-white hover:bg-[#152B47]'
+                  ? 'bg-[#E5EEF7] text-[#0B2545]'
+                  : 'bg-[#0B2545] text-white hover:bg-[#141070]'
               }`}
             >
               <Icon className="w-5 h-5 mb-1 stroke-[2.2]" />
@@ -58,6 +64,7 @@ export default function MobileBottomSheet({ activeNav, onSelectNav }) {
           );
         })}
       </nav>
+      )}
     </footer>
   );
 }

@@ -1,5 +1,9 @@
 import fs from 'node:fs';
+<<<<<<< HEAD
 import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from '../src/features/navigation/services/graph.js';
+=======
+import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, attachPoint, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from '../src/features/navigation/services/graph.js';
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 import { haversine } from '../src/features/navigation/services/geo.js';
 
 const D = new URL('../public/data/', import.meta.url);
@@ -64,4 +68,22 @@ for (const [t, n] of rooms) {
   if (straight > 30 && len > straight * 3 && flagged++ < 10) console.log(`  detour ${t}: ${Math.round(len)} m vs ${Math.round(straight)} m straight`);
 }
 console.log(`detours flagged: ${flagged}`);
+<<<<<<< HEAD
+=======
+// 5. Live GPS start: a fix 2 m beside a real walkway snaps onto it, reaches every room, and never touches the shared graph
+{
+  const before = [g.nodes.length, g.edges.length];
+  const sample = shortestPath(g, gates, [rooms[0][1]]).steps.flatMap((s) => s.edge.coords);
+  const fix = [sample[Math.floor(sample.length / 2)][0] + 0.00002, sample[Math.floor(sample.length / 2)][1]];
+  const snap = attachPoint(g, fix);
+  if (!snap) fail('GPS fix near a walkway did not snap');
+  else {
+    const cut = rooms.filter(([, n]) => !shortestPath(snap.graph, [snap.sourceId], [n]));
+    console.log(`gps start: snapped ${snap.snapDistance.toFixed(1)} m, ${cut.length} rooms unreachable`);
+    if (cut.length) failed = true;
+  }
+  if (attachPoint(g, [121.2, 14.6])) fail('GPS fix far off campus should not snap');
+  if (g.nodes.length !== before[0] || g.edges.length !== before[1]) fail('attachPoint modified the shared graph');
+}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 process.exit(failed ? 1 : 0);

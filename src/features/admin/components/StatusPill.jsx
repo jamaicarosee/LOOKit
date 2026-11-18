@@ -4,7 +4,7 @@ import React from 'react';
 const TONES = {
   success: 'bg-emerald-50 text-emerald-800',
   error: 'bg-red-50 text-red-800',
-  info: 'bg-[#E5EEF7] text-[#0B1E36]',
+  info: 'bg-[#E5EEF7] text-[#0B2545]',
   muted: 'bg-slate-100 text-slate-500',
 };
 

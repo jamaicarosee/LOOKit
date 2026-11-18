@@ -2,6 +2,8 @@ import React from 'react';
 import { MapPin, Users, Info } from 'lucide-react';
 import { useAdminNav } from '../../admin/AdminNavContext';
 import { ADMIN_NAV_ITEM } from '../../admin/adminNavItem';
+import { MobileNavTilesSkeleton } from '../../loading/components/NavSkeletons';
+import useNavLoading from '../../loading/hooks/useNavLoading';
 
 const NAV_ITEMS = [
   { id: 'map', label: 'Map', icon: MapPin },
@@ -10,10 +12,14 @@ const NAV_ITEMS = [
 ];
 
 export default function AboutBottomNav({ activeNav = 'about', onSelectNav }) {
-  const { openAdmin, isAdmin } = useAdminNav();
+  const { openAdmin, isAdmin, authLoading } = useAdminNav();
+  const navLoading = useNavLoading(authLoading);
   const navItems = isAdmin ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
   return (
     <footer className="bg-white pt-3 pb-5 px-6 flex justify-center border-t border-gray-100 shrink-0">
+      {navLoading ? (
+        <MobileNavTilesSkeleton />
+      ) : (
       <nav className={`grid ${isAdmin ? 'grid-cols-4 gap-2.5' : 'grid-cols-3 gap-3.5'} w-full max-w-xs`}>
         {navItems.map(({ id, label, icon: Icon }) => {
           const isActive = activeNav === id;
@@ -23,8 +29,8 @@ export default function AboutBottomNav({ activeNav = 'about', onSelectNav }) {
               type="button"
               aria-current={isActive ? 'page' : undefined}
               onClick={() => (id === 'admin' ? openAdmin() : onSelectNav(id))}
-              className={`flex flex-col items-center justify-center py-3 px-2 rounded-2xl transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0B1E36] ${
-                isActive ? 'bg-[#E5EEF7] text-[#0B1E36]' : 'bg-[#0B1E36] text-white hover:bg-[#152B47]'
+              className={`flex flex-col items-center justify-center py-3 px-2 rounded-2xl transition-all active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#0B2545] ${
+                isActive ? 'bg-[#E5EEF7] text-[#0B2545]' : 'bg-[#0B2545] text-white hover:bg-[#141070]'
               }`}
             >
               <Icon className="w-5 h-5 mb-1 stroke-[2.2]" />
@@ -33,6 +39,7 @@ export default function AboutBottomNav({ activeNav = 'about', onSelectNav }) {
           );
         })}
       </nav>
+      )}
     </footer>
   );
 }

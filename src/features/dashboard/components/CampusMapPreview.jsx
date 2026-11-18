@@ -72,12 +72,19 @@ export default function CampusMapPreview({
   activeFilter,
   isDesktop = false,
   onZoomStateChange,
+  onMapReady,
 }) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [is3D, setIs3D] = useState(false);
+
+  // Kept in a ref so a new callback identity never re-creates the Mapbox map
+  const onMapReadyRef = useRef(onMapReady);
+  useEffect(() => {
+    onMapReadyRef.current = onMapReady;
+  }, [onMapReady]);
 
   const initialZoom = isDesktop ? DESKTOP_DEFAULT_ZOOM : MOBILE_DEFAULT_ZOOM;
   const initialCenter = isDesktop ? DESKTOP_START_CENTER : RTU_PASIG_CENTER;
@@ -116,6 +123,7 @@ export default function CampusMapPreview({
     });
 
     mapRef.current = map;
+    let disposed = false;
 
     // Keep Mapbox WebGL canvas synced with container resizing
     const resizeObserver = new ResizeObserver(() => {
@@ -354,12 +362,26 @@ export default function CampusMapPreview({
         }
 
         setMapLoaded(true);
+
+        // Tell the launch sequence the map is ready once its layers have actually been painted
+        const signalReady = () => {
+          if (!disposed) onMapReadyRef.current?.();
+        };
+        if (campusData || siteData) {
+          map.once('idle', signalReady);
+          map.triggerRepaint();
+        } else {
+          signalReady();
+        }
       } catch (err) {
         console.error('Campus macro vector rendering error:', err);
+        // Never leave the user stuck behind the skeleton if the map data fails
+        if (!disposed) onMapReadyRef.current?.();
       }
     });
 
     return () => {
+      disposed = true;
       map.off('zoom', handleZoomCheck);
       resizeObserver.disconnect();
       markersRef.current.forEach((marker) => marker.remove());
@@ -434,7 +456,7 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleZoomIn}
           aria-label="Zoom In"
-          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
         </button>
@@ -442,7 +464,7 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleZoomOut}
           aria-label="Zoom Out"
-          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
         >
           <Minus className="w-4 h-4 stroke-[2.5]" />
         </button>
@@ -450,7 +472,7 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleReset}
           aria-label="Center Map"
-          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
         >
           <Compass className="w-4 h-4 stroke-[2.2]" />
         </button>
@@ -461,8 +483,8 @@ export default function CampusMapPreview({
           title={is3D ? 'Switch to 2D Top-Down' : 'Switch to 3D Isometric'}
           className={`${btnSizeClass} rounded-md flex items-center justify-center shadow-sm active:scale-95 transition font-black text-xs ${
             is3D
-              ? 'bg-[#0B1E36] text-white shadow-md'
-              : 'bg-[#E5EEF7] text-[#0B1E36] hover:bg-[#D5E2EE]'
+              ? 'bg-[#0B2545] text-white shadow-md'
+              : 'bg-[#E5EEF7] text-[#0B2545] hover:bg-[#D5E2EE]'
           }`}
         >
           <Box className="w-4 h-4 stroke-[2.2]" />

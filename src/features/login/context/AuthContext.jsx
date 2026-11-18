@@ -1,12 +1,12 @@
-import React, {createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import {
-    supabase,
+  supabase,
   signInUser,
   signUpUser,
   signOutUser,
   initializeAuthSession,
   verifyAndFetchProfile,
-} from '../services/authService'
+} from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -56,8 +56,6 @@ export function AuthProvider({ children }) {
           );
 
           if (isMounted) {
-            // A failed refetch must not wipe the known profile of the same user: SIGNED_IN also
-            // fires when the tab regains focus, and losing the profile would drop the admin role
             setProfile((prev) =>
               backendProfile ||
               (prev?.id === currentSession.user.id && prev) || {
@@ -102,15 +100,20 @@ export function AuthProvider({ children }) {
     setProfile(null);
   }, []);
 
+  // Updates the profile flag in local state once the password is changed
+  const completePasswordChange = useCallback(() => {
+    setProfile((prev) => (prev ? { ...prev, must_change_password: false } : prev));
+  }, []);
+
   const value = {
     user,
     profile,
     session,
     authLoading,
     isAuthenticated: Boolean(user && session),
-    // Role comes from the backend profile (public.users.role), never from the email.
-    // False while auth is loading or the profile has not arrived, so the button never flashes.
     isAdmin: !authLoading && Boolean(user && session) && profile?.role === 'admin',
+    mustChangePassword: Boolean(profile?.must_change_password),
+    completePasswordChange,
     login,
     register,
     logout,
@@ -120,9 +123,9 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvide');
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

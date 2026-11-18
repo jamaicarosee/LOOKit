@@ -2,8 +2,8 @@
 
 // --- Colors (match the dashboard tokens) ---
 export const COLORS = {
-  navy: '#0B1E36',
-  navyHover: '#152B47',
+  navy: '#0B2545',
+  navyHover: '#141070',
   lightBlue: '#E5EEF7',
   panel: '#E5EBF5',
   gold: '#C9A227',
@@ -32,3 +32,12 @@ export const MAPBOX_TOKEN =
 export const GUIDE_METERS_PER_SECOND = 7; // animation speed along a step (1x)
 export const GUIDE_MIN_STEP_MS = 1600;
 export const GUIDE_MAX_STEP_MS = 6000;
+
+// --- Current Location (GPS) ---
+export const CURRENT_LOCATION_ID = 'current-location';
+export const CURRENT_LOCATION_LABEL = 'Current Location (GPS)';
+export const GPS_MIN_MOVE_M = 3; // ignore fixes closer than this to the last one (jitter while standing still)
+export const GPS_MIN_INTERVAL_MS = 1500; // and fixes arriving faster than this
+export const GPS_MAX_ACCURACY_M = 100; // after the first fix, fixes less accurate than this are ignored
+export const GPS_SNAP_MAX_M = 150; // further than this from any walkway = not on campus, no route
+export const GPS_OFF_PATH_WARN_M = 25; // further than this from a walkway: route starts at the nearest one, with a warning

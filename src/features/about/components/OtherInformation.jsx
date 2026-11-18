@@ -21,7 +21,7 @@ export default function OtherInformation() {
 
   return (
     <section>
-      <h3 className="text-sm lg:text-xl font-semibold text-[#0B1E36] mb-2 lg:mb-4">
+      <h3 className="text-sm lg:text-xl font-semibold text-[#0B2545] mb-2 lg:mb-4">
         Other Information
       </h3>
 
@@ -38,7 +38,7 @@ export default function OtherInformation() {
           <ol className="space-y-2.5">
             {HOW_TO_USE.map((s, i) => (
               <li key={s.title}>
-                <p className="font-bold text-[#0B1E36]">
+                <p className="font-bold text-[#0B2545]">
                   {i + 1}. {s.title}
                 </p>
                 <p>{s.body}</p>
@@ -59,11 +59,11 @@ export default function OtherInformation() {
             {DEVELOPERS_TEXT}
           </p>
 
-          <p className="text-center font-bold text-[#0B1E36] mt-3">
+          <p className="text-center font-bold text-[#0B2545] mt-3">
             The LOOKit Team
           </p>
 
-          <ul className="mt-1 text-center font-medium text-[#0B1E36] space-y-0.5">
+          <ul className="mt-1 text-center font-medium text-[#0B2545] space-y-0.5">
             {TEAM.map((n) => (
               <li key={n}>{n}</li>
             ))}

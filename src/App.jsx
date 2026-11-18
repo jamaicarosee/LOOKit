@@ -13,6 +13,9 @@ import { StaffNavProvider } from './features/staff/StaffNavContext';
 import { AdminNavProvider } from './features/admin/AdminNavContext';
 import { supabase } from './services/supabaseClient'; 
 import ResetPassword from './features/login/components/ResetPassword'; 
+import LaunchOverlay from './features/loading/LaunchOverlay';
+import AdminScreenSkeleton from './features/admin/components/AdminScreenSkeleton';
+import { useLaunchSequence } from './features/loading/hooks/useLaunchSequence';
 
 // Loaded on demand so normal users never download the admin dashboard
 const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
@@ -22,6 +25,7 @@ const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
 function AppContent() {
   const { isDesktop } = useViewport(1024);
   const { user, profile, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
+  const { phase: launchPhase, markMapLoaded } = useLaunchSequence();
 
   const [screen, setScreen] = useState('dashboard');
   const [previousScreen, setPreviousScreen] = useState('dashboard');
@@ -158,7 +162,7 @@ function AppContent() {
   return (
     <AboutNavProvider onOpenAbout={openAbout}>
     <StaffNavProvider onOpenStaff={openStaff}>
-    <AdminNavProvider onOpenAdmin={openAdmin} isAdmin={isAdmin}>
+    <AdminNavProvider onOpenAdmin={openAdmin} isAdmin={isAdmin} authLoading={authLoading}>
 
       {screen === 'about' && (
         <main className={mainClass}>
@@ -194,13 +198,7 @@ function AppContent() {
 
       {screen === 'admin' && isAdmin && (
         <main className={mainClass}>
-          <Suspense
-            fallback={
-              <div className="w-full h-full flex items-center justify-center text-sm font-semibold text-slate-500">
-                Loading admin dashboard…
-              </div>
-            }
-          >
+          <Suspense fallback={<AdminScreenSkeleton isDesktop={isDesktop} onProfileClick={openLogin} />}>
             <AdminScreen onBackToMap={closeSearch} onProfileClick={openLogin} />
           </Suspense>
         </main>
@@ -221,11 +219,11 @@ function AppContent() {
         <>
           {isDesktop ? (
             <main className="w-screen h-[100dvh] bg-[#F8F9F9] overflow-hidden">
-              <DashboardDesktopView onOpenSearch={openSearch} onLoginClick={openLogin} />
+              <DashboardDesktopView onOpenSearch={openSearch} onLoginClick={openLogin} onMapReady={markMapLoaded} />
             </main>
           ) : (
             <main className="w-screen h-[100dvh] bg-slate-900 flex items-center justify-center overflow-hidden">
-              <DashboardMobileView onOpenSearch={openSearch} onLoginClick={openLogin} />
+              <DashboardMobileView onOpenSearch={openSearch} onLoginClick={openLogin} onMapReady={markMapLoaded} />
             </main>
           )}
         </>
@@ -269,6 +267,9 @@ function AppContent() {
           </div>
         </div>
       )}
+
+      {/* Launch splash -> skeleton -> map reveal */}
+      <LaunchOverlay phase={launchPhase} isDesktop={isDesktop} isAdmin={isAdmin} />
 
     </AdminNavProvider>
     </StaffNavProvider>

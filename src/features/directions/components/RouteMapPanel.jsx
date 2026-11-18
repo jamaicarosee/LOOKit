@@ -58,7 +58,7 @@ function floorFeatures(data, floor) {
 }
 
 // "Route" panel: floor-only Mapbox map (floors 1-6, no campus overview layer) with the route, stairs markers and the play-guide dot
-export default function RouteMapPanel({ route, status, activeFloor, onFloorChange, guide, focus, hasRequest, mapClassName = 'h-[32dvh] min-h-[180px]' }) {
+export default function RouteMapPanel({ route, status, activeFloor, onFloorChange, guide, focus, hasRequest, emptyMessage, mapClassName = 'h-[32dvh] min-h-[180px]' }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const dataRef = useRef(null);
@@ -192,7 +192,9 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
     });
     if (!route) return;
 
-    if (route.start.floor === activeFloor) m.start = new mapboxgl.Marker({ element: dot(COLORS.gold), anchor: 'center' }).setLngLat(route.start.coordinate).addTo(map);
+    // A live GPS start is drawn as the pulsing blue "you are here" dot instead of the gold start dot
+    const startEl = route.from?.isCurrentLocation ? guideDot() : dot(COLORS.gold);
+    if (route.start.floor === activeFloor) m.start = new mapboxgl.Marker({ element: startEl, anchor: 'center' }).setLngLat(route.start.coordinate).addTo(map);
     if (route.end.floor === activeFloor) m.end = new mapboxgl.Marker({ element: pin(), anchor: 'bottom' }).setLngLat(route.end.coordinate).addTo(map);
     const stairs = route.stairMarkers.filter((s) => s.floor === activeFloor);
     stairs.forEach((s) => {
@@ -201,7 +203,10 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
     });
 
     // Fit once per route + floor
-    const key = `${route.distanceMeters}-${route.steps.length}-${activeFloor}-${route.start.coordinate.join()}`;
+    // (a live GPS route keeps one key so the camera doesn't jump on every fix)
+    const key = route.from?.isCurrentLocation
+      ? `live-${route.to?.name}-${activeFloor}`
+      : `${route.distanceMeters}-${route.steps.length}-${activeFloor}-${route.start.coordinate.join()}`;
     if (lastFitRef.current !== key) {
       lastFitRef.current = key;
       const pts = legs.flatMap((l) => l.coords).concat(stairs.map((s) => s.coordinate));
@@ -242,7 +247,7 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
   }, [focus, mapLoaded]);
 
   const zoom = (dir) => () => (dir > 0 ? mapRef.current?.zoomIn({ duration: 250 }) : mapRef.current?.zoomOut({ duration: 250 }));
-  const btn = 'w-8 h-8 rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36]';
+  const btn = 'w-8 h-8 rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]';
 
   return (
     <section aria-label="Route" className="rounded-xl bg-[#E5EBF5] p-2 pt-2.5">
@@ -273,13 +278,13 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
 
         {status === 'loading' && (
           <div className="absolute inset-0 z-30 bg-white/70 flex flex-col items-center justify-center gap-2" role="status">
-            <span className="w-7 h-7 rounded-full border-[3px] border-[#0B1E36] border-t-transparent animate-spin" />
-            <span className="text-xs font-bold text-[#0B1E36]">Finding route…</span>
+            <span className="w-7 h-7 rounded-full border-[3px] border-[#0B2545] border-t-transparent animate-spin" />
+            <span className="text-xs font-bold text-[#0B2545]">Finding route…</span>
           </div>
         )}
         {status === 'empty' && (
           <div className="absolute inset-0 z-30 bg-white/85 flex items-center justify-center p-4 text-center text-xs font-semibold text-[#0B2545]">
-            No walkable route found between these locations.
+            {emptyMessage || 'No walkable route found between these locations.'}
           </div>
         )}
         {status === 'error' && (

@@ -40,11 +40,13 @@ export default function DirectionsMobileView({
     return true;
   };
 
+  // Live GPS refreshes must not yank the floor tab back while the user is looking at another floor
+  const isLiveRefresh = !!request?.live;
   useEffect(() => {
-    if (route) {
+    if (route && !isLiveRefresh) {
       setActiveFloor(route.start.floor);
     }
-  }, [route]);
+  }, [route, isLiveRefresh]);
 
   const guideFloor = playback.position?.floor;
 
@@ -112,6 +114,11 @@ export default function DirectionsMobileView({
       guide={isAuthenticated ? playback : null}
       focus={focus}
       hasRequest={!!request}
+      emptyMessage={
+        request?.from?.isCurrentLocation
+          ? 'Your GPS position is too far from the campus paths to start a route. Walk onto campus or choose a starting point.'
+          : undefined
+      }
       mapClassName={mapClassName}
     />
   );

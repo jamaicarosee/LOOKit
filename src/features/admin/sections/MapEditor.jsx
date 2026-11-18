@@ -120,7 +120,7 @@ export default function MapEditor() {
     <>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:gap-10">
         <section aria-labelledby="map-edit-title" className="space-y-4">
-          <h2 id="map-edit-title" className="text-sm font-black text-[#0B1E36]">Map</h2>
+          <h2 id="map-edit-title" className="text-sm font-black text-[#0B2545]">Map</h2>
           <Field label="From">
             <div className="relative">
               <TextInput
@@ -134,7 +134,7 @@ export default function MapEditor() {
                   {suggestions.map((l) => (
                     <li key={l.id} role="option" aria-selected={String(l.id) === fromId}>
                       <button type="button" onMouseDown={(e) => { e.preventDefault(); pick(l); }} className="w-full px-3 py-2 text-left text-sm hover:bg-[#E5EEF7]">
-                        <span className="font-semibold text-[#0B1E36]">{l.name}</span>
+                        <span className="font-semibold text-[#0B2545]">{l.name}</span>
                       </button>
                     </li>
                   ))}
@@ -159,7 +159,7 @@ export default function MapEditor() {
           <div className="relative h-[55vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-[#E5EBF5] lg:h-[60vh]">
             <FloorPlanMap target={onMap} activeFloor={activeFloor} />
           </div>
-          <p role="status" className="mt-3 flex items-start gap-2 rounded-lg bg-[#E5EEF7] px-3 py-2.5 text-xs font-semibold text-[#0B1E36]">
+          <p role="status" className="mt-3 flex items-start gap-2 rounded-lg bg-[#E5EEF7] px-3 py-2.5 text-xs font-semibold text-[#0B2545]">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#D4A017]" />
             <span className="min-w-0">{status}</span>
           </p>

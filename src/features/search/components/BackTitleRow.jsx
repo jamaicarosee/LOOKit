@@ -8,7 +8,7 @@ export default function BackTitleRow({ onBack }) {
         type="button"
         onClick={onBack}
         aria-label="Back"
-        className="w-10 h-10 rounded-full bg-white border border-gray-200 text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36]"
+        className="w-10 h-10 rounded-full bg-white border border-gray-200 text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]"
       >
         <ArrowLeft className="w-5 h-5 stroke-[2.2]" />
       </button>

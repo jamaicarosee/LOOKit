@@ -40,11 +40,11 @@ export default function StaffMapPanel({ staff, location, isDesktop, onClose, onS
         }`}
       >
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 shrink-0 rounded-xl bg-[#0B1E36] text-white flex items-center justify-center text-base font-extrabold">
+          <div className="w-12 h-12 shrink-0 rounded-xl bg-[#0B2545] text-white flex items-center justify-center text-base font-extrabold">
             {getInitials(staff.name)}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-extrabold text-[#0B1E36] leading-snug">{staff.name}</p>
+            <p className="text-sm font-extrabold text-[#0B2545] leading-snug">{staff.name}</p>
             {staff.position && <p className="text-xs text-slate-500">{staff.position}</p>}
             <p className="text-[11px] text-slate-400">{staff.office}</p>
           </div>
@@ -52,7 +52,7 @@ export default function StaffMapPanel({ staff, location, isDesktop, onClose, onS
             type="button"
             aria-label="Close map"
             onClick={onClose}
-            className="p-1 -mr-1 -mt-1 text-slate-400 hover:text-[#0B1E36] transition"
+            className="p-1 -mr-1 -mt-1 text-slate-400 hover:text-[#0B2545] transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -60,7 +60,7 @@ export default function StaffMapPanel({ staff, location, isDesktop, onClose, onS
 
         <div className="mt-3 flex items-start gap-2 rounded-xl bg-[#E5EEF7] px-3 py-2.5">
           <MapPin className="w-4 h-4 mt-0.5 text-[#D4A017] shrink-0" />
-          <div className="min-w-0 text-xs text-[#0B1E36]">
+          <div className="min-w-0 text-xs text-[#0B2545]">
             {location.status === 'loading' && <p className="font-semibold">Finding location…</p>}
             {location.status === 'error' && (
               <p className="font-semibold">Couldn't load the campus map data. Try again.</p>
@@ -85,7 +85,7 @@ export default function StaffMapPanel({ staff, location, isDesktop, onClose, onS
           type="button"
           disabled={!isReady}
           onClick={() => onShowPath(result.loc)}
-          className="mt-3 w-full flex items-center justify-center rounded-xl bg-[#0B1E36] py-3 text-sm font-bold text-white transition hover:bg-[#152B47] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          className="mt-3 w-full flex items-center justify-center rounded-xl bg-[#0B2545] py-3 text-sm font-bold text-white transition hover:bg-[#141070] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Show path
         </button>
