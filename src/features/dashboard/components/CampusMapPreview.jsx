@@ -72,6 +72,10 @@ export default function CampusMapPreview({
   activeFilter,
   isDesktop = false,
   onZoomStateChange,
+<<<<<<< HEAD
+=======
+  onMapReady,
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 }) {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -79,6 +83,15 @@ export default function CampusMapPreview({
   const [mapLoaded, setMapLoaded] = useState(false);
   const [is3D, setIs3D] = useState(false);
 
+<<<<<<< HEAD
+=======
+  // Kept in a ref so a new callback identity never re-creates the Mapbox map
+  const onMapReadyRef = useRef(onMapReady);
+  useEffect(() => {
+    onMapReadyRef.current = onMapReady;
+  }, [onMapReady]);
+
+>>>>>>> 73e09d3 (added skeletal loading and current location)
   const initialZoom = isDesktop ? DESKTOP_DEFAULT_ZOOM : MOBILE_DEFAULT_ZOOM;
   const initialCenter = isDesktop ? DESKTOP_START_CENTER : RTU_PASIG_CENTER;
 
@@ -116,6 +129,10 @@ export default function CampusMapPreview({
     });
 
     mapRef.current = map;
+<<<<<<< HEAD
+=======
+    let disposed = false;
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 
     // Keep Mapbox WebGL canvas synced with container resizing
     const resizeObserver = new ResizeObserver(() => {
@@ -354,12 +371,34 @@ export default function CampusMapPreview({
         }
 
         setMapLoaded(true);
+<<<<<<< HEAD
       } catch (err) {
         console.error('Campus macro vector rendering error:', err);
+=======
+
+        // Tell the launch sequence the map is ready once its layers have actually been painted
+        const signalReady = () => {
+          if (!disposed) onMapReadyRef.current?.();
+        };
+        if (campusData || siteData) {
+          map.once('idle', signalReady);
+          map.triggerRepaint();
+        } else {
+          signalReady();
+        }
+      } catch (err) {
+        console.error('Campus macro vector rendering error:', err);
+        // Never leave the user stuck behind the skeleton if the map data fails
+        if (!disposed) onMapReadyRef.current?.();
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       }
     });
 
     return () => {
+<<<<<<< HEAD
+=======
+      disposed = true;
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       map.off('zoom', handleZoomCheck);
       resizeObserver.disconnect();
       markersRef.current.forEach((marker) => marker.remove());
@@ -434,7 +473,11 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleZoomIn}
           aria-label="Zoom In"
+<<<<<<< HEAD
           className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+=======
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
         </button>
@@ -442,7 +485,11 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleZoomOut}
           aria-label="Zoom Out"
+<<<<<<< HEAD
           className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+=======
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
         >
           <Minus className="w-4 h-4 stroke-[2.5]" />
         </button>
@@ -450,7 +497,11 @@ export default function CampusMapPreview({
           type="button"
           onClick={handleReset}
           aria-label="Center Map"
+<<<<<<< HEAD
           className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+=======
+          className={`${btnSizeClass} rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE]`}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
         >
           <Compass className="w-4 h-4 stroke-[2.2]" />
         </button>
@@ -461,8 +512,13 @@ export default function CampusMapPreview({
           title={is3D ? 'Switch to 2D Top-Down' : 'Switch to 3D Isometric'}
           className={`${btnSizeClass} rounded-md flex items-center justify-center shadow-sm active:scale-95 transition font-black text-xs ${
             is3D
+<<<<<<< HEAD
               ? 'bg-[#0B1E36] text-white shadow-md'
               : 'bg-[#E5EEF7] text-[#0B1E36] hover:bg-[#D5E2EE]'
+=======
+              ? 'bg-[#0B2545] text-white shadow-md'
+              : 'bg-[#E5EEF7] text-[#0B2545] hover:bg-[#D5E2EE]'
+>>>>>>> 73e09d3 (added skeletal loading and current location)
           }`}
         >
           <Box className="w-4 h-4 stroke-[2.2]" />

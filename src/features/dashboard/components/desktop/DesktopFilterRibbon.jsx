@@ -3,7 +3,11 @@ import { BUILDING_FILTERS } from '../../hooks/useDashboardState';
 
 export default function DesktopFilterRibbon({ activeFilter, setActiveFilter }) {
   return (
+<<<<<<< HEAD
     <section className="w-full bg-[#0B1E36] py-3.5 px-8 shrink-0 select-none z-20">
+=======
+    <section className="w-full bg-[#0B2545] py-3.5 px-8 shrink-0 select-none z-20">
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         {BUILDING_FILTERS.map((filter) => {
           const isActive = activeFilter === filter.id;
@@ -17,7 +21,11 @@ export default function DesktopFilterRibbon({ activeFilter, setActiveFilter }) {
               onClick={() => setActiveFilter(filter.id)}
               className={`flex-1 py-2 px-4 rounded-xl text-sm font-extrabold tracking-wider transition-all duration-200 active:scale-95 ${
                 isActive
+<<<<<<< HEAD
                   ? 'bg-[#E5EEF7] text-[#0B1E36] shadow-sm'
+=======
+                  ? 'bg-[#E5EEF7] text-[#0B2545] shadow-sm'
+>>>>>>> 73e09d3 (added skeletal loading and current location)
                   : 'bg-[#3B4C63] text-white hover:bg-[#4A5E78]'
               }`}
             >

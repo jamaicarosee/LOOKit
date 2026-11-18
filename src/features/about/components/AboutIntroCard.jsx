@@ -4,7 +4,11 @@ import { ABOUT_TEXT } from '../aboutContent';
 
 export default function AboutIntroCard() {
   return (
+<<<<<<< HEAD
     <section className="rounded-2xl bg-[#E5EEF7] px-4 py-4 lg:px-8 lg:py-7 text-[#0B1E36]">
+=======
+    <section className="rounded-2xl bg-[#E5EEF7] px-4 py-4 lg:px-8 lg:py-7 text-[#0B2545]">
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       <h2 className="flex items-center gap-2 lg:gap-3 text-base lg:text-2xl font-semibold">
         <Info className="w-4 h-4 lg:w-6 lg:h-6 stroke-[2]" />
         About <span className="font-black">LOOKit</span>

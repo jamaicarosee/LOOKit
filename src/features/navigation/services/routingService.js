@@ -2,9 +2,15 @@
 // getRoute() is the only entry point the UI uses, so a FastAPI backend can replace it later.
 
 import { apiClient } from '../../../services/apiClient';
+<<<<<<< HEAD
 import { USE_REMOTE_ROUTING, API_BASE_URL } from '../constants';
 import { fetchCampusData } from './dataService';
 import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
+=======
+import { USE_REMOTE_ROUTING, API_BASE_URL, GPS_SNAP_MAX_M, GPS_OFF_PATH_WARN_M } from '../constants';
+import { fetchCampusData } from './dataService';
+import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, attachPoint, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 import { buildRouteResult } from './stepBuilder';
 import { buildingAtFactory } from './locationService';
 import { haversine, pointInPolygon } from './geo';
@@ -30,6 +36,14 @@ function getGraph() {
   return graphPromise;
 }
 
+<<<<<<< HEAD
+=======
+// Warms the campus GeoJSON cache and builds the routing graph at launch (see useLaunchSequence)
+export function preloadRoutingGraph() {
+  return getGraph().then(() => true);
+}
+
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 // --- Location -> graph nodes (several nodes per gate / building so one-way dead ends never trap a route) ---
 
 function resolveNodes(graph, loc) {
@@ -66,12 +80,36 @@ function findPath(graph, from, to, emergency, sources, targets, mode) {
 // --- Local routing ---
 
 async function getLocalRoute(from, to, options) {
+<<<<<<< HEAD
   const { graph, buildingAt, raw } = await getGraph();
   const { emergency = false, pwd = false } = options;
 
   const src = resolveNodes(graph, from);
   if (!src.ids.length) return null;
   const warnings = [];
+=======
+  const base = await getGraph();
+  const { buildingAt, raw } = base;
+  let { graph } = base;
+  const { emergency = false, pwd = false } = options;
+  const warnings = [];
+
+  // Live GPS start: snap the position onto the nearest walkway (virtual start node on a copy of the graph)
+  let src;
+  if (from.isCurrentLocation) {
+    const snap = from.coordinate ? attachPoint(graph, from.coordinate, { maxSnapM: GPS_SNAP_MAX_M }) : null;
+    if (!snap) return null;
+    graph = snap.graph;
+    src = { ids: [snap.sourceId], exact: true };
+    if (snap.snapDistance > GPS_OFF_PATH_WARN_M) warnings.push(`You are about ${Math.round(snap.snapDistance)} m from the nearest campus path; the route starts from that path.`);
+    // The Javier lobby rule needs to know whether the user is standing inside the Javier area
+    const inside = (raw.campus?.features || []).find((f) => f.properties.category !== 'outdoor_structure' && pointInPolygon(from.coordinate, f.geometry));
+    from = { ...from, building: inside?.properties?.name || null };
+  } else {
+    src = resolveNodes(graph, from);
+  }
+  if (!src.ids.length) return null;
+>>>>>>> 73e09d3 (added skeletal loading and current location)
   if (!src.exact) warnings.push(`Indoor path to ${from.name} is not mapped; the route starts at the ${from.building || 'building'} entrance.`);
 
   let targets;
@@ -166,7 +204,12 @@ async function getRemoteRoute(from, to, options) {
 
 // Returns a RouteResult, or null when no walkable path exists.
 export async function getRoute(fromLocation, toLocation, options = {}) {
+<<<<<<< HEAD
   if (!USE_REMOTE_ROUTING) {
+=======
+  // A live GPS start is always solved locally: the position is snapped onto the walkway graph here
+  if (fromLocation?.isCurrentLocation || !USE_REMOTE_ROUTING) {
+>>>>>>> 73e09d3 (added skeletal loading and current location)
     return getLocalRoute(fromLocation, toLocation, options);
   }
   try {

@@ -14,11 +14,19 @@ export default function UserCard({ user, onSelect, selected = false }) {
         selected ? 'ring-2 ring-[#D4A017]' : ''
       } ${user.is_active ? '' : 'opacity-70'}`}
     >
+<<<<<<< HEAD
       <div className="w-12 h-12 shrink-0 rounded-xl bg-[#0B1E36] text-white flex items-center justify-center text-lg font-extrabold tracking-wide">
         {getInitials(name)}
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-extrabold text-[#0B1E36] truncate">{name}</p>
+=======
+      <div className="w-12 h-12 shrink-0 rounded-xl bg-[#0B2545] text-white flex items-center justify-center text-lg font-extrabold tracking-wide">
+        {getInitials(name)}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-extrabold text-[#0B2545] truncate">{name}</p>
+>>>>>>> 73e09d3 (added skeletal loading and current location)
         <p className="text-xs text-slate-400 truncate">{user.email}</p>
         <div className="mt-1 flex flex-wrap gap-1.5">
           <StatusPill tone="info">{user.role}</StatusPill>

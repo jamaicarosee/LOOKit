@@ -3,6 +3,10 @@ import mapboxgl from 'mapbox-gl';
 import { Plus, Minus } from 'lucide-react';
 import { fetchCampusData } from '../../navigation/services/dataService';
 import { MAPBOX_TOKEN, RTU_PASIG_CENTER, COLORS } from '../../navigation/constants';
+<<<<<<< HEAD
+=======
+import { MapCanvasSkeleton } from './AdminSkeletons';
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 
 // Floor-plan view (same look as the Directions route map): rooms, stairs/structures and
 // paths of one floor, with the chosen location highlighted and marked by a pin. No route.
@@ -160,11 +164,19 @@ export default function FloorPlanMap({ target, activeFloor }) {
   }, [targetId, mapLoaded]);
 
   const zoom = (dir) => () => (dir > 0 ? mapRef.current?.zoomIn({ duration: 250 }) : mapRef.current?.zoomOut({ duration: 250 }));
+<<<<<<< HEAD
   const btn = 'w-8 h-8 rounded-md bg-[#E5EEF7] text-[#0B1E36] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36]';
+=======
+  const btn = 'w-8 h-8 rounded-md bg-[#E5EEF7] text-[#0B2545] flex items-center justify-center shadow-sm active:scale-95 transition hover:bg-[#D5E2EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]';
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 
   return (
     <div className="absolute inset-0 bg-[#F8F9F9]">
       {!mapError && <div ref={containerRef} className="absolute inset-0" />}
+<<<<<<< HEAD
+=======
+      {!mapError && <MapCanvasSkeleton visible={!mapLoaded} />}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       {mapError && (
         <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-xs font-medium text-[#607289]">
           The map is unavailable (missing Mapbox token or WebGL).

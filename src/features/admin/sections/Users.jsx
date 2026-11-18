@@ -6,6 +6,10 @@ import useDebouncedValue from '../hooks/useDebouncedValue';
 import { addUser, updateUser, deactivateUser, reactivateUser, errorMessage } from '../data/usersService';
 import { Field, TextInput, SelectInput, PrimaryButton, Notice } from '../components/AdminControls';
 import ConfirmModal from '../components/ConfirmModal';
+<<<<<<< HEAD
+=======
+import { UserListSkeleton } from '../components/AdminSkeletons';
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 
 const ACTIONS = [
   { id: 'update', label: 'Update user' },
@@ -202,14 +206,22 @@ export default function Users() {
     <>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:gap-10">
         <section aria-labelledby="users-title" className="space-y-4">
+<<<<<<< HEAD
           <h2 id="users-title" className="text-sm font-black text-[#0B1E36]">Users</h2>
+=======
+          <h2 id="users-title" className="text-sm font-black text-[#0B2545]">Users</h2>
+>>>>>>> 73e09d3 (added skeletal loading and current location)
 
           <div>
             <button
               type="button"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((o) => !o)}
+<<<<<<< HEAD
               className="flex w-full items-center justify-between rounded-lg bg-[#0B1E36] px-3 py-2.5 text-left text-sm font-bold text-white"
+=======
+              className="flex w-full items-center justify-between rounded-lg bg-[#0B2545] px-3 py-2.5 text-left text-sm font-bold text-white"
+>>>>>>> 73e09d3 (added skeletal loading and current location)
             >
               {actionLabel || 'What to do?'}
               <ChevronRight className={`h-4 w-4 transition-transform ${menuOpen ? 'rotate-90' : ''}`} />
@@ -218,7 +230,11 @@ export default function Users() {
               <ul className="rounded-b-lg bg-[#E5EEF7]">
                 {ACTIONS.map((a) => (
                   <li key={a.id}>
+<<<<<<< HEAD
                     <button type="button" onClick={() => chooseAction(a.id)} className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0B1E36]/70 hover:text-[#0B1E36] hover:bg-[#D5E2EE]">
+=======
+                    <button type="button" onClick={() => chooseAction(a.id)} className="w-full px-3 py-2 text-left text-xs font-semibold text-[#0B2545]/70 hover:text-[#0B2545] hover:bg-[#D5E2EE]">
+>>>>>>> 73e09d3 (added skeletal loading and current location)
                       {a.label}
                     </button>
                   </li>
@@ -232,7 +248,11 @@ export default function Users() {
               {userPicker('Who will be updated?')}
               {target && (
                 <>
+<<<<<<< HEAD
                   <p className="text-xs font-bold text-[#0B1E36]">What it will be changed into?</p>
+=======
+                  <p className="text-xs font-bold text-[#0B2545]">What it will be changed into?</p>
+>>>>>>> 73e09d3 (added skeletal loading and current location)
                   {detailFields}
                 </>
               )}
@@ -254,6 +274,7 @@ export default function Users() {
           <Notice notice={notice} />
         </section>
 
+<<<<<<< HEAD
         <section aria-labelledby="users-preview" className="min-w-0 rounded-md border border-[#0B1E36] bg-[#F8F9F9]">
           <div className="max-h-[70vh] overflow-y-auto px-5 py-5 lg:px-8">
             <h2 id="users-preview" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">Accounts</h2>
@@ -265,6 +286,19 @@ export default function Users() {
               </label>
             </div>
             {status === 'loading' && <p className="text-sm text-slate-500">Loading users…</p>}
+=======
+        <section aria-labelledby="users-preview" className="min-w-0 rounded-md border border-[#0B2545] bg-[#F8F9F9]">
+          <div className="max-h-[70vh] overflow-y-auto px-5 py-5 lg:px-8">
+            <h2 id="users-preview" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B2545] lg:text-2xl">Accounts</h2>
+            <div className="mb-5 space-y-3">
+              <TextInput type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name or email" />
+              <label className="flex w-fit items-center gap-2 text-xs font-semibold text-[#0B2545]">
+                <input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} className="h-4 w-4 accent-[#0B2545]" />
+                Show inactive
+              </label>
+            </div>
+            {status === 'loading' && users.length === 0 && <UserListSkeleton count={6} />}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
             {status === 'error' && <p className="text-sm text-red-700">Could not load users. Check your connection and permissions.</p>}
             {status === 'ready' && users.length === 0 && <p className="text-sm text-slate-500">No users found.</p>}
             {status !== 'loading' && users.length > 0 && (

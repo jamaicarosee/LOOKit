@@ -19,11 +19,19 @@ export default function StepItem({ step, index, active, onSelect, itemRef }) {
         type="button"
         onClick={() => onSelect(index)}
         aria-current={active ? 'step' : undefined}
+<<<<<<< HEAD
         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36] ${
           active ? 'bg-white ring-2 ring-[#0B1E36] shadow-sm' : 'hover:bg-white/60'
         }`}
       >
         <span className="w-6 h-6 rounded-full bg-[#0B1E36] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+=======
+        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-left transition active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545] ${
+          active ? 'bg-white ring-2 ring-[#0B2545] shadow-sm' : 'hover:bg-white/60'
+        }`}
+      >
+        <span className="w-6 h-6 rounded-full bg-[#0B2545] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+>>>>>>> 73e09d3 (added skeletal loading and current location)
           {index + 1}
         </span>
         <Icon className="w-4 h-4 text-[#4A5568] stroke-[2.2] shrink-0" aria-hidden="true" />
@@ -31,7 +39,11 @@ export default function StepItem({ step, index, active, onSelect, itemRef }) {
           <span className="block text-xs font-semibold text-[#0B2545] leading-snug">{step.instruction}</span>
           <span className="block text-[10px] font-medium text-[#607289]">{floorText}</span>
         </span>
+<<<<<<< HEAD
         {step.distanceMeters > 0 && <span className="text-[11px] font-bold text-[#0B1E36] shrink-0">{step.distanceMeters} m</span>}
+=======
+        {step.distanceMeters > 0 && <span className="text-[11px] font-bold text-[#0B2545] shrink-0">{step.distanceMeters} m</span>}
+>>>>>>> 73e09d3 (added skeletal loading and current location)
       </button>
     </li>
   );
