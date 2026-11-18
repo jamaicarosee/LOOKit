@@ -33,6 +33,10 @@ export default {
         glass: "0 8px 32px 0 rgba(0, 0, 0, 0.08)",
       },
       // Launch sequence (splash + skeleton)
+<<<<<<< HEAD
+=======
+            // Launch sequence (splash + skeleton)
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
       keyframes: {
         shimmer: {
           "0%": { transform: "translateX(-100%)" },

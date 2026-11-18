@@ -1,5 +1,9 @@
 import React from 'react';
 import SkeletonBlock from './SkeletonBlock';
+<<<<<<< HEAD
+=======
+import { useAdminNav, ADMIN_HINT_KEY } from '../../admin/AdminNavContext';
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
 
 // Placeholders for the nav bar (Map, Staff, About and the admin-only Admin button).
 // Each tab is drawn like the real one: an icon shape stacked over a label bar.
@@ -7,6 +11,22 @@ import SkeletonBlock from './SkeletonBlock';
 // arrives) and for a short minimum time after a screen mounts (see useNavLoading).
 const LABEL_WIDTHS = ['w-6', 'w-8', 'w-8', 'w-9']; // Map, Staff, About, Admin
 
+<<<<<<< HEAD
+=======
+// Normal users have 3 tabs (Map, Staff, About); admins get a 4th (Admin).
+// Once auth is known we use the real answer. While it is still loading we use the role
+// remembered from the last visit, and default to 3 tabs.
+function useNavSlotCount() {
+  const { isAdmin, authLoading } = useAdminNav();
+  if (!authLoading) return isAdmin ? 4 : 3;
+  try {
+    return localStorage.getItem(ADMIN_HINT_KEY) === '1' ? 4 : 3;
+  } catch {
+    return 3;
+  }
+}
+
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
 // One tab: icon + label centered inside the tab shape
 function TabContent({ inner, iconClass, labelClass, labelWidth, gap }) {
   return (
@@ -19,13 +39,23 @@ function TabContent({ inner, iconClass, labelClass, labelWidth, gap }) {
 
 // Desktop top nav tabs, drawn on the navy header. The active tab is wider and light, like the real one.
 export function DesktopNavTabsSkeleton({ activeIndex = -1 }) {
+<<<<<<< HEAD
+=======
+  const count = useNavSlotCount();
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
   return (
     <nav
       role="status"
       aria-label="Loading navigation"
+<<<<<<< HEAD
       className="flex items-center gap-8 lg:gap-12"
     >
       {LABEL_WIDTHS.map((labelWidth, i) => {
+=======
+      className={`flex items-center ${count === 4 ? 'gap-8 lg:gap-12' : 'gap-12 lg:gap-16'}`}
+    >
+      {LABEL_WIDTHS.slice(0, count).map((labelWidth, i) => {
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
         const active = i === activeIndex;
         return (
           <SkeletonBlock
@@ -49,13 +79,23 @@ export function DesktopNavTabsSkeleton({ activeIndex = -1 }) {
 
 // Phone bottom dock tiles, drawn on white (same size as the real navy tiles).
 export function MobileNavTilesSkeleton() {
+<<<<<<< HEAD
+=======
+  const count = useNavSlotCount();
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
   return (
     <nav
       role="status"
       aria-label="Loading navigation"
+<<<<<<< HEAD
       className="grid grid-cols-4 gap-2.5 w-full max-w-xs"
     >
       {LABEL_WIDTHS.map((labelWidth, i) => (
+=======
+      className={`grid ${count === 4 ? 'grid-cols-4 gap-2.5' : 'grid-cols-3 gap-3.5'} w-full max-w-xs`}
+    >
+      {LABEL_WIDTHS.slice(0, count).map((labelWidth, i) => (
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
         <SkeletonBlock key={i} className="h-[65px] rounded-2xl">
           <TabContent
             inner="lightInner"
@@ -68,4 +108,8 @@ export function MobileNavTilesSkeleton() {
       ))}
     </nav>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 45883d1 (added skeletal laoding and current loc)
