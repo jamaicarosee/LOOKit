@@ -1,0 +1,207 @@
+// Route computation: resolves locations to graph nodes, runs Dijkstra and builds steps.
+// getRoute() is the only entry point the UI uses, so a FastAPI backend can replace it later.
+
+import { apiClient } from '../../../services/apiClient';
+import { USE_REMOTE_ROUTING, API_BASE_URL, GPS_SNAP_MAX_M, GPS_OFF_PATH_WARN_M } from '../constants';
+import { fetchCampusData } from './dataService';
+import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, attachPoint, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
+import { buildRouteResult } from './stepBuilder';
+import { buildingAtFactory } from './locationService';
+import { haversine, pointInPolygon } from './geo';
+
+const EMERGENCY_EXITS = ['Gate 1', 'Gate 2'];
+
+let graphPromise = null;
+
+function withBuildings(graph, raw) {
+  graph.buildingGeometry = new Map((raw.campus?.features || []).map((f) => [f.properties.name, f.geometry]));
+  return graph;
+}
+
+function getGraph() {
+  if (!graphPromise) {
+    graphPromise = fetchCampusData()
+      .then((raw) => ({ raw, graph: withBuildings(buildGraph(raw), raw), buildingAt: buildingAtFactory(raw.campus?.features || []) }))
+      .catch((err) => {
+        graphPromise = null;
+        throw err;
+      });
+  }
+  return graphPromise;
+}
+
+// Warms the campus GeoJSON cache and builds the routing graph at launch (see useLaunchSequence)
+export function preloadRoutingGraph() {
+  return getGraph().then(() => true);
+}
+
+// --- Location -> graph nodes (several nodes per gate / building so one-way dead ends never trap a route) ---
+
+function resolveNodes(graph, loc) {
+  if (loc.type === 'room') {
+    const own = graph.tags.get(`room:${loc.id}`);
+    if (own !== undefined) return { ids: [own], exact: true };
+  }
+  if (loc.geometry) {
+    const ids = nodesNearGeometry(graph, loc.geometry);
+    if (ids.length) return { ids, exact: loc.type !== 'room' };
+  }
+  // Rooms without a mapped door fall back to their building's ground-floor entrance
+  const b = loc.building && graph.buildingGeometry?.get(loc.building);
+  const ids = b ? nodesNearGeometry(graph, b) : [];
+  return { ids, exact: false };
+}
+
+// The Javier Building lobby is only the way in or out of the Javier area.
+//   outside -> inside, inside -> outside : must pass through the lobby
+//   inside -> inside                     : shortest path, never forced through the lobby
+// The Gymnasium and the Garden sit inside the Javier vicinity, so they count as "inside".
+const JAVIER_AREA = new Set([JAVIER_BUILDING, 'Gymnasium', 'Garden']);
+const inJavier = (loc) => JAVIER_AREA.has(loc?.building);
+
+function findPath(graph, from, to, emergency, sources, targets, mode) {
+  const lobby = graph.tags.get(JAVIER_LOBBY_TAG);
+  // Emergency routes always take the shortest way to the nearest gate
+  if (!emergency && lobby !== undefined && inJavier(from) !== inJavier(to)) {
+    return shortestPathVia(graph, sources, lobby, targets, mode);
+  }
+  return shortestPath(graph, sources, targets, mode);
+}
+
+// --- Local routing ---
+
+async function getLocalRoute(from, to, options) {
+  const base = await getGraph();
+  const { buildingAt, raw } = base;
+  let { graph } = base;
+  const { emergency = false, pwd = false } = options;
+  const warnings = [];
+
+  // Live GPS start: snap the position onto the nearest walkway (virtual start node on a copy of the graph)
+  let src;
+  if (from.isCurrentLocation) {
+    const snap = from.coordinate ? attachPoint(graph, from.coordinate, { maxSnapM: GPS_SNAP_MAX_M }) : null;
+    if (!snap) return null;
+    graph = snap.graph;
+    src = { ids: [snap.sourceId], exact: true };
+    if (snap.snapDistance > GPS_OFF_PATH_WARN_M) warnings.push(`You are about ${Math.round(snap.snapDistance)} m from the nearest campus path; the route starts from that path.`);
+    // The Javier lobby rule needs to know whether the user is standing inside the Javier area
+    const inside = (raw.campus?.features || []).find((f) => f.properties.category !== 'outdoor_structure' && pointInPolygon(from.coordinate, f.geometry));
+    from = { ...from, building: inside?.properties?.name || null };
+  } else {
+    src = resolveNodes(graph, from);
+  }
+  if (!src.ids.length) return null;
+  if (!src.exact) warnings.push(`Indoor path to ${from.name} is not mapped; the route starts at the ${from.building || 'building'} entrance.`);
+
+  let targets;
+  let exits = [];
+  if (emergency) {
+    exits = EMERGENCY_EXITS.map((name) => {
+      const f = (raw.site?.features || []).find((x) => x.properties.name === name);
+      return { name, ids: f ? nodesNearGeometry(graph, f.geometry) : [] };
+    });
+    targets = exits.flatMap((e) => e.ids);
+    if (!targets.length) return null;
+  } else {
+    const dst = resolveNodes(graph, to);
+    if (!dst.ids.length) return null;
+    targets = dst.ids;
+    if (!dst.exact) warnings.push(`Indoor path to ${to.name} is not mapped; the route ends at the ${to.building || 'building'} entrance.`);
+  }
+
+  // Step-free first; fall back to stairs with a clear warning when the data has no accessible link
+  let mode = { avoidStairs: pwd };
+  let path = findPath(graph, from, to, emergency, src.ids, targets, mode);
+  if (!path && pwd) {
+    mode = { avoidStairs: false };
+    path = findPath(graph, from, to, emergency, src.ids, targets, mode);
+    if (path) warnings.push('No step-free route exists in the campus data (no elevator or ramp between floors). This route uses stairs.');
+  }
+  if (!path) return null;
+
+  const exitName = emergency ? exits.find((e) => e.ids.includes(path.target))?.name || 'the nearest exit' : null;
+  const toLabel = emergency ? `${exitName} (emergency exit)` : to.name;
+  const dest = !emergency && to.type === 'room'
+    ? `${to.name}${to.fullName && to.fullName !== to.name ? ` – ${to.fullName}` : ''} (${to.building || 'building'}, Floor ${to.floor})`
+    : toLabel;
+
+  const result = buildRouteResult(path, {
+    fromLabel: from.type === 'room' ? `${from.name} (${from.building}, Floor ${from.floor})` : from.name,
+    toLabel,
+    arriveText: emergency ? `You have reached the emergency exit at ${exitName}` : `You have arrived at ${dest}`,
+    mode,
+    buildingAt,
+    insideBuilding: (c) => (raw.campus?.features || []).some((f) => f.properties.category !== 'outdoor_structure' && pointInPolygon(c, f.geometry)),
+    startCoord: graph.nodes[path.nodeIds[0]].coord,
+    startFloor: graph.nodes[path.nodeIds[0]].floor,
+    startZone: from.type === 'room' ? 'indoor' : 'outdoor',
+    endFloor: graph.nodes[path.target].floor,
+  });
+
+  // Say so in the directions when the route goes through the Javier lobby
+  if (path.via !== undefined) {
+    const lobbyCoord = graph.nodes[path.via].coord;
+    const hit = result.steps.find((st) => st.coords?.some((c) => haversine(c, lobbyCoord) < 1.5));
+    if (hit && !/lobby/i.test(hit.instruction)) hit.instruction += ' (through the Javier Building lobby)';
+  }
+
+  const named = new Map([...graph.tags].filter(([t]) => t.startsWith('node:')).map(([t, id]) => [id, t.slice(5)]));
+  return {
+    ...result,
+    nodes: path.nodeIds.map((id) => named.get(id)).filter(Boolean),
+    warnings,
+    options: { emergency, pwd },
+    from,
+    to: emergency ? { ...to, name: toLabel, type: 'gate', floor: 1 } : to,
+  };
+}
+
+// --- Remote routing (kept behind the same interface) ---
+
+async function getRemoteRoute(from, to, options) {
+  const { data } = await apiClient.post('/api/navigation/route', {
+    from,
+    to,
+    ...options,
+  });
+  if (!data) return null;
+  return {
+    distanceMeters: data.distanceMeters,
+    durationSeconds: data.durationSeconds,
+    coordinates: data.coordinates || [],
+    legs: data.legs || [{ floor: 1, coords: data.coordinates || [] }],
+    floors: data.floors || [1],
+    stairMarkers: data.stairMarkers || [],
+    nodes: data.nodes || [],
+    steps: data.steps || [],
+    start: data.start,
+    end: data.end,
+    warnings: data.warnings || [],
+    options,
+    from: data.from || from,
+    to: data.to || to,
+  };
+}
+
+// Returns a RouteResult, or null when no walkable path exists.
+export async function getRoute(fromLocation, toLocation, options = {}) {
+  // A live GPS start is always solved locally: the position is snapped onto the walkway graph here
+  if (fromLocation?.isCurrentLocation || !USE_REMOTE_ROUTING) {
+    return getLocalRoute(fromLocation, toLocation, options);
+  }
+  try {
+    return await getRemoteRoute(fromLocation, toLocation, options);
+  } catch (err) {
+    console.warn('[LOOKit Routing] FastAPI unreachable, falling back to local graph:', err.message);
+    return getLocalRoute(fromLocation, toLocation, options);
+  }
+}
+/*
+ * Sample calls (verified against the bundled GeoJSON):
+ *
+ *   getRoute(gate1, e501)                  -> 97 m, floors [1, 5], 12 steps incl. "Take the stairs up 4 floors to Floor 5"
+ *   getRoute(gate1, e103, { pwd: true })   -> step-free: connector walkway -> PWD ramp -> M.A.E corridor
+ *   getRoute(gate1, e501, { pwd: true })   -> stairs fallback + warning (no elevator/ramp between floors in the data)
+ *   getRoute(e501, anything, { emergency: true }) -> nearest of Gate 1 / Gate 2, stairs allowed, 'To' ignored
+ */

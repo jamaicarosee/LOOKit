@@ -1,0 +1,264 @@
+[
+ {
+  "id": "STAIRS-F5-MAE-WEST",
+  "type": "stairs",
+  "layout": "u_turn",
+  "name": "MAE West Staircase",
+  "full_name": "M.A.E Building West Turn-Around Staircase (Floor 5)",
+  "building": "M.A.E Building",
+  "floor_level": 5,
+  "steps": 17,
+  "direction": "north",
+  "step_increment": 0.2,
+  "start_height": 0.0,
+  "target_height": 3.5,
+  "bounds": [
+   121.09940442,
+   14.57334274,
+   121.09946755,
+   14.57342085
+  ],
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      121.09940442,
+      14.57342085
+     ],
+     [
+      121.09940442,
+      14.57334274
+     ],
+     [
+      121.09946755,
+      14.57334274
+     ],
+     [
+      121.09946755,
+      14.57342085
+     ],
+     [
+      121.09940442,
+      14.57342085
+     ]
+    ]
+   ]
+  },
+  "flights": [
+   {
+    "kind": "steps",
+    "bounds": [
+     121.09940442,
+     14.57334274,
+     121.09943599,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "north",
+    "start_step": 1,
+    "start_height": 0.0,
+    "target_height": 1.75
+   },
+   {
+    "kind": "landing",
+    "bounds": [
+     121.09940442,
+     14.57340825,
+     121.09946755,
+     14.57342085
+    ],
+    "step_number": 9,
+    "height": 1.75
+   },
+   {
+    "kind": "steps",
+    "bounds": [
+     121.09943599,
+     14.57334274,
+     121.09946755,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "south",
+    "start_step": 10,
+    "start_height": 1.75,
+    "target_height": 3.5
+   }
+  ]
+ },
+ {
+  "id": "STAIRS-F5-MAE-EAST",
+  "type": "stairs",
+  "layout": "u_turn",
+  "name": "MAE East Staircase",
+  "full_name": "M.A.E Building East Turn-Around Staircase (Floor 5)",
+  "building": "M.A.E Building",
+  "floor_level": 5,
+  "steps": 17,
+  "direction": "north",
+  "step_increment": 0.2,
+  "start_height": 0.0,
+  "target_height": 3.5,
+  "bounds": [
+   121.10016199,
+   14.57334274,
+   121.10022512,
+   14.57342085
+  ],
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      121.10016199,
+      14.57342085
+     ],
+     [
+      121.10016199,
+      14.57334274
+     ],
+     [
+      121.10022512,
+      14.57334274
+     ],
+     [
+      121.10022512,
+      14.57342085
+     ],
+     [
+      121.10016199,
+      14.57342085
+     ]
+    ]
+   ]
+  },
+  "flights": [
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10019355,
+     14.57334274,
+     121.10022512,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "north",
+    "start_step": 1,
+    "start_height": 0.0,
+    "target_height": 1.75
+   },
+   {
+    "kind": "landing",
+    "bounds": [
+     121.10016199,
+     14.57340825,
+     121.10022512,
+     14.57342085
+    ],
+    "step_number": 9,
+    "height": 1.75
+   },
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10016199,
+     14.57334274,
+     121.10019355,
+     14.57340825
+    ],
+    "steps": 8,
+    "direction": "south",
+    "start_step": 10,
+    "start_height": 1.75,
+    "target_height": 3.5
+   }
+  ]
+ },
+ {
+  "id": "STAIRS-F5-CED",
+  "type": "stairs",
+  "layout": "flat",
+  "name": "CED Top Downstairs",
+  "full_name": "CED Building Top Downstairs Exit Transit (Floor 5)",
+  "building": "CED Building",
+  "floor_level": 5,
+  "label": "DOWNSTAIRS",
+    "height": 0.1,
+    "base_height": 0.0,
+  "bounds": [
+   121.10030136,
+   14.57325662,
+   121.10033967,
+   14.57328959
+  ],
+  "geometry": {
+   "type": "Polygon",
+   "coordinates": [
+    [
+     [
+      121.10030136,
+      14.57328959
+     ],
+     [
+      121.10030136,
+      14.57325662
+     ],
+     [
+      121.10033967,
+      14.57325662
+     ],
+     [
+      121.10033967,
+      14.57328959
+     ],
+     [
+      121.10030136,
+      14.57328959
+     ]
+    ]
+   ]
+  },
+  "flights": [
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10031094,
+     14.57325662,
+     121.10033967,
+     14.57327311
+    ],
+    "steps": 6,
+    "direction": "west",
+    "start_step": 1,
+    "start_height": 0.0,
+    "target_height": 1.75
+   },
+   {
+    "kind": "landing",
+    "bounds": [
+     121.10030136,
+     14.57325662,
+     121.10031094,
+     14.57328959
+    ],
+    "step_number": 7,
+    "height": 1.75
+   },
+   {
+    "kind": "steps",
+    "bounds": [
+     121.10031094,
+     14.57327311,
+     121.10033967,
+     14.57328959
+    ],
+    "steps": 6,
+    "direction": "east",
+    "start_step": 8,
+    "start_height": 1.75,
+    "target_height": 3.5
+   }
+  ]
+ }
+]
