@@ -1,18 +1,43 @@
+
 import React, { useEffect, useState } from 'react';
-import { UserRound, X, Eye, EyeOff, KeyRound, Loader2 } from 'lucide-react';
+import {
+  UserRound,
+  X,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Loader2,
+} from 'lucide-react';
+
 import TermsAndConditions from './TermsAndConditions';
 import ForgotPassword from './ForgotPassword';
-import ResetPassword from './ResetPassword';
 import { useAuth } from '../context/AuthContext';
+import { signInWithGoogle } from '../services/authService';
 
 const inputClass =
   'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40 disabled:opacity-60';
-const labelClass = 'mb-[6px] block text-[13px] font-medium text-[#102747]';
 
-function PasswordInput({ id, label, value, onChange, visible, onToggle, placeholder, autoComplete, isSubmitting }) {
+const labelClass =
+  'mb-[6px] block text-[13px] font-medium text-[#102747]';
+
+// Password input
+function PasswordInput({
+  id,
+  label,
+  value,
+  onChange,
+  visible,
+  onToggle,
+  placeholder,
+  autoComplete,
+  isSubmitting,
+}) {
   return (
     <div>
-      <label htmlFor={id} className={labelClass}>{label}</label>
+      <label htmlFor={id} className={labelClass}>
+        {label}
+      </label>
+
       <div className="relative">
         <input
           id={id}
@@ -26,6 +51,7 @@ function PasswordInput({ id, label, value, onChange, visible, onToggle, placehol
           onChange={(event) => onChange(event.target.value)}
           className={`${inputClass} pr-[45px]`}
         />
+
         <button
           type="button"
           onClick={onToggle}
@@ -33,82 +59,103 @@ function PasswordInput({ id, label, value, onChange, visible, onToggle, placehol
           aria-label={visible ? 'Hide password' : 'Show password'}
           className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
         >
-          {visible ? <EyeOff size={19} /> : <Eye size={19} />}
+          {visible ? (
+            <EyeOff size={19} />
+          ) : (
+            <Eye size={19} />
+          )}
         </button>
       </div>
     </div>
   );
 }
 
-export default function LoginModal({ onClose, loginRequired = false }) {
+// Google logo
+function GoogleIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 48 48"
+      aria-hidden="true"
+    >
+      <path
+        fill="#EA4335"
+        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+      />
+      <path
+        fill="#4285F4"
+        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6C44.4 38.03 46.98 31.88 46.98 24.55z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.53 28.59A14.41 14.41 0 0 1 9.75 24c0-1.59.27-3.14.78-4.59l-7.98-6.2A23.86 23.86 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78z"
+      />
+      <path
+        fill="#34A853"
+        d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.15 1.45-4.91 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+      />
+    </svg>
+  );
+}
+
+export default function LoginModal({
+  onClose,
+  loginRequired = false,
+}) {
   const { login, register } = useAuth();
-  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot' | 'force_reset'
+
+  const [mode, setMode] = useState('login');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
+
   const isLogin = mode === 'login';
   const isSignup = mode === 'signup';
   const isForgot = mode === 'forgot';
-  const isForceReset = mode === 'force_reset';
 
   useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key === 'Escape' && !isSubmitting && !isForceReset) onClose();
+      if (event.key === 'Escape' && !isSubmitting) {
+        onClose();
+      }
     };
+
     window.addEventListener('keydown', handleEscape);
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }, [onClose, isSubmitting, isForceReset]);
+  }, [onClose, isSubmitting]);
 
   const switchForm = (newMode) => {
     setMode(newMode);
-    setShowPassword(false);
-    setShowConfirmPassword(false);
     setPassword('');
     setConfirmPassword('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setMessage('');
     setIsError(false);
   };
 
-  const handleFailedAttempt = () => {
-    let attempts = parseInt(localStorage.getItem('lookit_login_attempts') || '0', 10) + 1;
-    localStorage.setItem('lookit_login_attempts', attempts);
-
-    if (attempts >= 5) {
-      const penaltySeconds = 30 * Math.pow(2, attempts - 5);
-      const lockoutTime = Date.now() + penaltySeconds * 1000;
-      localStorage.setItem('lookit_login_lockout', lockoutTime);
-    }
-  };
-
+  // EMAIL / PASSWORD LOGIN AND SIGNUP
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     setMessage('');
     setIsError(false);
-
-    if (isLogin) {
-      const lockoutUntil = parseInt(localStorage.getItem('lookit_login_lockout') || '0', 10);
-      if (lockoutUntil && Date.now() < lockoutUntil) {
-        setIsError(true);
-        setMessage('Too many attempts! Please try again later');
-        return;
-      }
-    }
-
-    if (isForgot) {
-      setIsError(true);
-      setMessage('Password recovery is not available yet. Please contact the system administrator.');
-      return;
-    }
 
     if (isSignup && password !== confirmPassword) {
       setIsError(true);
@@ -120,21 +167,25 @@ export default function LoginModal({ onClose, loginRequired = false }) {
 
     try {
       if (isLogin) {
-        const result = await login({ email, password, keepSignedIn });
-        localStorage.removeItem('lookit_login_attempts');
-        localStorage.removeItem('lookit_login_lockout');
+        await login({
+          email,
+          password,
+          keepSignedIn,
+        });
 
-        // Check if user has temporary password
-        if (result?.profile?.must_change_password) {
-          setMode('force_reset');
-        } else {
-          onClose();
-        }
-      } else if (isSignup) {
-        const result = await register({ fullName, email, password });
+        onClose();
+      } else {
+        const result = await register({
+          fullName,
+          email,
+          password,
+        });
+
         if (result.requiresEmailConfirmation) {
           setIsError(false);
-          setMessage('Account created! Please check your email inbox to confirm your account before logging in.');
+          setMessage(
+            'Account created! Please check your email inbox to confirm your account before logging in.'
+          );
           setPassword('');
           setConfirmPassword('');
         } else {
@@ -143,29 +194,42 @@ export default function LoginModal({ onClose, loginRequired = false }) {
       }
     } catch (err) {
       setIsError(true);
-      setMessage(err.message || 'Authentication failed. Please try again.');
-      if (isLogin) handleFailedAttempt();
+      setMessage(
+        err.message ||
+          'Authentication failed. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // If mandatory password reset is triggered, render the ResetPassword modal in forced mode
-  if (isForceReset) {
-    return (
-      <ResetPassword
-        isForced={true}
-        onClose={onClose}
-        onBackToLogin={() => switchForm('login')}
-      />
-    );
-  }
+  // GOOGLE LOGIN
+  const handleGoogleSignIn = async () => {
+    setIsSubmitting(true);
+    setMessage('');
+    setIsError(false);
+
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setIsError(true);
+      setMessage(
+        err.message || 'Google sign-in failed. Please try again.'
+      );
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
       className="fixed inset-0 z-[90] flex items-end justify-center bg-[#071C35]/50 lg:items-center lg:p-6"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget && !isSubmitting) onClose();
+        if (
+          event.target === event.currentTarget &&
+          !isSubmitting
+        ) {
+          onClose();
+        }
       }}
     >
       <section
@@ -175,22 +239,46 @@ export default function LoginModal({ onClose, loginRequired = false }) {
         className="w-full max-w-md max-h-[95dvh] overflow-y-auto rounded-t-[30px] bg-white shadow-2xl lg:max-w-[480px] lg:max-h-[90dvh] lg:rounded-[24px]"
       >
         <div className="px-[30px] pb-[30px] pt-[25px] sm:px-[35px] lg:px-[35px] lg:py-[30px]">
+
+          {/* HEADER */}
           <div className="mb-[27px] flex items-center justify-between">
             <div className="flex items-center gap-[12px]">
               <div className="flex h-[45px] w-[45px] shrink-0 items-center justify-center rounded-[13px] bg-[#102747]">
                 {isForgot ? (
-                  <KeyRound size={22} strokeWidth={1.8} className="text-white" />
+                  <KeyRound
+                    size={22}
+                    strokeWidth={1.8}
+                    className="text-white"
+                  />
                 ) : (
-                  <UserRound size={22} strokeWidth={1.8} className="text-white" />
+                  <UserRound
+                    size={22}
+                    strokeWidth={1.8}
+                    className="text-white"
+                  />
                 )}
               </div>
+
               <div>
-                <h2 id="login-title" className="text-[17px] font-bold text-[#102747]">
-                  {isLogin ? 'Log in' : isSignup ? 'Create account' : 'Forgot Password'}
+                <h2
+                  id="login-title"
+                  className="text-[17px] font-bold text-[#102747]"
+                >
+                  {isLogin
+                    ? 'Log in'
+                    : isSignup
+                      ? 'Create account'
+                      : 'Forgot Password'}
                 </h2>
-                {isForgot && <p className="mt-1 text-[12px] text-[#61738A]">Recover your LOOKit account</p>}
+
+                {isForgot && (
+                  <p className="mt-1 text-[12px] text-[#61738A]">
+                    Recover your LOOKit account
+                  </p>
+                )}
               </div>
             </div>
+
             <button
               type="button"
               onClick={onClose}
@@ -202,6 +290,7 @@ export default function LoginModal({ onClose, loginRequired = false }) {
             </button>
           </div>
 
+          {/* LOGIN REQUIRED */}
           {loginRequired && !isForgot && (
             <div className="mb-[20px] rounded-[10px] bg-[#E7EDF6] px-[15px] py-[13px]">
               <p className="text-center text-[12px] leading-5 text-[#102747]">
@@ -210,11 +299,22 @@ export default function LoginModal({ onClose, loginRequired = false }) {
             </div>
           )}
 
+          {/* LOGIN / SIGNUP FORM */}
           {!isForgot && (
-            <form key={mode} onSubmit={handleSubmit} className="space-y-[17px]">
+            <form
+              key={mode}
+              onSubmit={handleSubmit}
+              className="space-y-[17px]"
+            >
               {isSignup && (
                 <div>
-                  <label htmlFor="lookit-name" className={labelClass}>Full name</label>
+                  <label
+                    htmlFor="lookit-name"
+                    className={labelClass}
+                  >
+                    Full name
+                  </label>
+
                   <input
                     id="lookit-name"
                     type="text"
@@ -223,14 +323,23 @@ export default function LoginModal({ onClose, loginRequired = false }) {
                     required
                     disabled={isSubmitting}
                     value={fullName}
-                    onChange={(event) => setFullName(event.target.value)}
+                    onChange={(event) =>
+                      setFullName(event.target.value)
+                    }
                     className={inputClass}
                   />
                 </div>
               )}
 
+              {/* EMAIL */}
               <div>
-                <label htmlFor="lookit-email" className={labelClass}>Email</label>
+                <label
+                  htmlFor="lookit-email"
+                  className={labelClass}
+                >
+                  Email
+                </label>
+
                 <input
                   id="lookit-email"
                   type="email"
@@ -239,16 +348,23 @@ export default function LoginModal({ onClose, loginRequired = false }) {
                   required
                   disabled={isSubmitting}
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) =>
+                    setEmail(event.target.value)
+                  }
                   className={inputClass}
                 />
               </div>
 
+              {/* PASSWORD */}
               <div>
                 <div className="mb-[6px] flex items-center justify-between">
-                  <label htmlFor="lookit-password" className="text-[13px] font-medium text-[#102747]">
+                  <label
+                    htmlFor="lookit-password"
+                    className="text-[13px] font-medium text-[#102747]"
+                  >
                     Password
                   </label>
+
                   {isLogin && (
                     <button
                       type="button"
@@ -260,31 +376,52 @@ export default function LoginModal({ onClose, loginRequired = false }) {
                     </button>
                   )}
                 </div>
+
                 <div className="relative">
                   <input
                     id="lookit-password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={
+                      showPassword ? 'text' : 'password'
+                    }
                     placeholder="Enter your password"
-                    autoComplete={isLogin ? 'current-password' : 'new-password'}
+                    autoComplete={
+                      isLogin
+                        ? 'current-password'
+                        : 'new-password'
+                    }
                     required
                     minLength={8}
                     disabled={isSubmitting}
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) =>
+                      setPassword(event.target.value)
+                    }
                     className={`${inputClass} pr-[45px]`}
                   />
+
                   <button
                     type="button"
                     disabled={isSubmitting}
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                    aria-label={
+                      showPassword
+                        ? 'Hide password'
+                        : 'Show password'
+                    }
                     className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
                   >
-                    {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                    {showPassword ? (
+                      <EyeOff size={19} />
+                    ) : (
+                      <Eye size={19} />
+                    )}
                   </button>
                 </div>
               </div>
 
+              {/* CONFIRM PASSWORD */}
               {isSignup && (
                 <PasswordInput
                   id="lookit-confirm-password"
@@ -294,43 +431,70 @@ export default function LoginModal({ onClose, loginRequired = false }) {
                   value={confirmPassword}
                   onChange={setConfirmPassword}
                   visible={showConfirmPassword}
-                  onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onToggle={() =>
+                    setShowConfirmPassword(
+                      !showConfirmPassword
+                    )
+                  }
                   isSubmitting={isSubmitting}
                 />
               )}
 
+              {/* KEEP SIGNED IN / TERMS */}
               <div className="flex items-center gap-[9px] text-[12px] text-[#61738A]">
                 <input
                   id="lookit-agreement"
                   type="checkbox"
                   required={isSignup}
                   disabled={isSubmitting}
-                  checked={isLogin ? keepSignedIn : agreedToTerms}
+                  checked={
+                    isLogin
+                      ? keepSignedIn
+                      : agreedToTerms
+                  }
                   onChange={(event) => {
                     if (isLogin) {
-                      setKeepSignedIn(event.target.checked);
+                      setKeepSignedIn(
+                        event.target.checked
+                      );
                     } else {
-                      setAgreedToTerms(event.target.checked);
+                      setAgreedToTerms(
+                        event.target.checked
+                      );
                     }
                   }}
                   className="h-[17px] w-[17px] shrink-0 cursor-pointer accent-[#102747]"
                 />
+
                 {isLogin ? (
-                  <label htmlFor="lookit-agreement">Keep me signed in</label>
+                  <label htmlFor="lookit-agreement">
+                    Keep me signed in
+                  </label>
                 ) : (
                   <span>
-                    <label htmlFor="lookit-agreement">I agree to the </label>
+                    <label htmlFor="lookit-agreement">
+                      I agree to the{' '}
+                    </label>
                     <TermsAndConditions />
                   </span>
                 )}
               </div>
 
+              {/* AUTH MESSAGE */}
               {message && (
-                <p role="status" className={`text-center text-[12px] ${isError ? 'text-red-600' : 'text-[#B58B34]'}`}>
+                <p
+                  role="status"
+                  className={`text-center text-[12px] ${
+                    isError
+                      ? 'text-red-600'
+                      : 'text-[#B58B34]'
+                  }`}
+                >
                   {message}
                 </p>
               )}
 
+              {/* SUBMIT */}
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -338,8 +502,13 @@ export default function LoginModal({ onClose, loginRequired = false }) {
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 size={18} className="animate-spin text-white" />
-                    <span>{isLogin ? 'Logging in...' : 'Creating account...'}</span>
+                    <Loader2
+                      size={18}
+                      className="animate-spin"
+                    />
+                    {isLogin
+                      ? 'Logging in...'
+                      : 'Creating account...'}
                   </>
                 ) : isLogin ? (
                   'Log in'
@@ -350,8 +519,45 @@ export default function LoginModal({ onClose, loginRequired = false }) {
             </form>
           )}
 
-          {isForgot && <ForgotPassword onBack={() => switchForm('login')} />}
+          {/* CONTINUE WITH GOOGLE */}
+          {!isForgot && (
+            <div className="mt-5">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="h-px flex-1 bg-gray-200" />
+                <span className="text-xs text-gray-400">
+                  OR
+                </span>
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
 
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={isSubmitting}
+                className="flex h-[45px] w-full items-center justify-center gap-3 rounded-lg border border-[#D2D9E3] bg-[#F7F8FA] text-[14px] font-medium text-[#102747] transition hover:bg-[#E7EDF6] disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  <Loader2
+                    size={19}
+                    className="animate-spin"
+                  />
+                ) : (
+                  <GoogleIcon />
+                )}
+
+                Continue with Google
+              </button>
+            </div>
+          )}
+
+          {/* FORGOT PASSWORD */}
+          {isForgot && (
+            <ForgotPassword
+              onBack={() => switchForm('login')}
+            />
+          )}
+
+          {/* SWITCH LOGIN / SIGNUP */}
           {!isForgot && (
             <div className="mt-[23px] text-center text-[12px] text-[#61738A]">
               {isLogin ? (
