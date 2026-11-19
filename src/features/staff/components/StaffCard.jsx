@@ -13,21 +13,13 @@ export default function StaffCard({ staff, onSelect, selected = false }) {
       }`}
     >
       {/* Initials avatar */}
-<<<<<<< HEAD
-      <div className="w-16 h-16 shrink-0 rounded-xl bg-[#0B1E36] text-white flex items-center justify-center text-xl font-extrabold tracking-wide">
-=======
       <div className="w-16 h-16 shrink-0 rounded-xl bg-[#0B2545] text-white flex items-center justify-center text-xl font-extrabold tracking-wide">
->>>>>>> 73e09d3 (added skeletal loading and current location)
         {getInitials(staff.name)}
       </div>
 
       {/* Details */}
       <div className="min-w-0">
-<<<<<<< HEAD
-        <p className="text-sm font-extrabold text-[#0B1E36] truncate">{staff.name}</p>
-=======
         <p className="text-sm font-extrabold text-[#0B2545] truncate">{staff.name}</p>
->>>>>>> 73e09d3 (added skeletal loading and current location)
         {staff.position && (
           <p className="text-xs text-slate-400 truncate">{staff.position}</p>
         )}

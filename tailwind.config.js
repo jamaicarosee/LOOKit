@@ -32,8 +32,6 @@ export default {
       boxShadow: {
         glass: "0 8px 32px 0 rgba(0, 0, 0, 0.08)",
       },
-<<<<<<< HEAD
-=======
       // Launch sequence (splash + skeleton)
             // Launch sequence (splash + skeleton)
       keyframes: {
@@ -60,7 +58,6 @@ export default {
         "loading-slide": "loading-slide 1.2s ease-in-out infinite",
         "blink-lid": "blink-lid 2.4s ease-in-out infinite",
       },
->>>>>>> 73e09d3 (added skeletal loading and current location)
     },
   },
   plugins: [],

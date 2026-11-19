@@ -2,20 +2,12 @@ import React from 'react';
 
 // Small form pieces shared by the admin tabs. Colors match the rest of the app.
 const control =
-<<<<<<< HEAD
-  'w-full rounded-lg bg-[#E5EEF7] px-3 py-2.5 text-sm font-medium text-[#0B1E36] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0B1E36]/20 disabled:opacity-60';
-=======
   'w-full rounded-lg bg-[#E5EEF7] px-3 py-2.5 text-sm font-medium text-[#0B2545] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20 disabled:opacity-60';
->>>>>>> 73e09d3 (added skeletal loading and current location)
 
 export function Field({ label, children }) {
   return (
     <label className="block">
-<<<<<<< HEAD
-      <span className="mb-1.5 block text-xs font-bold text-[#0B1E36]">{label}</span>
-=======
       <span className="mb-1.5 block text-xs font-bold text-[#0B2545]">{label}</span>
->>>>>>> 73e09d3 (added skeletal loading and current location)
       {children}
     </label>
   );
@@ -39,11 +31,7 @@ export function PrimaryButton({ children, danger = false, ...props }) {
       type="button"
       {...props}
       className={`w-full rounded-lg px-4 py-2.5 text-sm font-bold text-white transition active:scale-[0.99] disabled:opacity-60 ${
-<<<<<<< HEAD
-        danger ? 'bg-red-700 hover:bg-red-800' : 'bg-[#0B1E36] hover:bg-[#152B47]'
-=======
         danger ? 'bg-red-700 hover:bg-red-800' : 'bg-[#0B2545] hover:bg-[#141070]'
->>>>>>> 73e09d3 (added skeletal loading and current location)
       }`}
     >
       {children}

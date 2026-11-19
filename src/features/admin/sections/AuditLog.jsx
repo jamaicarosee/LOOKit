@@ -6,10 +6,7 @@ import { errorMessage } from '../data/usersService';
 import useDebouncedValue from '../hooks/useDebouncedValue';
 import StatusPill from '../components/StatusPill';
 import { Notice } from '../components/AdminControls';
-<<<<<<< HEAD
-=======
 import { AuditLogSkeleton } from '../components/AdminSkeletons';
->>>>>>> 73e09d3 (added skeletal loading and current location)
 
 const DISPLAY_LIMIT = 10;
 
@@ -40,11 +37,7 @@ function Highlight({ text, search }) {
     parts.push(
       <mark
         key={match}
-<<<<<<< HEAD
-        className="rounded-[3px] bg-[#BFDBFE] px-0.5 text-[#0B1E36]"
-=======
         className="rounded-[3px] bg-[#BFDBFE] px-0.5 text-[#0B2545]"
->>>>>>> 73e09d3 (added skeletal loading and current location)
       >
         {value.slice(match, match + keyword.length)}
       </mark>
@@ -98,11 +91,7 @@ function WhatChanged({ entry, search }) {
 
   return (
     <div className="min-w-0">
-<<<<<<< HEAD
-      <p className="text-sm font-semibold text-[#0B1E36] break-words">
-=======
       <p className="text-sm font-semibold text-[#0B2545] break-words">
->>>>>>> 73e09d3 (added skeletal loading and current location)
         <Highlight text={humanize(entry.entity_type)} search={search} />
         {entry.entity_label ? (
           <span className="font-normal text-slate-600">
@@ -114,11 +103,7 @@ function WhatChanged({ entry, search }) {
         <ul className="mt-1 space-y-0.5">
           {rows.map((r) => (
             <li key={r.field} className="text-xs text-slate-500 break-words">
-<<<<<<< HEAD
-              <span className="font-semibold text-[#0B1E36]">
-=======
               <span className="font-semibold text-[#0B2545]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
                 <Highlight text={humanize(r.field)} search={search} />:
               </span>{' '}
               <Highlight text={formatValue(r.field, r.before)} search={search} /> →{' '}
@@ -194,22 +179,14 @@ export default function AuditLog({ isDesktop }) {
   // Original Staff page search bar styling
   const searchBar = isDesktop ? (
     <div className="mb-5 w-full">
-<<<<<<< HEAD
-      <div className="w-full h-14 bg-[#E5EEF7] rounded-full px-6 flex items-center gap-3 shadow-inner focus-within:ring-2 focus-within:ring-[#0B1E36]/20 transition">
-=======
       <div className="w-full h-14 bg-[#E5EEF7] rounded-full px-6 flex items-center gap-3 shadow-inner focus-within:ring-2 focus-within:ring-[#0B2545]/20 transition">
->>>>>>> 73e09d3 (added skeletal loading and current location)
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search records"
           aria-label="Search audit records"
-<<<<<<< HEAD
-          className="w-full min-w-0 bg-transparent text-sm text-[#0B1E36] placeholder-[#64748B] focus:outline-none font-medium"
-=======
           className="w-full min-w-0 bg-transparent text-sm text-[#0B2545] placeholder-[#64748B] focus:outline-none font-medium"
->>>>>>> 73e09d3 (added skeletal loading and current location)
         />
         <Search className="w-5 h-5 text-[#475569] shrink-0 stroke-[2]" />
       </div>
@@ -248,26 +225,15 @@ export default function AuditLog({ isDesktop }) {
             return (
               <tr key={e.id} className="border-b border-slate-100 align-top">
                 <td className="whitespace-nowrap py-3 pr-4 text-xs text-slate-600">
-<<<<<<< HEAD
-                  <span className="block font-semibold text-[#0B1E36]">
-=======
                   <span className="block font-semibold text-[#0B2545]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
                     <Highlight text={w.date} search={search} />
                   </span>
                   <Highlight text={w.time} search={search} />
                 </td>
-<<<<<<< HEAD
-                <td className="py-3 pr-4 text-sm text-[#0B1E36] break-all">
-                  <Highlight text={e.actor_email || '—'} search={search} />
-                </td>
-                <td className="py-3 pr-4 text-sm font-semibold text-[#0B1E36]">
-=======
                 <td className="py-3 pr-4 text-sm text-[#0B2545] break-all">
                   <Highlight text={e.actor_email || '—'} search={search} />
                 </td>
                 <td className="py-3 pr-4 text-sm font-semibold text-[#0B2545]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
                   <Highlight text={humanize(e.action)} search={search} />
                 </td>
                 <td className="py-3 pr-4">
@@ -296,11 +262,7 @@ export default function AuditLog({ isDesktop }) {
               </p>
               <StatusCell entry={e} search={search} />
             </div>
-<<<<<<< HEAD
-            <p className="text-sm font-extrabold text-[#0B1E36]">
-=======
             <p className="text-sm font-extrabold text-[#0B2545]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
               <Highlight text={humanize(e.action)} search={search} />
             </p>
             <p className="text-xs text-slate-500 break-all">
@@ -314,28 +276,17 @@ export default function AuditLog({ isDesktop }) {
   );
 
   return (
-<<<<<<< HEAD
-    <section aria-labelledby="audit-title" className="min-w-0 rounded-md border border-[#0B1E36] bg-[#F8F9F9]">
-      <div className="px-5 py-5 lg:px-8">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-          <h2 id="audit-title" className="text-xl font-black uppercase tracking-tight text-[#0B1E36] lg:text-2xl">
-=======
     <section aria-labelledby="audit-title" className="min-w-0 rounded-md border border-[#0B2545] bg-[#F8F9F9]">
       <div className="px-5 py-5 lg:px-8">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
           <h2 id="audit-title" className="text-xl font-black uppercase tracking-tight text-[#0B2545] lg:text-2xl">
->>>>>>> 73e09d3 (added skeletal loading and current location)
             Audit Log
           </h2>
           <button
             type="button"
             onClick={handleExport}
             disabled={exporting}
-<<<<<<< HEAD
-            className="flex items-center gap-2 rounded-lg bg-[#0B1E36] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#142F50] disabled:opacity-50"
-=======
             className="flex items-center gap-2 rounded-lg bg-[#0B2545] px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-[#142F50] disabled:opacity-50"
->>>>>>> 73e09d3 (added skeletal loading and current location)
           >
             <Download className="h-4 w-4" />
             {exporting ? 'Exporting...' : 'Export to Excel'}
@@ -345,11 +296,7 @@ export default function AuditLog({ isDesktop }) {
         {searchBar}
         <Notice notice={notice} />
 
-<<<<<<< HEAD
-        {status === 'loading' && entries.length === 0 && <p className="text-sm text-slate-500">Loading audit log…</p>}
-=======
         {status === 'loading' && entries.length === 0 && <AuditLogSkeleton isDesktop={isDesktop} />}
->>>>>>> 73e09d3 (added skeletal loading and current location)
         {status === 'ready' && entries.length === 0 && <p className="text-sm text-slate-500">No records found.</p>}
 
         {entries.length > 0 && (
@@ -360,11 +307,7 @@ export default function AuditLog({ isDesktop }) {
 
         {entries.length > 0 && (
           <div className="mt-5 space-y-3">
-<<<<<<< HEAD
-            <p className="text-xs font-semibold text-[#0B1E36] rounded-md bg-[#E5EEF7] p-3">
-=======
             <p className="text-xs font-semibold text-[#0B2545] rounded-md bg-[#E5EEF7] p-3">
->>>>>>> 73e09d3 (added skeletal loading and current location)
               Showing the latest {entries.length} of {total} transactions. Please click "Export to Excel" to download and view the complete audit history.
             </p>
           </div>

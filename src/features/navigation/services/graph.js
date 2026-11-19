@@ -731,8 +731,6 @@ export function nodesNearGeometry(graph, geometry, { floor = 1, slack = 6, max =
   if (!scored.length) return [];
   return scored.filter((n) => n.d <= scored[0].d + slack).slice(0, max).map((n) => n.id);
 }
-<<<<<<< HEAD
-=======
 
 
 // --- Live GPS start ---
@@ -795,4 +793,3 @@ export function attachPoint(graph, coord, { floor = 1, maxSnapM = 150, slack = 6
 
   return { graph: { ...graph, nodes, edges, adj: [...graph.adj, out] }, sourceId, snapDistance: hits[0].distance };
 }
->>>>>>> 73e09d3 (added skeletal loading and current location)

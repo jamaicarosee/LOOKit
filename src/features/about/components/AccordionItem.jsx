@@ -10,11 +10,7 @@ export default function AccordionItem({ id, icon: Icon, title, isOpen, onToggle,
         aria-expanded={isOpen}
         aria-controls={`about-acc-panel-${id}`}
         onClick={onToggle}
-<<<<<<< HEAD
-        className="w-full flex items-center gap-3 lg:gap-5 px-4 py-3.5 lg:px-7 lg:py-6 text-left text-[#0B1E36] hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0B1E36]"
-=======
         className="w-full flex items-center gap-3 lg:gap-5 px-4 py-3.5 lg:px-7 lg:py-6 text-left text-[#0B2545] hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0B2545]"
->>>>>>> 73e09d3 (added skeletal loading and current location)
       >
         <Icon className="w-4 h-4 lg:w-6 lg:h-6 shrink-0 stroke-[2]" />
         <span className="flex-1 text-sm lg:text-lg font-medium">{title}</span>

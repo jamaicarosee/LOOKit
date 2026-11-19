@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React, { useEffect, useState } from 'react';
->>>>>>> 73e09d3 (added skeletal loading and current location)
 import SearchMobileView from '../search/SearchMobileView';
 import DirectionsMobileView from '../directions/DirectionsMobileView';
 import useRouteInputs, { saveRecent } from '../search/hooks/useRouteInputs';
@@ -42,8 +38,6 @@ export default function NavigationFlow({
     }
   };
 
-<<<<<<< HEAD
-=======
   // Live GPS: while the route starts at Current Location, every new fix re-runs the route from where
   // the user now stands. `live` makes useRoute refresh quietly (no loading overlay).
   const { liveFrom } = inputs;
@@ -52,7 +46,6 @@ export default function NavigationFlow({
     setRequest((r) => (r?.from?.isCurrentLocation && r.from !== liveFrom ? { ...r, from: liveFrom, live: true } : r));
   }, [screen, liveFrom]);
 
->>>>>>> 73e09d3 (added skeletal loading and current location)
   const run = (from, to) => {
     setRequest({
       from,
@@ -94,12 +87,8 @@ export default function NavigationFlow({
       inputs.setEmergency(false);
     }
 
-<<<<<<< HEAD
-    if (inputs.from && inputs.from.id !== room.id) {
-=======
     // liveFrom = the picked start, or the live GPS position when Current Location is the start
     if (inputs.liveFrom && inputs.liveFrom.id !== room.id) {
->>>>>>> 73e09d3 (added skeletal loading and current location)
       if (!isAuthenticated) {
         requireLogin();
         return;
@@ -108,11 +97,7 @@ export default function NavigationFlow({
       saveToRecentSearchesDatabase(room); // 4. Wire into the quick-pick destination flow
 
       setRequest({
-<<<<<<< HEAD
-        from: inputs.from,
-=======
         from: inputs.liveFrom,
->>>>>>> 73e09d3 (added skeletal loading and current location)
         to: room,
         options: {
           emergency: false,

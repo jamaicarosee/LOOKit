@@ -5,15 +5,6 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
   if (!isOpen) return null;
 
   return (
-<<<<<<< HEAD
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#0B1E36]/60 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-        <div className="mb-4 flex items-center gap-3">
-          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${isDanger ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-[#0B1E36]'}`}>
-            <AlertTriangle size={20} />
-          </div>
-          <h3 className="text-lg font-bold text-[#0B1E36]">{title}</h3>
-=======
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#0B2545]/60 px-4 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
         <div className="mb-4 flex items-center gap-3">
@@ -21,7 +12,6 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
             <AlertTriangle size={20} />
           </div>
           <h3 className="text-lg font-bold text-[#0B2545]">{title}</h3>
->>>>>>> 73e09d3 (added skeletal loading and current location)
         </div>
         
         <p className="mb-6 text-sm text-slate-600">{message}</p>
@@ -38,11 +28,7 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
             type="button"
             onClick={onConfirm}
             className={`flex-1 rounded-lg py-2.5 text-sm font-bold text-white transition ${
-<<<<<<< HEAD
-              isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-[#0B1E36] hover:bg-[#1C3B62]'
-=======
               isDanger ? 'bg-red-600 hover:bg-red-700' : 'bg-[#0B2545] hover:bg-[#1C3B62]'
->>>>>>> 73e09d3 (added skeletal loading and current location)
             }`}
           >
             {confirmText}

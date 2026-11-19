@@ -63,20 +63,12 @@ export default function AccountInfo({ onBackToMap, onLogout, user, profile }) {
   const displayEmail = profile?.email || user?.email || 'No email available';
 
   return (
-<<<<<<< HEAD
-    <div className={`h-[100dvh] w-full overflow-hidden ${isDesktop ? 'bg-[#F8F9F9]' : 'bg-[#0B1E36]'}`}>
-=======
     <div className={`h-[100dvh] w-full overflow-hidden ${isDesktop ? 'bg-[#F8F9F9]' : 'bg-[#0B2545]'}`}>
->>>>>>> 73e09d3 (added skeletal loading and current location)
       <div className={`flex h-full flex-col overflow-hidden bg-white ${isDesktop ? 'w-full' : 'mx-auto w-full max-w-md shadow-2xl'}`}>
         
         {/* ============ HEADERS ============ */}
         {isDesktop && (
-<<<<<<< HEAD
-          <header className="z-20 flex h-20 w-full shrink-0 items-center justify-between bg-[#0B1E36] px-8">
-=======
           <header className="z-20 flex h-20 w-full shrink-0 items-center justify-between bg-[#0B2545] px-8">
->>>>>>> 73e09d3 (added skeletal loading and current location)
             <div className="flex h-12 w-40 items-center justify-start overflow-hidden">
               {!desktopLogoError ? (
                 <img src="/lookit_logo_desktop.png" alt="LOOKit Logo" onError={() => setDesktopLogoError(true)} className="pointer-events-none w-40 max-w-none object-cover object-center" />
@@ -84,11 +76,7 @@ export default function AccountInfo({ onBackToMap, onLogout, user, profile }) {
                 <span className="text-2xl font-black text-white">LOOKiT</span>
               )}
             </div>
-<<<<<<< HEAD
-            <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-full bg-[#E5EEF7] text-[#0B1E36] shadow-sm">
-=======
             <div className="flex h-11 w-14 shrink-0 items-center justify-center rounded-full bg-[#E5EEF7] text-[#0B2545] shadow-sm">
->>>>>>> 73e09d3 (added skeletal loading and current location)
               <User className="h-5 w-5 stroke-[2]" />
             </div>
           </header>
@@ -100,17 +88,10 @@ export default function AccountInfo({ onBackToMap, onLogout, user, profile }) {
               {!mobileLogoError ? (
                 <img src="/lookit_logo_mobile.png" alt="LOOKit Logo" onError={() => setMobileLogoError(true)} className="pointer-events-none h-36 w-36 max-w-none object-contain" />
               ) : (
-<<<<<<< HEAD
-                <span className="text-xl font-black tracking-tight text-[#0B1E36]">LOOKiT</span>
-              )}
-            </div>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0B1E36] text-white shadow-sm">
-=======
                 <span className="text-xl font-black tracking-tight text-[#0B2545]">LOOKiT</span>
               )}
             </div>
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0B2545] text-white shadow-sm">
->>>>>>> 73e09d3 (added skeletal loading and current location)
               <User className="h-4 w-4 stroke-[2.2]" />
             </div>
           </header>

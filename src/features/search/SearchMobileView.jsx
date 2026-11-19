@@ -22,11 +22,7 @@ export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect,
                 inputs.selectFrom(r.from);
                 inputs.selectTo(r.to);
               }}
-<<<<<<< HEAD
-              className="w-full text-left px-4 py-2.5 rounded-xl bg-[#E5EEF7] hover:bg-[#D5E2EE] text-xs lg:text-sm font-semibold text-[#0B2545] active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36]"
-=======
               className="w-full text-left px-4 py-2.5 rounded-xl bg-[#E5EEF7] hover:bg-[#D5E2EE] text-xs lg:text-sm font-semibold text-[#0B2545] active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]"
->>>>>>> 73e09d3 (added skeletal loading and current location)
             >
               {r.from.name} → {r.to.name}
             </button>

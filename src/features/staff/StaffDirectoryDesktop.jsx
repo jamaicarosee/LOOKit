@@ -13,11 +13,7 @@ export default function StaffDirectoryDesktop({ searchQuery, onSelectStaff, sele
         <p className="text-xl lg:text-2xl font-medium text-[#A8830F] tracking-wide uppercase">
           Pasig Campus
         </p>
-<<<<<<< HEAD
-        <h1 className="mb-8 text-2xl lg:text-3xl font-black text-[#0B1E36] tracking-tight uppercase">
-=======
         <h1 className="mb-8 text-2xl lg:text-3xl font-black text-[#0B2545] tracking-tight uppercase">
->>>>>>> 73e09d3 (added skeletal loading and current location)
           Staff Directory
         </h1>
 

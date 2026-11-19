@@ -16,11 +16,7 @@ export default function StaffList({ staff, onSelectStaff, selectedId, gridClassN
         <section key={section.id} aria-labelledby={`staff-section-${section.id}`}>
           <h2
             id={`staff-section-${section.id}`}
-<<<<<<< HEAD
-            className={`mb-4 border-l-4 border-[#D4A017] pl-3 font-extrabold uppercase tracking-wide text-[#0B1E36] ${headingClassName}`}
-=======
             className={`mb-4 border-l-4 border-[#D4A017] pl-3 font-extrabold uppercase tracking-wide text-[#0B2545] ${headingClassName}`}
->>>>>>> 73e09d3 (added skeletal loading and current location)
           >
             {section.title}
             <span className="ml-2 font-semibold text-slate-400">({section.staff.length})</span>

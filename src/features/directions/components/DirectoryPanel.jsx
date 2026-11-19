@@ -33,11 +33,7 @@ export default function DirectoryPanel({ destination, onPick }) {
 
   const rooms = groups.find((g) => g.floor === floor)?.rooms || [];
   const chip = (on) =>
-<<<<<<< HEAD
-    `shrink-0 h-8 px-3 rounded-full text-[11px] font-bold transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36] ${on ? 'bg-[#0B1E36] text-white' : 'bg-white text-[#0B1E36]'}`;
-=======
     `shrink-0 h-8 px-3 rounded-full text-[11px] font-bold transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545] ${on ? 'bg-[#0B2545] text-white' : 'bg-white text-[#0B2545]'}`;
->>>>>>> 73e09d3 (added skeletal loading and current location)
 
   return (
     <section aria-label="Directory" className="rounded-xl bg-[#E5EBF5] p-3">
@@ -71,11 +67,7 @@ export default function DirectoryPanel({ destination, onPick }) {
                   <button
                     type="button"
                     onClick={() => onPick(r)}
-<<<<<<< HEAD
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left bg-white transition active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B1E36] ${isDest ? 'ring-2 ring-[#C9A227]' : ''}`}
-=======
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left bg-white transition active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545] ${isDest ? 'ring-2 ring-[#C9A227]' : ''}`}
->>>>>>> 73e09d3 (added skeletal loading and current location)
                   >
                     <span className="flex-1 min-w-0">
                       <span className="block text-xs font-bold text-[#0B2545] truncate">{r.name}</span>
@@ -83,11 +75,7 @@ export default function DirectoryPanel({ destination, onPick }) {
                         {r.fullName && r.fullName !== r.name ? r.fullName : r.category || 'Room'}
                       </span>
                     </span>
-<<<<<<< HEAD
-                    <span className="text-[10px] font-black text-white bg-[#0B1E36] rounded-full px-2.5 py-1 shrink-0">{isDest ? 'Here' : 'Go'}</span>
-=======
                     <span className="text-[10px] font-black text-white bg-[#0B2545] rounded-full px-2.5 py-1 shrink-0">{isDest ? 'Here' : 'Go'}</span>
->>>>>>> 73e09d3 (added skeletal loading and current location)
                   </button>
                 </li>
               );

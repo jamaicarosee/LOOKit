@@ -1,8 +1,6 @@
 // 100% Live Backend-backed Searchable Locations Service
 import { apiClient } from '../../../services/apiClient';
 import { polygonCentroid, pointInPolygon, haversine } from './geo';
-<<<<<<< HEAD
-=======
 import { CURRENT_LOCATION_ID, CURRENT_LOCATION_LABEL } from '../constants';
 
 // "Current Location (GPS)" is a pseudo-location. The From field holds this stable entry; the live
@@ -19,7 +17,6 @@ export const CURRENT_LOCATION = {
 export function makeLiveLocation({ coord, accuracy, heading }) {
   return { ...CURRENT_LOCATION, coordinate: coord, accuracy, heading, geometry: { type: 'Point', coordinates: coord } };
 }
->>>>>>> 73e09d3 (added skeletal loading and current location)
 
 let locationsPromise = null;
 

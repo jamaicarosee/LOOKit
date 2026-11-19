@@ -4,11 +4,7 @@ import React from 'react';
 const TONES = {
   success: 'bg-emerald-50 text-emerald-800',
   error: 'bg-red-50 text-red-800',
-<<<<<<< HEAD
-  info: 'bg-[#E5EEF7] text-[#0B1E36]',
-=======
   info: 'bg-[#E5EEF7] text-[#0B2545]',
->>>>>>> 73e09d3 (added skeletal loading and current location)
   muted: 'bg-slate-100 text-slate-500',
 };
 

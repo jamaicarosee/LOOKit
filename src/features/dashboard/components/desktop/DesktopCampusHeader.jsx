@@ -15,17 +15,10 @@ export default function DesktopCampusHeader({ isHidden = false }) {
         }
       `}
     >
-<<<<<<< HEAD
-      <h1 className="text-3xl lg:text-4xl font-black text-[#0B1E36] tracking-tight drop-shadow-[0_2px_4px_rgba(248,249,249,0.95)]">
-        Rizal Technological University
-      </h1>
-      <p className="text-lg lg:text-xl font-medium text-[#0B1E36] tracking-widest uppercase mt-1 drop-shadow-[0_1px_3px_rgba(248,249,249,0.95)]">
-=======
       <h1 className="text-3xl lg:text-4xl font-black text-[#0B2545] tracking-tight drop-shadow-[0_2px_4px_rgba(248,249,249,0.95)]">
         Rizal Technological University
       </h1>
       <p className="text-lg lg:text-xl font-medium text-[#0B2545] tracking-widest uppercase mt-1 drop-shadow-[0_1px_3px_rgba(248,249,249,0.95)]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
         PASIG CAMPUS
       </p>
     </div>

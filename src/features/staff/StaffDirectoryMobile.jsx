@@ -8,11 +8,7 @@ export default function StaffDirectoryMobile({ searchQuery, onSelectStaff, selec
   return (
     <div className="flex-1 min-h-0 overflow-y-auto bg-[#F8F9F9] px-5 py-5">
       <p className="text-sm font-medium uppercase tracking-wide text-[#A8830F]">Pasig Campus</p>
-<<<<<<< HEAD
-      <h1 className="mb-6 text-xl font-black uppercase tracking-tight text-[#0B1E36]">
-=======
       <h1 className="mb-6 text-xl font-black uppercase tracking-tight text-[#0B2545]">
->>>>>>> 73e09d3 (added skeletal loading and current location)
         Staff Directory
       </h1>
 
