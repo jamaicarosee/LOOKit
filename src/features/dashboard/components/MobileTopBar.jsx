@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React, { useEffect, useState } from 'react';
->>>>>>> dc41c8c (Google Account in Login. Google account in accountinfo)
 import { User } from 'lucide-react';
 
 import { useAuth } from '../../login/context/AuthContext';
