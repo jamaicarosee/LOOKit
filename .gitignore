@@ -38,4 +38,8 @@ geo_diagnostics_*.geojson
 
 #Temporary Files
 tmp/
-temp/
+temp/.env
+.venv/
+__pycache__/
+*.pyc
+data/supabase_graph_cache.json

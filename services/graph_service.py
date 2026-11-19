@@ -968,7 +968,19 @@ class CampusGraphService:
                     "lineId": meta.get("lineId") or f"edge_{e['pathid']}",
                     "name": e.get("name") or "Path",
                     "stairName": meta.get("stairName"),
-                    "kind": e.get("kind") or "walk",
+                    "kind": (
+                        "stairs" if (
+                            (e.get("floor_from") or 1) != (e.get("floor_to") or (e.get("floor_from") or 1))
+                            or e.get("kind") == "stairs"
+                        ) else
+                        "ramp" if (
+                            not re.match(r"^PWD RAMP$", (e.get("name") or "").strip(), re.I)
+                            and (e.get("kind") == "ramp" or re.search(r"\bramp\b", e.get("name") or "", re.I))
+                        ) else
+                        "walk" if re.match(r"^Lobby (column )?to courtyard ring", e.get("name") or "", re.I) else
+                        "entrance-stairs" if re.search(r"(stair|stairs|staircase|lobby stairs path)", e.get("name") or "", re.I) else
+                        (e.get("kind") or "walk")
+                    ),
                     "zone": e.get("zone") or "indoor",
                     "oneway": bool(e.get("oneway", False)),
                     "building": meta.get("building"),
@@ -982,6 +994,33 @@ class CampusGraphService:
                     "len": float(e.get("distance") or 0.0),
                 }
             )
+
+        ramp_base = [121.100491841, 14.573097]
+        base_nodes = [n for n in self.nodes if n["floor"] == 1 and haversine(n["coord"], ramp_base) < 0.8]
+        if base_nodes:
+            bn = base_nodes[0]
+            for other in self.nodes:
+                if other["id"] != bn["id"] and other["floor"] == 1:
+                    d = haversine(bn["coord"], other["coord"])
+                    if 0.8 <= d <= 5.0:
+                        self.edges.append({
+                            "id": len(self.edges),
+                            "lineId": f"storage_ramp_link_{bn['id']}_{other['id']}",
+                            "name": "CAS South Walkway to Storage PWD Ramp",
+                            "stairName": None,
+                            "kind": "walk",
+                            "zone": "outdoor",
+                            "oneway": False,
+                            "building": None,
+                            "spur": False,
+                            "a": bn["id"],
+                            "b": other["id"],
+                            "floor": 1,
+                            "floorTo": 1,
+                            "coords": [bn["coord"], other["coord"]],
+                            "coordsTo": None,
+                            "len": d,
+                        })
 
         self.adj = [[] for _ in self.nodes]
         for edge in self.edges:
@@ -1081,10 +1120,35 @@ class CampusGraphService:
         return {"ids": ids, "exact": False}
 
     def _edge_distance(self, edge: Dict[str, Any], mode: Dict[str, Any]) -> float:
-        is_stairs = edge.get("kind") in ("stairs", "entrance-stairs")
-        if is_stairs and mode.get("avoidStairs"):
+        kind = edge.get("kind")
+        if kind in ("stairs", "entrance-stairs") and mode.get("avoidStairs"):
             return float("inf")
-        return STAIRS_LENGTH_M if edge.get("kind") == "stairs" else float(edge.get("len", 0.0))
+        if kind == "entrance-stairs" and mode.get("preferRamps"):
+            return float("inf")
+        if kind == "stairs" and mode.get("climbBuildingOnly"):
+            eb = self._building_at((edge.get("coords") or [[0, 0]])[0]) or edge.get("building")
+            if eb and eb != mode["climbBuildingOnly"]:
+                return float("inf")
+        if kind == "stairs" and mode.get("climbBuildingOnly"):
+            eb = self._building_at((edge.get("coords") or [[0, 0]])[0]) or edge.get("building")
+            if eb and eb != mode["climbBuildingOnly"]:
+                return float("inf")
+        raw_len = STAIRS_LENGTH_M if kind == "stairs" else float(edge.get("len", 0.0))
+        if mode.get("avoidStairs") or mode.get("preferRamps"):
+            ename = (edge.get("name") or "").lower()
+            coords = edge.get("coords") or []
+            if ename == "east column north" and any(
+                abs(c[1] - 14.573206985) < 1e-6 or abs(c[1] - 14.57312078) < 1e-6
+                for c in coords
+            ):
+                return float("inf")
+            if "door - pced activity area" in ename and any(
+                abs(c[0] - 121.100540851) < 1e-6 for c in coords
+            ):
+                return float("inf")
+            if kind == "ramp":
+                return max(0.5, raw_len * 0.65)
+        return raw_len
 
     def _shortest_path(
         self, sources: List[int], targets: List[int], mode: Dict[str, Any]
@@ -1159,10 +1223,9 @@ class CampusGraphService:
         targets: List[int],
         mode: Dict[str, Any],
     ) -> Optional[Dict[str, Any]]:
-        lobby = self.tags.get(JAVIER_LOBBY_TAG)
-        in_javier = lambda loc: bool(loc and loc.get("building") in JAVIER_AREA)
-        if not emergency and lobby is not None and in_javier(from_loc) != in_javier(to_loc):
-            return self._shortest_path_via(sources, lobby, targets, mode)
+        # Standard mode (pwd=False): take the true shortest absolute path across campus.
+        # PWD mode (avoidStairs / preferRamps): entrance-stairs are blocked, so Dijkstra
+        # automatically routes through the nearest PWD ramp (MAE, PCED, CAS, or Javier Lobby).
         return self._shortest_path(sources, targets, mode)
 
     def _building_at(self, coord: List[float]) -> Optional[str]:
@@ -1229,15 +1292,31 @@ class CampusGraphService:
                     f"Indoor path to {to_loc.get('name')} is not mapped; the route ends at the {to_loc.get('building') or 'building'} entrance."
                 )
 
-        mode = {"avoidStairs": pwd}
+        mode = {"avoidStairs": pwd, "preferRamps": pwd}
         path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
+        used_upper_floor_stairs = False
+        used_upper_floor_stairs = False
         if not path and pwd:
-            mode = {"avoidStairs": False}
+            # Multi-floor PWD fallback:
+            # 1) Keep entrance-stairs blocked so building exit/entry on Floor 1 uses PWD ramps.
+            # 2) If going from Floor 1 to an upper floor in a DIFFERENT building, forbid climbing
+            #    stairs in the origin building so the route traverses Floor 1 via PWD ramps into
+            #    the target building first, then climbs stairs inside the target building.
+            from_bldg = from_loc.get("building")
+            to_bldg = to_loc.get("building") if to_loc else None
+            target_floor = (to_loc.get("floor") or 1) if to_loc else 1
+            src_floor = from_loc.get("floor") or 1
+
+            mode = {"avoidStairs": False, "preferRamps": True}
+            if src_floor == 1 and target_floor > 1 and from_bldg and to_bldg and from_bldg != to_bldg:
+                mode["climbBuildingOnly"] = to_bldg
+
             path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
+            if not path and "climbBuildingOnly" in mode:
+                mode.pop("climbBuildingOnly")
+                path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
             if path:
-                warnings.append(
-                    "No step-free route exists in the campus data (no elevator or ramp between floors). This route uses stairs."
-                )
+                used_upper_floor_stairs = True
         if not path:
             return None
 
@@ -1280,6 +1359,32 @@ class CampusGraphService:
                 "endFloor": self.nodes[path["target"]]["floor"],
             },
         )
+
+        if used_upper_floor_stairs:
+            steps = result.get("steps") or []
+            insert_idx = None
+            for idx, st in enumerate(steps):
+                if st.get("floor") == 1 and st.get("type") == "ramp":
+                    insert_idx = idx + 1
+            if insert_idx is None:
+                for idx, st in enumerate(steps):
+                    if st.get("type") == "stairs":
+                        insert_idx = idx
+                        break
+            if insert_idx is not None:
+                ref_st = steps[max(0, insert_idx - 1)]
+                steps.insert(insert_idx, {
+                    "id": "step-pwd-upper-note",
+                    "distanceMeters": 0,
+                    "bearing": None,
+                    "type": "note",
+                    "instruction": "Note: There is no PWD ramp or elevator going up to upper floors; proceed using the stairs.",
+                    "floor": ref_st.get("floor", 1),
+                    "coordinate": ref_st.get("coordinate"),
+                    "coords": [ref_st.get("coordinate")] if ref_st.get("coordinate") else [],
+                })
+                for re_i, st in enumerate(steps):
+                    st["id"] = f"step-{re_i}"
 
         if path.get("via") is not None:
             lobby_coord = self.nodes[path["via"]]["coord"]
