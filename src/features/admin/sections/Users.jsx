@@ -16,6 +16,7 @@ const ACTIONS = [
 
 const EMPTY = { fullName: '', email: '', role: 'user', password: '' };
 const MIN_PASSWORD = 8;
+const MAX_PASSWORD = 72;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const displayName = (u) => u.full_name || u.email;
@@ -25,8 +26,6 @@ export default function Users() {
   const [showInactive, setShowInactive] = useState(false);
   const debouncedSearch = useDebouncedValue(search.trim());
   const { users, status, reload } = useUsersData({ q: debouncedSearch, includeInactive: showInactive });
-  
-  // Set dropdown to closed by default
   const [menuOpen, setMenuOpen] = useState(false);
   const [action, setAction] = useState(null);
   const [targetId, setTargetId] = useState('');
@@ -34,11 +33,8 @@ export default function Users() {
   const [form, setForm] = useState(EMPTY);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState(null);
-
-  // State for Confirmation Modal
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState({});
-
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const target = targetId ? users.find((u) => String(u.id) === targetId) || targetUser : null;
   const pickerUsers = target && !users.some((u) => u.id === target.id) ? [target, ...users] : users;
@@ -96,11 +92,26 @@ export default function Users() {
       if (!fullName) return fail('Enter a full name.');
       if (!email) return fail('Enter an email address.');
       if (!EMAIL_RE.test(email)) return fail('Enter a valid email address.');
-      if (form.password.length < MIN_PASSWORD) return fail(`The temporary password needs at least ${MIN_PASSWORD} characters.`);
-      
-      run(() => addUser({ fullName, email, role: form.role, password: form.password }), `Added ${fullName}.`).then((ok) => {
-        if (ok) setForm(EMPTY);
+      if (form.password.length < MIN_PASSWORD) {
+        return fail(`The temporary password needs at least ${MIN_PASSWORD} characters.`);
+      }
+      if (form.password.length > MAX_PASSWORD) {
+        return fail(`The temporary password must be at most ${MAX_PASSWORD} characters.`);
+      }
+
+      setConfirmConfig({
+        title: 'Add New User',
+        message: `Create account for ${fullName} (${email})? A temporary password will be assigned, and they will be prompted to change it upon first login.`,
+        isDanger: false,
+        confirmAction: async () => {
+          const ok = await run(
+            () => addUser({ fullName, email, role: form.role, password: form.password }),
+            `Added user ${fullName}.`
+          );
+          if (ok) setForm(EMPTY);
+        },
       });
+      setConfirmModalOpen(true);
       return;
     }
 
@@ -115,7 +126,7 @@ export default function Users() {
           confirmAction: async () => {
             const ok = await run(() => reactivateUser(target.id), `Reactivated ${displayName(target)}.`);
             if (ok) clearTarget();
-          }
+          },
         });
       } else {
         setConfirmConfig({
@@ -128,7 +139,7 @@ export default function Users() {
               setShowInactive(true);
               clearTarget();
             }
-          }
+          },
         });
       }
       setConfirmModalOpen(true);
@@ -138,7 +149,7 @@ export default function Users() {
     if (!fullName) return fail('Full name cannot be empty.');
     if (!email) return fail('Email cannot be empty.');
     if (!EMAIL_RE.test(email)) return fail('Enter a valid email address.');
-    
+
     setConfirmConfig({
       title: 'Update User Details',
       message: `Are you sure you want to update the details of ${fullName}?`,
@@ -151,7 +162,7 @@ export default function Users() {
         );
         if (Object.keys(patch).length === 0) return fail('Nothing has changed yet.');
         await run(() => updateUser(target.id, patch), `Updated ${fullName}.`);
-      }
+      },
     });
     setConfirmModalOpen(true);
   }
@@ -191,7 +202,7 @@ export default function Users() {
             autoComplete="new-password"
             value={form.password}
             onChange={(e) => setField('password', e.target.value)}
-            placeholder={`At least ${MIN_PASSWORD} characters`}
+            placeholder={`Between ${MIN_PASSWORD} and ${MAX_PASSWORD} characters`}
             disabled={busy}
           />
         </Field>
@@ -243,13 +254,25 @@ export default function Users() {
           {action === 'delete' && (
             <>
               {userPicker('Who will be deleted?')}
-              {reactivating && <p className="text-xs text-slate-500">This user is inactive. You can bring the account back by reactivating it.</p>}
+              {reactivating && (
+                <p className="text-xs text-slate-500">
+                  This user is inactive. You can bring the account back by reactivating it.
+                </p>
+              )}
             </>
           )}
 
           {action && (action === 'add' || target) && (
             <PrimaryButton onClick={apply} disabled={busy}>
-              {busy ? 'Saving…' : action === 'add' ? 'Add user' : action === 'delete' ? (reactivating ? 'Reactivate user' : 'Delete user') : 'Apply change'}
+              {busy
+                ? 'Saving…'
+                : action === 'add'
+                ? 'Add user'
+                : action === 'delete'
+                ? reactivating
+                  ? 'Reactivate user'
+                  : 'Delete user'
+                : 'Apply change'}
             </PrimaryButton>
           )}
           <Notice notice={notice} />
@@ -270,7 +293,9 @@ export default function Users() {
             {status === 'ready' && users.length === 0 && <p className="text-sm text-slate-500">No users found.</p>}
             {status !== 'loading' && users.length > 0 && (
               <div className="grid grid-cols-1 gap-3 pb-6">
-                {users.map((u) => <UserCard key={u.id} user={u} onSelect={onCardSelect} selected={target?.id === u.id} />)}
+                {users.map((u) => (
+                  <UserCard key={u.id} user={u} onSelect={onCardSelect} selected={target?.id === u.id} />
+                ))}
               </div>
             )}
           </div>
