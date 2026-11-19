@@ -2,20 +2,27 @@ import React from 'react';
 import ScreenShell from '../navigation/ScreenShell';
 import { useViewport } from '../dashboard/hooks/useViewport';
 import RouteForm from './components/RouteForm';
-import { loadRecent } from './hooks/useRouteInputs';
+import useRecentSearches from './hooks/useRecentSearches';
 
-// Search screen: From / To, route toggles and Start Navigation.
-// Desktop: full-width frame like the dashboard; phone: single column.
 export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect, onProfileClick }) {
   const { isDesktop } = useViewport(1024);
-  const recent = loadRecent();
+  const { recentRoutes, saveRecentRoute } = useRecentSearches();
 
-  const recentSection = recent.length > 0 && (
+  const handleStartNavigation = () => {
+    if (inputs.from && inputs.to) {
+      saveRecentRoute(inputs.from, inputs.to);
+    }
+    if (onStart) onStart();
+  };
+
+  const recentSection = recentRoutes.length > 0 && (
     <section className={isDesktop ? '' : 'mt-6'} aria-label="Recent routes">
-      <h3 className="px-1 mb-2 text-[10px] lg:text-xs font-black uppercase tracking-widest text-[#607289]">Recent</h3>
+      <h3 className="px-1 mb-2 text-[10px] lg:text-xs font-black uppercase tracking-widest text-[#607289]">
+        Recent
+      </h3>
       <ul className="space-y-2">
-        {recent.map((r) => (
-          <li key={`${r.from.id}>${r.to.id}`}>
+        {recentRoutes.map((r) => (
+          <li key={r.id || `${r.from.id}>${r.to.id}`}>
             <button
               type="button"
               onClick={() => {
@@ -37,14 +44,13 @@ export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect,
       {isDesktop ? (
         <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-8 py-6">
           <div className="max-w-6xl mx-auto grid grid-cols-2 gap-10 items-start">
-            <RouteForm inputs={inputs} onBack={onBack} onStart={onStart} />
+            <RouteForm inputs={inputs} onBack={onBack} onStart={handleStartNavigation} />
             <div className="pt-14">{recentSection}</div>
           </div>
         </main>
       ) : (
         <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pb-4">
-          <RouteForm inputs={inputs} onBack={onBack} onStart={onStart} />
-          {/* Recent routes fill the otherwise empty space */}
+          <RouteForm inputs={inputs} onBack={onBack} onStart={handleStartNavigation} />
           {recentSection}
         </main>
       )}
