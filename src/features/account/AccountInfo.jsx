@@ -11,6 +11,7 @@ import {
 
 import { useViewport } from '../dashboard/hooks/useViewport';
 import useRecentSearches from '../search/hooks/useRecentSearches';
+import apiClient from '../../services/apiClient';
 
 export default function AccountInfo({
   onBackToMap,
