@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 
 import React, { useState, useEffect } from 'react';
->>>>>>> dc41c8c (Google Account in Login. Google account in accountinfo)
 import { MapPin, Users, Info, User } from 'lucide-react';
 
 import { useAboutNav } from '../../../about/AboutNavContext';
