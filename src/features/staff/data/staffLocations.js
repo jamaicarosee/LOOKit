@@ -1,17 +1,13 @@
 // Where each staff member can be found on the campus map.
 //
-// TEMPORARY RULES (until every office has its own room on the map):
-//   1. If the person's office has a room on the map, they are linked to that room.
-//   2. Otherwise, college staff are linked to their college's main office.
-//   3. Otherwise (administration units with no room yet), they are linked to the Javier Building.
-//
-// Rooms are referenced by the `code` property used in /public/data/floor{n}/buildings_f{n}.geojson,
-// so nothing here depends on generated ids. To give an office its real room later,
-// just add a line to OFFICE_ROOMS.
+// Priority order:
+//   1. Database-assigned officeLocationId / office_location_id (set in Admin -> Directory)
+//   2. Database-assigned room_code or matching room name
+//   3. Hardcoded OFFICE_ROOMS / COLLEGE_MAIN_OFFICE dictionary fallback
+//   4. Javier Building fallback
 
 import { getAll } from '../../navigation/services/locationService';
 
-// Office name (as written in staffData.js) -> room code on the map
 export const OFFICE_ROOMS = {
   'Office of the Chancellor': 'F2-JAV-OFCHAN',
   'Disaster Risk Reduction Management Office': 'JAV-DRRMU',
@@ -32,21 +28,16 @@ export const OFFICE_ROOMS = {
   'National Service Training Program Office': 'MAE-NSTP',
 };
 
-// Main office of each college / institute (keyed by the first entry of `groups`)
 export const COLLEGE_MAIN_OFFICE = {
-  cbea: 'F2-JAV-OFDEAN', // Office of the Dean (Javier, 2nd floor)
-  ics: 'MAE-ICSOFFICE', // ICS Office of the Director (M.A.E, 1st floor)
-  cas: 'F2-CAS-ADEAN', // CAS Assistant Dean's Office
-  ced: 'F2-CED-ADEAN', // CED Assistant Dean's Office
+  cbea: 'F2-JAV-OFDEAN',
+  ics: 'MAE-ICSOFFICE',
+  cas: 'F2-CAS-ADEAN',
+  ced: 'F2-CED-ADEAN',
 };
 
-// CBEA program heads have their own room
 const CBEA_PROGRAM_HEADS_ROOM = 'F2-JAV-PROGHEADS';
-
-// Used when nothing more specific is known
 const FALLBACK_BUILDING = 'Javier Building';
 
-// Building name on the map -> id used by the dashboard map's building highlight
 const BUILDING_FILTER = {
   'M.A.E Building': 'mae',
   'CED Building': 'ced',
@@ -55,17 +46,28 @@ const BUILDING_FILTER = {
   Canteen: 'canteen',
 };
 
-// What we know about a person's place, before looking at the map data.
-// kind: 'office' (their own office) | 'college' (college main office) | 'building' (building only)
 export function getLocationRef(staff) {
-  // 1. Prio: Database-assigned room code (from FastAPI joined with location table)
-  if (staff.room_code) return { kind: 'office', code: staff.room_code };
+  const locationId = staff.officeLocationId ?? staff.office_location_id;
+  if (locationId != null && locationId !== '') {
+    return { kind: 'office', locationId: String(locationId), code: staff.room_code || null };
+  }
 
-  // 2. Fallback: Hardcoded dictionary mapping
-  const own = OFFICE_ROOMS[staff.office];
-  if (own) return { kind: 'office', code: own };
+  if (staff.room_code) {
+    return { kind: 'office', code: staff.room_code };
+  }
 
-  const section = staff.groups?.[0];
+  if (staff.office) {
+    const exactMatch = OFFICE_ROOMS[staff.office];
+    if (exactMatch) return { kind: 'office', code: exactMatch };
+
+    const normOffice = staff.office.trim().toLowerCase();
+    const ciKey = Object.keys(OFFICE_ROOMS).find((k) => k.toLowerCase() === normOffice);
+    if (ciKey) return { kind: 'office', code: OFFICE_ROOMS[ciKey] };
+
+    return { kind: 'office', code: staff.office.trim(), query: staff.office.trim() };
+  }
+
+  const section = (staff.groups?.[0] || '').toLowerCase();
   if (section && section !== 'offices') {
     if (section === 'cbea' && staff.position === 'Program Head') {
       return { kind: 'college', code: CBEA_PROGRAM_HEADS_ROOM };
@@ -78,18 +80,46 @@ export function getLocationRef(staff) {
   return { kind: 'building', building: FALLBACK_BUILDING };
 }
 
-// Finds the map location (room or building) for a staff member.
-// Resolves to: { loc, kind, filterId, exact }
-//   loc      - location object understood by the Directions screen (room or building)
-//   kind     - 'office' | 'college' | 'building'
-//   filterId - building id for the map highlight (undefined if the building is not highlightable)
-//   exact    - true only when the person's own office is on the map
 export async function resolveStaffLocation(staff) {
   const all = await getAll();
   const ref = getLocationRef(staff);
 
   let kind = ref.kind;
-  let loc = ref.code ? all.find((l) => l.type === 'room' && l.code === ref.code) : null;
+  let loc = null;
+
+  if (ref.locationId) {
+    loc =
+      all.find(
+        (l) =>
+          String(l.dbId ?? l.location_id ?? '') === ref.locationId ||
+          String(l.id) === ref.locationId ||
+          String(l.id) === `room:${ref.locationId}`
+      ) || null;
+  }
+
+  if (!loc && ref.code) {
+    const normCode = ref.code.trim().toLowerCase();
+    loc =
+      all.find(
+        (l) =>
+          l.type === 'room' &&
+          ((l.id && String(l.id).toLowerCase() === normCode) ||
+            (l.code && l.code.toLowerCase() === normCode.split('@')[0]) ||
+            (l.name && l.name.toLowerCase() === normCode) ||
+            (l.label && l.label.toLowerCase() === normCode))
+      ) || null;
+  }
+
+  if (!loc && ref.query) {
+    const normQuery = ref.query.toLowerCase();
+    loc =
+      all.find(
+        (l) =>
+          l.type === 'room' &&
+          ((l.name && l.name.toLowerCase() === normQuery) ||
+            (l.full_name && l.full_name.toLowerCase() === normQuery))
+      ) || null;
+  }
 
   if (!loc) {
     kind = 'building';
@@ -101,6 +131,6 @@ export async function resolveStaffLocation(staff) {
     loc,
     kind,
     filterId: loc ? BUILDING_FILTER[loc.building] : undefined,
-    exact: kind === 'office',
+    exact: kind === 'office' && loc?.type === 'room',
   };
 }
