@@ -461,7 +461,7 @@ def build_route_result(path: Dict[str, Any], ctx: Dict[str, Any]) -> Dict[str, A
             )
         )
     )
-    total_dur = int(round(sum(p.get("cost", 0.0) for p in pieces)))
+    total_dur = int(round(sum(p.get("cost", 0.0) for p in pieces if math.isfinite(p.get("cost", 0.0)))))
 
     return {
         "distanceMeters": total_dist,
