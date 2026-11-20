@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-
-import React, { useState, useEffect } from 'react';
-=======
-import React from 'react';
->>>>>>> 1e25e3c (Added PWD validation and Staff Directory Location)
+import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, Users, Info, User } from 'lucide-react';
-
 import { useAboutNav } from '../../../about/AboutNavContext';
 import { useStaffNav } from '../../../staff/StaffNavContext';
 import { useAdminNav } from '../../../admin/AdminNavContext';
 import { ADMIN_NAV_ITEM } from '../../../admin/adminNavItem';
-
 import { useAuth } from '../../../login/context/AuthContext';
-
 import { DesktopNavTabsSkeleton } from '../../../loading/components/NavSkeletons';
 import useNavLoading from '../../../loading/hooks/useNavLoading';
 

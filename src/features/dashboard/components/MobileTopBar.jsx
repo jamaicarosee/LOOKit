@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-=======
+import { useEffect } from 'react';
 import React, { useState } from 'react';
->>>>>>> 1e25e3c (Added PWD validation and Staff Directory Location)
 import { User } from 'lucide-react';
 
 import { useAuth } from '../../login/context/AuthContext';
