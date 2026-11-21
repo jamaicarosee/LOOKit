@@ -20,13 +20,23 @@ export default function StaffCard({ staff, onSelect, selected = false }) {
       {/* Details */}
       <div className="min-w-0">
         <p className="text-sm font-extrabold text-[#0B2545] truncate">{staff.name}</p>
+
         {staff.position && (
           <p className="text-xs text-slate-400 truncate">{staff.position}</p>
         )}
+        {staff.secondaryPosition && (
+          <p className="text-xs text-slate-400 truncate">{staff.secondaryPosition}</p>
+        )}
+
         <p className="mt-1 flex items-center gap-1 text-[11px] text-slate-500 truncate">
           <MapPin className="w-3 h-3 text-[#D4A017] shrink-0" />
           <span className="truncate">{staff.office}</span>
         </p>
+        {staff.secondaryOffice && (
+          <p className="pl-4 text-[11px] text-slate-500 truncate">
+            {staff.secondaryOffice}
+          </p>
+        )}
       </div>
     </button>
   );

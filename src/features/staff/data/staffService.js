@@ -22,6 +22,8 @@ const COLUMN = {
   departmentId: 'department_id',
   officeLocationId: 'office_location_id',
   section: 'section',
+  secondaryRole: 'secondary_role',
+  secondaryDepartmentId: 'secondary_department_id',
 };
 
 function toRow(values) {

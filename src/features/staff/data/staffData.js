@@ -168,15 +168,17 @@ export function getInitials(fullName = '') {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Search by name, position, or office/program
+// Search by name, primary/secondary position, or primary/secondary office/program
 export function filterStaff(list, query) {
   const q = query.trim().toLowerCase();
   if (!q) return list;
   return list.filter(
     (s) =>
-      s.name.toLowerCase().includes(q) ||
-      s.position.toLowerCase().includes(q) ||
-      s.office.toLowerCase().includes(q)
+      (s.name || '').toLowerCase().includes(q) ||
+      (s.position || '').toLowerCase().includes(q) ||
+      (s.secondaryPosition || '').toLowerCase().includes(q) ||
+      (s.office || '').toLowerCase().includes(q) ||
+      (s.secondaryOffice || '').toLowerCase().includes(q)
   );
 }
 

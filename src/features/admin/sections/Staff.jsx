@@ -29,6 +29,8 @@ const EMPTY = {
   email: '',
   departmentId: '',
   section: 'offices',
+  secondaryRole: '',
+  secondaryDepartmentId: '',
   officeLocationId: '',
 };
 
@@ -42,6 +44,7 @@ export default function Staff() {
   const [action, setAction] = useState(null);
   const [targetId, setTargetId] = useState('');
   const [form, setForm] = useState(EMPTY);
+  const [hasSecondPosition, setHasSecondPosition] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState(null);
 
@@ -65,11 +68,18 @@ export default function Staff() {
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
-  // Auto-select the matching Directory Section whenever the Department changes
+  // Auto-select the matching Directory Section whenever the primary Department changes
   const handleDepartmentChange = (deptId) => {
     const matched = departments.find((d) => String(d.id) === String(deptId));
     const autoSection = matched ? sectionForDepartment(matched.name) : 'offices';
     setForm((f) => ({ ...f, departmentId: deptId, section: autoSection }));
+  };
+
+  const handleToggleSecondPosition = (checked) => {
+    setHasSecondPosition(checked);
+    if (!checked) {
+      setForm((f) => ({ ...f, secondaryRole: '', secondaryDepartmentId: '' }));
+    }
   };
 
   const target = staff.find((s) => String(s.id) === targetId);
@@ -82,7 +92,9 @@ export default function Staff() {
     return staff.filter((s) =>
       (s.name || '').toLowerCase().includes(q) ||
       (s.position || '').toLowerCase().includes(q) ||
+      (s.secondaryPosition || '').toLowerCase().includes(q) ||
       (s.office || '').toLowerCase().includes(q) ||
+      (s.secondaryOffice || '').toLowerCase().includes(q) ||
       (s.room_code || '').toLowerCase().includes(q)
     );
   }, [staff, search]);
@@ -92,6 +104,7 @@ export default function Staff() {
     setMenuOpen(false);
     setTargetId('');
     setForm(EMPTY);
+    setHasSecondPosition(false);
     setNotice(null);
   }
 
@@ -101,10 +114,15 @@ export default function Staff() {
     const p = staff.find((s) => String(s.id) === id);
     if (!p) {
       setForm(EMPTY);
+      setHasSecondPosition(false);
       return;
     }
     const resolvedOfficeId = p.officeLocationId ?? p.office_location_id;
     const resolvedSection = normalizeSectionId(p.section || p.groups?.[0] || sectionForDepartment(p.office));
+    const secRole = p.secondaryPosition || '';
+    const secDeptId = p.secondaryDepartmentId == null ? '' : String(p.secondaryDepartmentId);
+
+    setHasSecondPosition(Boolean(secRole || secDeptId));
     setForm({
       ...EMPTY,
       firstName: p.firstName || '',
@@ -113,6 +131,8 @@ export default function Staff() {
       email: p.email || '',
       departmentId: p.departmentId == null ? '' : String(p.departmentId),
       section: resolvedSection,
+      secondaryRole: secRole,
+      secondaryDepartmentId: secDeptId,
       officeLocationId: resolvedOfficeId == null ? '' : String(resolvedOfficeId),
     });
   }
@@ -145,7 +165,18 @@ export default function Staff() {
 
     if (action === 'add') {
       if (!names.firstName || !names.lastName) return setNotice({ type: 'error', text: 'Enter a first and last name.' });
-      run(() => addStaff({ ...form, ...names }), `Added ${names.firstName} ${names.lastName}.`).then((ok) => ok && setForm(EMPTY));
+      const payload = {
+        ...form,
+        ...names,
+        secondaryRole: hasSecondPosition ? (form.secondaryRole || '').trim() : '',
+        secondaryDepartmentId: hasSecondPosition ? form.secondaryDepartmentId : '',
+      };
+      run(() => addStaff(payload), `Added ${names.firstName} ${names.lastName}.`).then((ok) => {
+        if (ok) {
+          setForm(EMPTY);
+          setHasSecondPosition(false);
+        }
+      });
       return;
     }
 
@@ -178,6 +209,8 @@ export default function Staff() {
           email: (form.email || '').trim(),
           departmentId: form.departmentId,
           section: form.section,
+          secondaryRole: hasSecondPosition ? (form.secondaryRole || '').trim() : '',
+          secondaryDepartmentId: hasSecondPosition ? form.secondaryDepartmentId : '',
           officeLocationId: form.officeLocationId,
         };
         const beforeOfficeId = target.officeLocationId ?? target.office_location_id;
@@ -189,6 +222,8 @@ export default function Staff() {
           email: target.email || '',
           departmentId: target.departmentId == null ? '' : String(target.departmentId),
           section: beforeSection,
+          secondaryRole: target.secondaryPosition || '',
+          secondaryDepartmentId: target.secondaryDepartmentId == null ? '' : String(target.secondaryDepartmentId),
           officeLocationId: beforeOfficeId == null ? '' : String(beforeOfficeId),
         };
         const patch = Object.fromEntries(Object.entries(next).filter(([k, v]) => v !== before[k]));
@@ -221,7 +256,7 @@ export default function Staff() {
         </Field>
       </div>
       <Field label="Title">
-        <TextInput value={form.role} onChange={(e) => setField('role', e.target.value)} placeholder="Title" disabled={busy} />
+        <TextInput value={form.role} onChange={(e) => setField('role', e.target.value)} placeholder="e.g. Head - Unit Name" disabled={busy} />
       </Field>
       <Field label="Email">
         <TextInput type="email" value={form.email} onChange={(e) => setField('email', e.target.value)} placeholder="Email" disabled={busy} />
@@ -239,6 +274,42 @@ export default function Staff() {
           ))}
         </SelectInput>
       </Field>
+
+      {/* Optional Dual Position */}
+      <label className="flex items-center gap-2 pt-1 text-xs font-semibold text-[#0B2545] cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={hasSecondPosition}
+          onChange={(e) => handleToggleSecondPosition(e.target.checked)}
+          disabled={busy}
+          className="h-4 w-4 rounded border-slate-300 text-[#0B2545] focus:ring-[#0B2545]"
+        />
+        Other Designation
+      </label>
+
+      {hasSecondPosition && (
+        <div className="space-y-3 rounded-lg border border-slate-200 bg-[#F8F9F9] p-3">
+          <Field label="Title">
+            <TextInput
+              value={form.secondaryRole}
+              onChange={(e) => setField('secondaryRole', e.target.value)}
+              placeholder="e.g. Faculty - Title"
+              disabled={busy}
+            />
+          </Field>
+          <Field label="Department">
+            <SelectInput
+              value={form.secondaryDepartmentId}
+              onChange={(e) => setField('secondaryDepartmentId', e.target.value)}
+              disabled={busy}
+            >
+              <option value="">Department</option>
+              {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </SelectInput>
+          </Field>
+        </div>
+      )}
+
       <Field label="Office">
         <SelectInput value={form.officeLocationId} onChange={(e) => setField('officeLocationId', e.target.value)} disabled={busy}>
           <option value="">Office</option>
