@@ -110,13 +110,26 @@ async function getLocalRoute(from, to, options) {
     if (!dst.exact) warnings.push(`Indoor path to ${to.name} is not mapped; the route ends at the ${to.building || 'building'} entrance.`);
   }
 
-  // Step-free first; fall back to stairs with a clear warning when the data has no accessible link
-  let mode = { avoidStairs: pwd };
+  // Step-free strictly enforced when PWD is on; for upper floors, stop at destination building 1F PWD ramp with validation
+  let mode = { avoidStairs: pwd, preferRamps: pwd };
+  let pwdUpperBlocked = false;
   let path = findPath(graph, from, to, emergency, src.ids, targets, mode);
-  if (!path && pwd) {
-    mode = { avoidStairs: false };
-    path = findPath(graph, from, to, emergency, src.ids, targets, mode);
-    if (path) warnings.push('No step-free route exists in the campus data (no elevator or ramp between floors). This route uses stairs.');
+  if (!path && pwd && !emergency && to && (to.floor || 1) > 1) {
+    const bRamps = to.building ? getBuildingPwdRamps(graph, to.building) : [];
+    const f1Targets = bRamps.length
+      ? [...new Set(bRamps.flatMap((e) => [e.a, e.b]))]
+      : (raw.campus?.features || [])
+          .filter((f) => f.properties?.name === to.building)
+          .flatMap((f) => nodesNearGeometry(graph, f.geometry, 1));
+    if (f1Targets.length) {
+      path = findPath(graph, from, { ...to, floor: 1 }, false, src.ids, f1Targets, mode);
+      if (path) {
+        pwdUpperBlocked = true;
+        warnings.push(
+          `No PWD ramp or elevator goes up to Floor ${to.floor} (${to.name}). Route ends at ${to.building || 'the building'} (1st Floor) via the PWD ramp.`
+        );
+      }
+    }
   }
   if (!path) return null;
 
@@ -138,6 +151,34 @@ async function getLocalRoute(from, to, options) {
     startZone: from.type === 'room' ? 'indoor' : 'outdoor',
     endFloor: graph.nodes[path.target].floor,
   });
+
+  // Insert inline accessibility note right after the final 1st-floor PWD ramp step
+  if (usedUpperFloorStairs && Array.isArray(result.steps)) {
+    let insertIdx = null;
+    result.steps.forEach((st, idx) => {
+      if ((st.floor || 1) === 1 && st.type === 'ramp') insertIdx = idx + 1;
+    });
+    if (insertIdx === null) {
+      const stairIdx = result.steps.findIndex((st) => st.type === 'stairs');
+      if (stairIdx !== -1) insertIdx = stairIdx;
+    }
+    if (insertIdx !== null) {
+      const refSt = result.steps[Math.max(0, insertIdx - 1)];
+      result.steps.splice(insertIdx, 0, {
+        id: 'step-pwd-upper-note',
+        distanceMeters: 0,
+        bearing: null,
+        type: 'note',
+        instruction: 'Note: There is no PWD ramp or elevator going up to upper floors; proceed using the stairs.',
+        floor: refSt?.floor || 1,
+        coordinate: refSt?.coordinate,
+        coords: refSt?.coordinate ? [refSt.coordinate] : [],
+      });
+      result.steps.forEach((st, idx) => {
+        st.id = `step-${idx}`;
+      });
+    }
+  }
 
   // Say so in the directions when the route goes through the Javier lobby
   if (path.via !== undefined) {

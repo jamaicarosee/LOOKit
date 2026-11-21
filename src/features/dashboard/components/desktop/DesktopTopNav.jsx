@@ -1,14 +1,11 @@
-
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { MapPin, Users, Info, User } from 'lucide-react';
-
 import { useAboutNav } from '../../../about/AboutNavContext';
 import { useStaffNav } from '../../../staff/StaffNavContext';
 import { useAdminNav } from '../../../admin/AdminNavContext';
 import { ADMIN_NAV_ITEM } from '../../../admin/adminNavItem';
-
 import { useAuth } from '../../../login/context/AuthContext';
-
 import { DesktopNavTabsSkeleton } from '../../../loading/components/NavSkeletons';
 import useNavLoading from '../../../loading/hooks/useNavLoading';
 
