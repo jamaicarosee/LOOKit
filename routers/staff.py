@@ -24,6 +24,8 @@ class StaffCreate(BaseModel):
     department_id: Optional[int] = None
     office_location_id: Optional[int] = None
     section: Optional[str] = None
+    secondary_role: Optional[str] = None
+    secondary_department_id: Optional[int] = None
 
 
 class StaffUpdate(BaseModel):
@@ -34,6 +36,8 @@ class StaffUpdate(BaseModel):
     department_id: Optional[int] = None
     office_location_id: Optional[int] = None
     section: Optional[str] = None
+    secondary_role: Optional[str] = None
+    secondary_department_id: Optional[int] = None
 
 
 # --- Internal Helpers ---
@@ -77,6 +81,9 @@ def get_all_staff():
         loc_res = supabase.table("location").select("locationid, code").execute()
         loc_map = {r["locationid"]: r.get("code") for r in (loc_res.data or [])}
 
+        dept_res = supabase.table("departments").select("departmentid, name").execute()
+        dept_map = {d["departmentid"]: d.get("name") for d in (dept_res.data or [])}
+
         results = []
         for row in (staff_res.data or []):
             meta = row.get("metadata") or {}
@@ -85,11 +92,17 @@ def get_all_staff():
             room_code = loc_map.get(loc_id) if loc_id else None
             groups = normalize_groups(meta.get("groups"), dept_name)
 
+            sec_dept_id = meta.get("secondary_department_id")
+            sec_dept_name = dept_map.get(sec_dept_id) if sec_dept_id else None
+            sec_role = meta.get("secondary_role") or ""
+
             results.append({
                 "id": row["employee_number"],
                 "name": meta.get("full_name") or f"{row.get('first_name', '')} {row.get('last_name', '')}".strip(),
                 "position": row.get("role") or "",
+                "secondaryPosition": sec_role,
                 "office": dept_name,
+                "secondaryOffice": sec_dept_name or "",
                 "groups": groups,
                 "section": groups[0],
                 "office_location_id": loc_id,
@@ -100,6 +113,7 @@ def get_all_staff():
                 "lastName": row.get("last_name", ""),
                 "email": row.get("email", ""),
                 "departmentId": row.get("department_id"),
+                "secondaryDepartmentId": sec_dept_id,
             })
 
         results.sort(key=lambda x: x["id"])
@@ -162,14 +176,22 @@ def _fetch_staff_row(employee_number: int) -> Optional[dict]:
 # --- Protected Admin CRUD Endpoints ---
 @router.post("")
 def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: Adds a new staff member with automatic or explicit section categorization."""
+    """Admin-only: Adds a new staff member with automatic/explicit section and optional secondary position."""
     ip = get_client_ip(request)
     data = payload.dict(exclude_none=True)
     requested_section = data.pop("section", None)
+    secondary_role = data.pop("secondary_role", None)
+    secondary_department_id = data.pop("secondary_department_id", None)
 
     full_name = f"{data.get('first_name', '')} {data.get('last_name', '')}".strip()
     resolved_section = _resolve_target_section(requested_section, data.get("department_id"))
-    data["metadata"] = {"full_name": full_name, "groups": [resolved_section]}
+
+    meta = {"full_name": full_name, "groups": [resolved_section]}
+    if secondary_role and str(secondary_role).strip():
+        meta["secondary_role"] = str(secondary_role).strip()
+    if secondary_department_id is not None:
+        meta["secondary_department_id"] = secondary_department_id
+    data["metadata"] = meta
 
     try:
         res = supabase.table("staff_members").insert(data).execute()
@@ -193,7 +215,7 @@ def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(requ
 
 @router.put("/{employee_number}")
 def update_staff(employee_number: int, payload: StaffUpdate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: Updates an existing staff member and keeps metadata.groups synchronized."""
+    """Admin-only: Updates an existing staff member and keeps metadata (groups & secondary position) synchronized."""
     ip = get_client_ip(request)
     data = payload.dict(exclude_unset=True)
     before = None
@@ -204,6 +226,10 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
         before = _fetch_staff_row(employee_number)
         section_provided = "section" in data
         requested_section = data.pop("section", None)
+        sec_role_provided = "secondary_role" in data
+        secondary_role = data.pop("secondary_role", None)
+        sec_dept_provided = "secondary_department_id" in data
+        secondary_department_id = data.pop("secondary_department_id", None)
         dept_changed = "department_id" in data
 
         needs_meta_sync = (
@@ -211,6 +237,8 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
             or "last_name" in data
             or dept_changed
             or section_provided
+            or sec_role_provided
+            or sec_dept_provided
         )
 
         if needs_meta_sync:
@@ -229,6 +257,19 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
                 )
                 resolved_section = _resolve_target_section(requested_section, target_dept_id)
                 current_meta["groups"] = [resolved_section]
+
+            if sec_role_provided:
+                cleaned_role = secondary_role.strip() if isinstance(secondary_role, str) else None
+                if cleaned_role:
+                    current_meta["secondary_role"] = cleaned_role
+                else:
+                    current_meta.pop("secondary_role", None)
+
+            if sec_dept_provided:
+                if secondary_department_id is not None:
+                    current_meta["secondary_department_id"] = secondary_department_id
+                else:
+                    current_meta.pop("secondary_department_id", None)
 
             data["metadata"] = current_meta
 
