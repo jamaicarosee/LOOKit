@@ -3,7 +3,7 @@
 // (e.g. ['offices', 'cbea'] -> listed under "Offices & Administration").
 export const STAFF_SECTIONS = [
   { id: 'offices', title: 'Offices & Administration' },
-  { id: 'cbea', title: 'College of Business, Entrepreneurship, and Accountancy' },
+  { id: 'cbm', title: 'College of Business and Management' },
   { id: 'ics', title: 'Institute of Computer Studies' },
   { id: 'cas', title: 'College of Arts and Sciences' },
   { id: 'ced', title: 'College of Education' },
@@ -22,21 +22,21 @@ const person = (name, position, office, groups) => ({
 });
 
 const O = 'offices';
-const CBEA = 'cbea';
+const CBM = 'cbm';
 const ICS = 'ics';
 const CAS = 'cas';
 
 // ---------- Offices & administration ----------
 const offices = [
-  person('Dr. Corazon D. Austria', 'Chancellor', 'Office of the Chancellor', [O, CBEA]),
-  person('Instr. John Rey Dormentes', 'Head', 'Disaster Risk Reduction Management Office', [O, CBEA]),
+  person('Dr. Corazon D. Austria', 'Chancellor', 'Office of the Chancellor', [O, CBM]),
+  person('Instr. John Rey Dormentes', 'Head', 'Disaster Risk Reduction Management Office', [O, CBM]),
 
   // Vice Chancellor for Finance and Administration
-  person('Dr. Eugenia G. Samarista', 'Vice Chancellor for Finance and Administration', 'Office of the Vice Chancellor for Finance and Administration', [O, CBEA]),
-  person('Dr. Francis B. Banaag, CMP', 'Head', 'Human Resource Management Unit', [O, CBEA]),
+  person('Dr. Eugenia G. Samarista', 'Vice Chancellor for Finance and Administration', 'Office of the Vice Chancellor for Finance and Administration', [O, CBM]),
+  person('Dr. Francis B. Banaag, CMP', 'Head', 'Human Resource Management Unit', [O, CBM]),
   person('Instr. Susan O. Vargas', 'Head', 'Records Management Section', [O]),
   person('Instr. Elizabeth G. Buraga, MA', 'Head', 'Employee Relations and Engagement Unit', [O]),
-  person('Instr. Emerson B. Juales', 'Head', 'General Services Unit', [O, CBEA]),
+  person('Instr. Emerson B. Juales', 'Head', 'General Services Unit', [O, CBM]),
 
   // Vice Chancellor for Research, Innovation, and Extension Services
   person('Assoc. Prof. Jason A. Romero', 'Vice Chancellor for Research, Innovation, and Extension Services', 'Office of the Vice Chancellor for Research, Innovation, and Extension Services', [O]),
@@ -44,12 +44,12 @@ const offices = [
   // Vice Chancellor for Planning, Quality Assurance, and Strategic Initiatives
   person('Assoc. Prof. Niño P. Maliban', 'Vice Chancellor for Planning, Quality Assurance, and Strategic Initiatives', 'Office of the Vice Chancellor for Planning, Quality Assurance, and Strategic Initiatives', [O]),
   person('Instr. Fae B. Illut', 'Head', 'Management Information System Unit', [O]),
-  person('Instr. Errol F. Diestro', 'Head', 'Data Protection Unit', [O, CBEA]),
+  person('Instr. Errol F. Diestro', 'Head', 'Data Protection Unit', [O, CBM]),
 
   // Vice Chancellor for Academics and Students Affairs
   person('Dr. Kristoffer M. Morada', 'Vice Chancellor for Academics and Students Affairs', 'Office of the Vice Chancellor for Academics and Students Affairs', [O]),
   person('Dr. Maria Teresa R. Beloy', 'Head', 'Office of Student and Alumni Affairs Services', [O]),
-  person('Instr. Zandra L. Brinas', 'Head', 'Students and Alumni Affairs Services Unit', [O, CBEA]),
+  person('Instr. Zandra L. Brinas', 'Head', 'Students and Alumni Affairs Services Unit', [O, CBM]),
   person('Instr. Jake Jason M. Queddeng', 'Head', 'Counseling and Assessment Services Unit', [O]),
   person('Mary Prescious Glenne O. Bonifacio', 'Psychometrician / Guidance Staff', 'Counseling and Assessment Services Unit', [O]),
   person('Rohayna D. Hassan', 'Psychometrician / Guidance Staff', 'Counseling and Assessment Services Unit', [O]),
@@ -69,14 +69,14 @@ const offices = [
   person('Dr. Agnes F. Montalbo', 'COE Pasig Branch Coordinator', 'Cooperative Education Unit', [O]),
   person('Asst. Prof. Aivie May R. Morada', 'COE Pasig Branch Coordinator', 'Cooperative Education Unit', [O]),
   person('Instr. Chona A. Escote', 'COE Pasig Branch Coordinator', 'Cooperative Education Unit', [O]),
-  person('Instr. Krisia T. Oledan', 'COE Pasig Branch Coordinator', 'Cooperative Education Unit', [O, CBEA]),
+  person('Instr. Krisia T. Oledan', 'COE Pasig Branch Coordinator', 'Cooperative Education Unit', [O, CBM]),
 
   person('Instr. Mercy L. Alejandrino', 'Head', 'Auxiliary Services Unit', [O]),
   person('Assoc. Prof. Joven F. Andrada', 'Head', 'National Service Training Program Office', [O]),
 ];
 
-// ---------- College of Business, Entrepreneurship, and Accountancy (CBEA) ----------
-const COLLEGE = 'College of Business, Entrepreneurship, and Accountancy';
+// ---------- College of Business and Management (CBM) ----------
+const COLLEGE = 'College of Business and Management';
 const HRM = 'BSBA Human Resource Management';
 const OPS = 'BSBA Operations Management';
 const MKT = 'BSBA Marketing Management';
@@ -84,53 +84,53 @@ const FIN = 'BSBA Financial Management';
 const FT = 'Full-time Faculty';
 const PT = 'Part-time Faculty';
 
-const cbea = [
-  person('Dr. Kathryn D. Tria', 'Dean', COLLEGE, [CBEA]),
-  person('Dr. Jessie F. Sergote', 'Associate Dean', COLLEGE, [CBEA, O]),
+const cbm = [
+  person('Dr. Kathryn D. Tria', 'Dean', COLLEGE, [CBM]),
+  person('Dr. Jessie F. Sergote', 'Associate Dean', COLLEGE, [CBM, O]),
 
   // BSBA Human Resource Management
-  person('Instr. Florencia A. Dela Cruz, MBA', 'Program Head', HRM, [CBEA, O]),
-  person('Asst. Prof. Luzviminda Paras', FT, HRM, [CBEA]),
-  person('Instr. Maria Helen R. Gunda', FT, HRM, [CBEA]),
-  person('Dr. John Philip G. Pamposa', PT, HRM, [CBEA]),
-  person('Instr. Cheryll Eileen B. Nillo', PT, HRM, [CBEA]),
-  person('Instr. Eileen P. Santos', PT, HRM, [CBEA]),
-  person('Instr. Lucky Lester B. Ople, CPA', PT, HRM, [CBEA]),
-  person('Atty. Johnson L. Villaruel', PT, HRM, [CBEA]),
-  person('Instr. Kenneth Michael A.', PT, HRM, [CBEA]),
+  person('Instr. Florencia A. Dela Cruz, MBA', 'Program Head', HRM, [CBM, O]),
+  person('Asst. Prof. Luzviminda Paras', FT, HRM, [CBM]),
+  person('Instr. Maria Helen R. Gunda', FT, HRM, [CBM]),
+  person('Dr. John Philip G. Pamposa', PT, HRM, [CBM]),
+  person('Instr. Cheryll Eileen B. Nillo', PT, HRM, [CBM]),
+  person('Instr. Eileen P. Santos', PT, HRM, [CBM]),
+  person('Instr. Lucky Lester B. Ople, CPA', PT, HRM, [CBM]),
+  person('Atty. Johnson L. Villaruel', PT, HRM, [CBM]),
+  person('Instr. Kenneth Michael A.', PT, HRM, [CBM]),
 
   // BSBA Operations Management
-  person('Instr. Jessa C. Dionisio', 'Program Head', OPS, [CBEA, O]),
-  person('Instr. Reynante A. America', FT, OPS, [CBEA]),
-  person('Atty. Adrian Antazo', FT, OPS, [CBEA]),
-  person('Instr. Nestor W. Espenocilla', FT, OPS, [CBEA]),
-  person('Dr. Remil R. Yabut', PT, OPS, [CBEA]),
-  person('Dr. Marissa C. Marable', PT, OPS, [CBEA]),
-  person('Asst. Prof. Leonardo T. Cruz', PT, OPS, [CBEA]),
-  person('Instr. Harvey King P. De Leon', PT, OPS, [CBEA]),
-  person('Instr. Carla P. Labonete', PT, OPS, [CBEA]),
-  person('Instr. William B. Perez', PT, OPS, [CBEA]),
+  person('Instr. Jessa C. Dionisio', 'Program Head', OPS, [CBM, O]),
+  person('Instr. Reynante A. America', FT, OPS, [CBM]),
+  person('Atty. Adrian Antazo', FT, OPS, [CBM]),
+  person('Instr. Nestor W. Espenocilla', FT, OPS, [CBM]),
+  person('Dr. Remil R. Yabut', PT, OPS, [CBM]),
+  person('Dr. Marissa C. Marable', PT, OPS, [CBM]),
+  person('Asst. Prof. Leonardo T. Cruz', PT, OPS, [CBM]),
+  person('Instr. Harvey King P. De Leon', PT, OPS, [CBM]),
+  person('Instr. Carla P. Labonete', PT, OPS, [CBM]),
+  person('Instr. William B. Perez', PT, OPS, [CBM]),
 
   // BSBA Marketing Management
   // (Program Head Dr. Francis B. Banaag is listed under Offices + CBEA above)
-  person('Dr. Crister Jane H. Cabejo', FT, MKT, [CBEA]),
-  person('Instr. Ian M. Tianero', PT, MKT, [CBEA]),
-  person('Instr. Aldren L. Lorica', PT, MKT, [CBEA]),
-  person('Instr. Gladys A. Isip, CPA', PT, MKT, [CBEA]),
+  person('Dr. Crister Jane H. Cabejo', FT, MKT, [CBM]),
+  person('Instr. Ian M. Tianero', PT, MKT, [CBM]),
+  person('Instr. Aldren L. Lorica', PT, MKT, [CBM]),
+  person('Instr. Gladys A. Isip, CPA', PT, MKT, [CBM]),
 
   // BSBA Financial Management
-  person('Instr. Dan Christian L. Gabon, MBA', 'Program Head', FIN, [CBEA]),
-  person('Dr. Ferdinand C. Martinez', FT, FIN, [CBEA]),
-  person('Dr. Velissa C. Rubaya', FT, FIN, [CBEA]),
-  person('Asst. Prof. Dorina D. Barreto', FT, FIN, [CBEA]),
-  person('Asst. Prof. Jesusito E. Tiglao', FT, FIN, [CBEA]),
-  person('Dr. Michael L. De La Cruz', PT, FIN, [CBEA]),
-  person('Atty. Julian Tutanes', PT, FIN, [CBEA]),
-  person('Instr. Reynaldo V. Meneses Jr., CPA', PT, FIN, [CBEA]),
-  person('Instr. Mary Jane Garcia, CPA', PT, FIN, [CBEA]),
-  person('Instr. Mark Eugene Jose Lopez, CPA', PT, FIN, [CBEA]),
-  person('Instr. Rufo O. Dominguez', PT, FIN, [CBEA]),
-  person('Instr. Angel M. Bautista', PT, FIN, [CBEA]),
+  person('Instr. Dan Christian L. Gabon, MBA', 'Program Head', FIN, [CBM]),
+  person('Dr. Ferdinand C. Martinez', FT, FIN, [CBM]),
+  person('Dr. Velissa C. Rubaya', FT, FIN, [CBM]),
+  person('Asst. Prof. Dorina D. Barreto', FT, FIN, [CBM]),
+  person('Asst. Prof. Jesusito E. Tiglao', FT, FIN, [CBM]),
+  person('Dr. Michael L. De La Cruz', PT, FIN, [CBM]),
+  person('Atty. Julian Tutanes', PT, FIN, [CBM]),
+  person('Instr. Reynaldo V. Meneses Jr., CPA', PT, FIN, [CBM]),
+  person('Instr. Mary Jane Garcia, CPA', PT, FIN, [CBM]),
+  person('Instr. Mark Eugene Jose Lopez, CPA', PT, FIN, [CBM]),
+  person('Instr. Rufo O. Dominguez', PT, FIN, [CBM]),
+  person('Instr. Angel M. Bautista', PT, FIN, [CBM]),
 ];
 
 // ---------- Institute of Computer Studies (ICS) ----------
@@ -149,7 +149,7 @@ const cas = [
 // The PDF lists no staff for CED yet.
 const ced = [];
 
-export const STAFF_DATA = [...offices, ...cbea, ...ics, ...cas, ...ced];
+export const STAFF_DATA = [...offices, ...cbm, ...ics, ...cas, ...ced];
 
 // ---------- Helpers ----------
 const TITLES = /^(dr|prof|assoc|asst|instr|engr|arch|atty|mr|mrs|ms|mx)\.?$/i;
@@ -180,10 +180,23 @@ export function filterStaff(list, query) {
   );
 }
 
+const VALID_SECTION_IDS = new Set(STAFF_SECTIONS.map((s) => s.id));
+const LEGACY_SECTION_MAP = { cbea: 'cbm' };
+
+export function normalizeSectionId(sectionId) {
+  if (!sectionId || typeof sectionId !== 'string') return 'offices';
+  const key = sectionId.trim().toLowerCase();
+  const mapped = LEGACY_SECTION_MAP[key] || key;
+  return VALID_SECTION_IDS.has(mapped) ? mapped : 'offices';
+}
+
 // Split a staff list into the sections above (empty sections are left out)
 export function groupStaffBySection(list) {
   return STAFF_SECTIONS.map((section) => ({
     ...section,
-    staff: list.filter((person) => person.groups[0] === section.id),
+    staff: list.filter((person) => {
+      const primary = normalizeSectionId(person.section || person.groups?.[0]);
+      return primary === section.id;
+    }),
   })).filter((section) => section.staff.length > 0);
 }

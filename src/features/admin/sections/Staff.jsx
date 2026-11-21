@@ -2,7 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import StaffList from '../../staff/components/StaffList';
 import useStaffData from '../../staff/hooks/useStaffData';
-import { addStaff, updateStaff, deleteStaff, fetchDepartments, fetchLocations } from '../../staff/data/staffService';
+import { STAFF_SECTIONS, normalizeSectionId } from '../../staff/data/staffData';
+import {
+  addStaff,
+  updateStaff,
+  deleteStaff,
+  fetchDepartments,
+  fetchLocations,
+  sectionForDepartment,
+} from '../../staff/data/staffService';
 import { Field, TextInput, SelectInput, PrimaryButton, Notice, LocationOptions } from '../components/AdminControls';
 import ConfirmModal from '../components/ConfirmModal';
 import { StaffListSkeleton } from '../components/AdminSkeletons';
@@ -13,13 +21,22 @@ const ACTIONS = [
   { id: 'delete', label: 'Delete staff' },
 ];
 
-const EMPTY = { employeeNumber: '', firstName: '', lastName: '', role: '', email: '', departmentId: '', officeLocationId: '' };
+const EMPTY = {
+  employeeNumber: '',
+  firstName: '',
+  lastName: '',
+  role: '',
+  email: '',
+  departmentId: '',
+  section: 'offices',
+  officeLocationId: '',
+};
 
 export default function Staff() {
   const { staff, status, reload } = useStaffData({ fallback: false });
   const [departments, setDepartments] = useState([]);
   const [locations, setLocations] = useState([]);
-  
+
   // Set dropdown to closed by default
   const [menuOpen, setMenuOpen] = useState(false);
   const [action, setAction] = useState(null);
@@ -47,6 +64,14 @@ export default function Staff() {
   }, []);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  // Auto-select the matching Directory Section whenever the Department changes
+  const handleDepartmentChange = (deptId) => {
+    const matched = departments.find((d) => String(d.id) === String(deptId));
+    const autoSection = matched ? sectionForDepartment(matched.name) : 'offices';
+    setForm((f) => ({ ...f, departmentId: deptId, section: autoSection }));
+  };
+
   const target = staff.find((s) => String(s.id) === targetId);
   const actionLabel = ACTIONS.find((a) => a.id === action)?.label;
 
@@ -79,6 +104,7 @@ export default function Staff() {
       return;
     }
     const resolvedOfficeId = p.officeLocationId ?? p.office_location_id;
+    const resolvedSection = normalizeSectionId(p.section || p.groups?.[0] || sectionForDepartment(p.office));
     setForm({
       ...EMPTY,
       firstName: p.firstName || '',
@@ -86,6 +112,7 @@ export default function Staff() {
       role: p.position || '',
       email: p.email || '',
       departmentId: p.departmentId == null ? '' : String(p.departmentId),
+      section: resolvedSection,
       officeLocationId: resolvedOfficeId == null ? '' : String(resolvedOfficeId),
     });
   }
@@ -132,14 +159,14 @@ export default function Staff() {
         confirmAction: async () => {
           const ok = await run(() => deleteStaff(target.id), `Deleted ${target.name}.`);
           if (ok) pickTarget('');
-        }
+        },
       });
       setConfirmModalOpen(true);
       return;
     }
 
     if (!names.firstName || !names.lastName) return setNotice({ type: 'error', text: 'First and last name cannot be empty.' });
-    
+
     setConfirmConfig({
       title: 'Update Staff',
       message: `Are you sure you want to update the details of ${names.firstName} ${names.lastName}?`,
@@ -150,21 +177,24 @@ export default function Staff() {
           role: (form.role || '').trim(),
           email: (form.email || '').trim(),
           departmentId: form.departmentId,
-          officeLocationId: form.officeLocationId
+          section: form.section,
+          officeLocationId: form.officeLocationId,
         };
         const beforeOfficeId = target.officeLocationId ?? target.office_location_id;
+        const beforeSection = normalizeSectionId(target.section || target.groups?.[0] || sectionForDepartment(target.office));
         const before = {
           firstName: target.firstName || '',
           lastName: target.lastName || '',
           role: target.position || '',
           email: target.email || '',
           departmentId: target.departmentId == null ? '' : String(target.departmentId),
+          section: beforeSection,
           officeLocationId: beforeOfficeId == null ? '' : String(beforeOfficeId),
         };
         const patch = Object.fromEntries(Object.entries(next).filter(([k, v]) => v !== before[k]));
         if (Object.keys(patch).length === 0) return setNotice({ type: 'error', text: 'Nothing has changed yet.' });
         await run(() => updateStaff(target.id, patch), `Updated ${names.firstName} ${names.lastName}.`);
-      }
+      },
     });
     setConfirmModalOpen(true);
   }
@@ -173,19 +203,40 @@ export default function Staff() {
     <div className="space-y-3">
       {action === 'add' && (
         <Field label="Employee number (optional)">
-          <TextInput inputMode="numeric" value={form.employeeNumber} onChange={(e) => setField('employeeNumber', e.target.value.replace(/\D/g, ''))} placeholder="Leave blank to assign automatically" disabled={busy} />
+          <TextInput
+            inputMode="numeric"
+            value={form.employeeNumber}
+            onChange={(e) => setField('employeeNumber', e.target.value.replace(/\D/g, ''))}
+            placeholder="Leave blank to assign automatically"
+            disabled={busy}
+          />
         </Field>
       )}
       <div className="grid grid-cols-2 gap-3">
-        <Field label="First name"><TextInput value={form.firstName} onChange={(e) => setField('firstName', e.target.value)} placeholder="First name" disabled={busy} /></Field>
-        <Field label="Last name"><TextInput value={form.lastName} onChange={(e) => setField('lastName', e.target.value)} placeholder="Last name" disabled={busy} /></Field>
+        <Field label="First name">
+          <TextInput value={form.firstName} onChange={(e) => setField('firstName', e.target.value)} placeholder="First name" disabled={busy} />
+        </Field>
+        <Field label="Last name">
+          <TextInput value={form.lastName} onChange={(e) => setField('lastName', e.target.value)} placeholder="Last name" disabled={busy} />
+        </Field>
       </div>
-      <Field label="Title"><TextInput value={form.role} onChange={(e) => setField('role', e.target.value)} placeholder="Title" disabled={busy} /></Field>
-      <Field label="Email"><TextInput type="email" value={form.email} onChange={(e) => setField('email', e.target.value)} placeholder="Email" disabled={busy} /></Field>
+      <Field label="Title">
+        <TextInput value={form.role} onChange={(e) => setField('role', e.target.value)} placeholder="Title" disabled={busy} />
+      </Field>
+      <Field label="Email">
+        <TextInput type="email" value={form.email} onChange={(e) => setField('email', e.target.value)} placeholder="Email" disabled={busy} />
+      </Field>
       <Field label="Department">
-        <SelectInput value={form.departmentId} onChange={(e) => setField('departmentId', e.target.value)} disabled={busy}>
+        <SelectInput value={form.departmentId} onChange={(e) => handleDepartmentChange(e.target.value)} disabled={busy}>
           <option value="">Department</option>
           {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+        </SelectInput>
+      </Field>
+      <Field label="Directory Section">
+        <SelectInput value={form.section} onChange={(e) => setField('section', e.target.value)} disabled={busy}>
+          {STAFF_SECTIONS.map((s) => (
+            <option key={s.id} value={s.id}>{s.title}</option>
+          ))}
         </SelectInput>
       </Field>
       <Field label="Office">
@@ -196,7 +247,7 @@ export default function Staff() {
       </Field>
     </div>
   );
-  
+
   return (
     <>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr] lg:gap-10">
@@ -262,7 +313,7 @@ export default function Staff() {
         <section aria-labelledby="dir-preview" className="min-w-0 rounded-md border border-[#0B2545] bg-[#F8F9F9]">
           <div className="max-h-[70vh] overflow-y-auto px-5 py-5 lg:px-8">
             <h2 id="dir-preview" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B2545] lg:text-2xl">Staff Directory</h2>
-            
+
             {/* Staff Search Bar matching Users tab style */}
             <div className="mb-5">
               <TextInput

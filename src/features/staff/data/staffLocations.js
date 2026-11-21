@@ -34,14 +34,14 @@ export const OFFICE_ROOMS = {
 
 // Main office of each college / institute (keyed by the first entry of `groups`)
 export const COLLEGE_MAIN_OFFICE = {
-  cbea: 'F2-JAV-OFDEAN', // Office of the Dean (Javier, 2nd floor)
+  cbm: 'F2-JAV-OFDEAN', // Office of the Dean (Javier, 2nd floor)
   ics: 'MAE-ICSOFFICE', // ICS Office of the Director (M.A.E, 1st floor)
   cas: 'F2-CAS-ADEAN', // CAS Assistant Dean's Office
   ced: 'F2-CED-ADEAN', // CED Assistant Dean's Office
 };
 
-// CBEA program heads have their own room
-const CBEA_PROGRAM_HEADS_ROOM = 'F2-JAV-PROGHEADS';
+// CBM program heads have their own room
+const CBM_PROGRAM_HEADS_ROOM = 'F2-JAV-PROGHEADS';
 
 // Used when nothing more specific is known
 const FALLBACK_BUILDING = 'Javier Building';
@@ -68,7 +68,7 @@ export function getLocationRef(staff) {
   const section = staff.groups?.[0];
   if (section && section !== 'offices') {
     if (section === 'cbea' && staff.position === 'Program Head') {
-      return { kind: 'college', code: CBEA_PROGRAM_HEADS_ROOM };
+      return { kind: 'college', code: CBM_PROGRAM_HEADS_ROOM };
     }
     if (COLLEGE_MAIN_OFFICE[section]) {
       return { kind: 'college', code: COLLEGE_MAIN_OFFICE[section] };

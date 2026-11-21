@@ -1,12 +1,12 @@
 import { apiClient } from '../../../services/apiClient';
 import { invalidateLocationCache } from '../../navigation/services/locationService';
 
-// Staff page sections chosen from the department name.
+// Staff page sections chosen from the department name (mirrors backend staff_categorizer.py).
 const SECTION_RULES = [
-  [/college of business|entrepreneurship|accountancy|\bcbea\b/i, 'cbea'],
-  [/institute of computer|\bics\b/i, 'ics'],
-  [/college of arts|\bcas\b/i, 'cas'],
-  [/college of education|\bced\b/i, 'ced'],
+  [/college of business|entrepreneurship|accountancy|\bcbm\b|\bcbea\b|\bbsba\b|\bbsoa\b|office administration/i, 'cbm'],
+  [/institute of computer|computer studies|information technology|computer science|\bics\b|\bbsit\b|\bbscs\b/i, 'ics'],
+  [/college of arts|arts and sciences|\bcas\b/i, 'cas'],
+  [/college of education|teacher education|secondary education|elementary education|\bced\b|\bbsed\b|\bbeed\b|\bbtled\b|\bbped\b/i, 'ced'],
 ];
 
 export function sectionForDepartment(name = '') {
@@ -21,6 +21,7 @@ const COLUMN = {
   email: 'email',
   departmentId: 'department_id',
   officeLocationId: 'office_location_id',
+  section: 'section',
 };
 
 function toRow(values) {
