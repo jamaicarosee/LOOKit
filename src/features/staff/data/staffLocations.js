@@ -29,7 +29,7 @@ export const OFFICE_ROOMS = {
 };
 
 export const COLLEGE_MAIN_OFFICE = {
-  cbea: 'F2-JAV-OFDEAN',
+  cbm: 'F2-JAV-OFDEAN',
   ics: 'MAE-ICSOFFICE',
   cas: 'F2-CAS-ADEAN',
   ced: 'F2-CED-ADEAN',
@@ -69,7 +69,7 @@ export function getLocationRef(staff) {
 
   const section = (staff.groups?.[0] || '').toLowerCase();
   if (section && section !== 'offices') {
-    if (section === 'cbea' && staff.position === 'Program Head') {
+    if (section === 'cbm' && staff.position === 'Program Head') {
       return { kind: 'college', code: CBM_PROGRAM_HEADS_ROOM };
     }
     if (COLLEGE_MAIN_OFFICE[section]) {
