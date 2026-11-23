@@ -101,7 +101,7 @@ def check_account_availability(payload: AccountAvailabilityPayload):
             return {
                 "exists": True,
                 "reason": conflict,
-                "message": "Full name or emal already exists.",
+                "message": "Full name or email already exists.",
             }
         return {"exists": False}
     except Exception as exc:
