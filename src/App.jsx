@@ -22,7 +22,6 @@ const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
 
 function AppContent() {
   const { isDesktop } = useViewport(1024);
-<<<<<<< HEAD
   const {
     user,
     profile,
@@ -37,10 +36,6 @@ function AppContent() {
   } = useAuth();
  const { phase: launchPhase, markMapLoaded, replayLaunch, cancelLaunch } =
     useLaunchSequence({ holdSplash: verifyingGoogle });
-=======
-  const { user, profile, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
-  const { phase: launchPhase, markMapLoaded } = useLaunchSequence();
->>>>>>> 2ff6cf4 (ai search)
 
   const [screen, setScreen] = useState('dashboard');
   const [previousScreen, setPreviousScreen] = useState('dashboard');
@@ -49,14 +44,9 @@ function AppContent() {
   const [pendingStaff, setPendingStaff] = useState(false);
   const [navTarget, setNavTarget] = useState(null);
   const [navOrigin, setNavOrigin] = useState('dashboard');
-<<<<<<< HEAD
   const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
 
   // Reset Password Modal states
-=======
-
-  // Bagong state para sa Reset Password Modal
->>>>>>> 2ff6cf4 (ai search)
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetError, setResetError] = useState(false);
 
@@ -119,7 +109,6 @@ function AppContent() {
     setScreen('navigation');
   };
 
-<<<<<<< HEAD
   // Immediately dismiss any launch overlay and show LoginModal on auth/validation errors
   useEffect(() => {
     if (authError) {
@@ -138,8 +127,6 @@ function AppContent() {
     replayLaunch();
   }, [loginEventCount, replayLaunch]);
 
-=======
->>>>>>> 2ff6cf4 (ai search)
   // PASSWORD_RECOVERY event
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -262,13 +249,8 @@ function AppContent() {
           {isDesktop ? (
             <main className="w-screen h-[100dvh] bg-[#F8F9F9] overflow-hidden">
               <DashboardDesktopView
-<<<<<<< HEAD
-                key={`desktop-${dashboardRefreshKey}`}
-                onOpenSearch={openSearch}
-=======
                 onOpenSearch={openSearch}
                 onSelectDestination={selectDestination}
->>>>>>> 2ff6cf4 (ai search)
                 onLoginClick={openLogin}
                 onMapReady={markMapLoaded}
               />
@@ -276,13 +258,8 @@ function AppContent() {
           ) : (
             <main className="w-screen h-[100dvh] bg-slate-900 flex items-center justify-center overflow-hidden">
               <DashboardMobileView
-<<<<<<< HEAD
-                key={`mobile-${dashboardRefreshKey}`}
-                onOpenSearch={openSearch}
-=======
                 onOpenSearch={openSearch}
                 onSelectDestination={selectDestination}
->>>>>>> 2ff6cf4 (ai search)
                 onLoginClick={openLogin}
                 onMapReady={markMapLoaded}
               />
@@ -304,19 +281,11 @@ function AppContent() {
         <ResetPassword
           onClose={async () => {
             setShowResetModal(false);
-<<<<<<< HEAD
-            await supabase.auth.signOut();
-          }}
-          onBackToLogin={async () => {
-            setShowResetModal(false);
-            await supabase.auth.signOut();
-=======
             await supabase.auth.signOut(); // SECURITY: No ghost logins
           }}
           onBackToLogin={async () => {
             setShowResetModal(false);
             await supabase.auth.signOut(); // SECURITY: No ghost logins
->>>>>>> 2ff6cf4 (ai search)
             openLogin();
           }}
         />
@@ -326,20 +295,6 @@ function AppContent() {
       {resetError && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#102747]/60 px-3">
           <div className="w-full max-w-[400px] rounded-[20px] bg-white p-6 text-center shadow-xl">
-<<<<<<< HEAD
-             <div className="mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-red-100">
-               <span className="text-[30px] font-bold text-red-600">!</span>
-             </div>
-             <h3 className="mb-2 text-[19px] font-bold text-[#102747]">Expired reset password</h3>
-             <p className="mb-6 text-[14px] text-[#61738A]">This reset link has expired or is invalid. Please request a new one.</p>
-             <button
-               type="button"
-               onClick={() => setResetError(false)}
-               className="h-[50px] w-full rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E]"
-             >
-               Close
-             </button>
-=======
             <div className="mx-auto mb-4 flex h-[60px] w-[60px] items-center justify-center rounded-full bg-red-100">
               <span className="text-[30px] font-bold text-red-600">!</span>
             </div>
@@ -352,7 +307,6 @@ function AppContent() {
             >
               Close
             </button>
->>>>>>> 2ff6cf4 (ai search)
           </div>
         </div>
       )}

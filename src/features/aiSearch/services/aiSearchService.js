@@ -4,7 +4,7 @@ import { apiClient } from '../../../services/apiClient';
 
 export const AI_QUERY_MIN = 3;
 export const AI_QUERY_MAX = 200; // keep in sync with MAX_QUERY_LENGTH in services/ai_search_service.py
-const AI_TIMEOUT_MS = 15000; // the shared client allows 10s; the AI call is given a little longer
+const AI_TIMEOUT_MS = 28000; // the shared client allows 10s; the AI call is given a little longer
 
 // kind: 'rate_limited' | 'invalid' | 'failed'
 export class AiSearchError extends Error {

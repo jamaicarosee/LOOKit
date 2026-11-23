@@ -28,10 +28,7 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
   const { staff, status } = useStaffData(); // Supabase, falls back to the built-in list
   // Skeleton until the staff request finishes (at least 600ms, so it never just flashes by)
   const loading = useMinLoading(status === 'loading');
-<<<<<<< HEAD
-=======
   const ai = useAiSearch(); // plain-language search; runs only on the Smart search button / Enter
->>>>>>> 2ff6cf4 (ai search)
 
   const closeSelection = () => setSelected(null);
 

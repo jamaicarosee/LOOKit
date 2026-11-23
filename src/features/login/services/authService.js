@@ -102,7 +102,10 @@ export async function checkAccountAvailability({ fullName, email }) {
   }
 }
 
-export async function validateGoogleLogin(accessToken) {
+export async function validateGoogleLogin(
+  accessToken,
+  { _hasRetried = false } = {}
+) {
   if (!accessToken) return;
   try {
     await apiClient.post(
@@ -112,10 +115,22 @@ export async function validateGoogleLogin(accessToken) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        _retry: true,
       }
     );
   } catch (error) {
-    if (error.response?.status === 409) {
+    const status = error.response?.status;
+
+    if (status === 401 && !_hasRetried) {
+      const { data, error: refreshError } = await supabase.auth.refreshSession();
+      const nextToken = data?.session?.access_token;
+
+      if (!refreshError && nextToken && nextToken !== accessToken) {
+        return validateGoogleLogin(nextToken, { _hasRetried: true });
+      }
+    }
+
+    if (status === 409) {
       await clearSession();
       const detail = error.response?.data?.detail;
       throw new Error(
@@ -129,36 +144,52 @@ export async function validateGoogleLogin(accessToken) {
   }
 }
 
+async function fetchMe(accessToken) {
+  const response = await apiClient.get('/api/auth/me', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    _retry: true,
+  });
+
+  const profile = response.data?.user ?? response.data;
+
+  if (profile && !('role' in profile)) {
+    console.warn(
+      "[LOOKit Auth] /api/auth/me returned no 'role' field. The backend must include public.users.role, otherwise the Admin button never appears."
+    );
+  }
+
+  return profile;
+}
+
 export async function verifyAndFetchProfile(
   accessToken,
-  { throwOnDeactivated = false } = {}
+  { throwOnDeactivated = false, _hasRetried = false } = {}
 ) {
   if (!accessToken) return null;
 
   try {
-    const response = await apiClient.get('/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const profile = response.data?.user ?? response.data;
-
-    if (profile && !('role' in profile)) {
-      console.warn(
-        "[LOOKit Auth] /api/auth/me returned no 'role' field. The backend must include public.users.role, otherwise the Admin button never appears."
-      );
-    }
-
-    return profile;
+    return await fetchMe(accessToken);
   } catch (error) {
+    const status = error.response?.status;
     const detail = error.response?.data?.detail;
 
+    if (status === 401 && !_hasRetried) {
+      const { data, error: refreshError } = await supabase.auth.refreshSession();
+      const nextToken = data?.session?.access_token;
+
+      if (!refreshError && nextToken && nextToken !== accessToken) {
+        return verifyAndFetchProfile(nextToken, {
+          throwOnDeactivated,
+          _hasRetried: true,
+        });
+      }
+    }
+
     if (
-      error.response?.status === 403 &&
-      /deactivated/i.test(
-        typeof detail === 'string' ? detail : ''
-      )
+      status === 403 &&
+      /deactivated/i.test(typeof detail === 'string' ? detail : '')
     ) {
       await clearSession();
 
@@ -171,7 +202,7 @@ export async function verifyAndFetchProfile(
 
     console.warn(
       '[LOOKit Auth] Backend profile verification warning:',
-      error.response?.data?.detail || error.message
+      detail || error.message
     );
 
     return null;

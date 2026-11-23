@@ -57,7 +57,7 @@ export default function SearchBar({ value, onChange, onOpenSearch, onSelectDesti
 
   return (
     <div className="px-5 py-2.5 bg-white shrink-0 relative z-50">
-      <div className="flex items-center gap-2 pl-4 pr-2 py-1.5 rounded-full bg-[#E5EEF7] text-[#4A5568] shadow-inner transition-colors focus-within:bg-[#DBE7F3]">
+      <div className="flex items-center gap-1.5 pl-4 pr-2 py-1.5 rounded-full bg-[#E5EEF7] text-[#4A5568] shadow-inner transition-colors focus-within:bg-[#DBE7F3]">
         <MapPin className="w-4 h-4 text-[#4A5568] shrink-0 stroke-[2.2]" />
         <input
           type="text"
@@ -72,6 +72,14 @@ export default function SearchBar({ value, onChange, onOpenSearch, onSelectDesti
         />
         <button
           type="button"
+          aria-label="Open route search"
+          onClick={onOpenSearch}
+          className="p-1 text-[#4A5568] hover:text-[#0B2545] shrink-0"
+        >
+          <Search className="w-4 h-4 stroke-[2.2]" />
+        </button>
+        <button
+          type="button"
           aria-label="Run smart search"
           onClick={runSmartSearch}
           disabled={loading || navigatingMatch || !value?.trim()}
@@ -84,14 +92,6 @@ export default function SearchBar({ value, onChange, onOpenSearch, onSelectDesti
             <Sparkles className="w-3.5 h-3.5 text-[#FACC15] stroke-[2.2]" />
           )}
           <span>Smart</span>
-        </button>
-        <button
-          type="button"
-          aria-label="Open route search"
-          onClick={onOpenSearch}
-          className="p-1 text-[#4A5568] hover:text-[#0B2545] shrink-0"
-        >
-          <Search className="w-4 h-4 stroke-[2.2]" />
         </button>
       </div>
 
