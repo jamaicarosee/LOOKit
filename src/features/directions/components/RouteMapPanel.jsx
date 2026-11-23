@@ -43,22 +43,53 @@ function guideDot() {
   return el;
 }
 
+function normalizeCollection(fc) {
+  if (!fc || fc.type !== 'FeatureCollection' || !Array.isArray(fc.features)) {
+    return EMPTY;
+  }
+  return fc;
+}
+
 function floorFeatures(data, floor) {
   const fd = data?.floors?.[floor] || {};
+  const rawStructures = Array.isArray(fd.structures)
+    ? fd.structures
+    : Array.isArray(fd.structures?.features)
+      ? fd.structures.features.map((f) => ({
+          type: f.properties?.type,
+          name: f.properties?.name,
+          geometry: f.geometry,
+        }))
+      : [];
+
   return {
-    rooms: fd.rooms || EMPTY,
-    paths: fd.paths || EMPTY,
+    rooms: normalizeCollection(fd.rooms),
+    paths: normalizeCollection(fd.paths),
     structures: {
       type: 'FeatureCollection',
-      features: (fd.structures || [])
-        .filter((s) => s.geometry)
-        .map((s) => ({ type: 'Feature', properties: { type: s.type, name: s.name }, geometry: s.geometry })),
+      features: rawStructures
+        .filter((s) => s && s.geometry)
+        .map((s) => ({
+          type: 'Feature',
+          properties: { type: s.type, name: s.name },
+          geometry: s.geometry,
+        })),
     },
   };
 }
 
 // "Route" panel: floor-only Mapbox map (floors 1-6, no campus overview layer) with the route, stairs markers and the play-guide dot
-export default function RouteMapPanel({ route, status, activeFloor, onFloorChange, guide, focus, hasRequest, emptyMessage, mapClassName = 'h-[32dvh] min-h-[180px]' }) {
+export default function RouteMapPanel({
+  route,
+  status,
+  activeFloor,
+  onFloorChange,
+  guide,
+  focus,
+  hasRequest,
+  emptyMessage,
+  mapClassName = 'h-[32dvh] min-h-[180px]',
+}) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const dataRef = useRef(null);
@@ -96,55 +127,76 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
       setMapError(true);
       return undefined;
     }
+
     mapRef.current = map;
     const markers = markersRef.current;
     let disposed = false;
 
-    const resizeObserver = new ResizeObserver(() => map.resize());
+    const rafId = requestAnimationFrame(() => {
+      if (!disposed) map.resize();
+    });
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (!disposed) map.resize();
+    });
     resizeObserver.observe(containerRef.current);
 
     map.on('load', async () => {
       try {
+        map.resize();
         const data = await fetchCampusData();
         if (disposed) return;
         dataRef.current = data;
-        const f1 = floorFeatures(data, 1);
+        const initialFloor = activeFloor || 1;
+        const fInitial = floorFeatures(data, initialFloor);
 
-        map.addSource('rooms', { type: 'geojson', data: f1.rooms });
-        map.addSource('floor-paths', { type: 'geojson', data: f1.paths });
-        map.addSource('structures', { type: 'geojson', data: f1.structures });
+        map.addSource('rooms', { type: 'geojson', data: fInitial.rooms });
+        map.addSource('floor-paths', { type: 'geojson', data: fInitial.paths });
+        map.addSource('structures', { type: 'geojson', data: fInitial.structures });
         map.addSource('route-line', { type: 'geojson', data: EMPTY });
 
         map.addLayer({ id: 'rooms-fill', type: 'fill', source: 'rooms', paint: { 'fill-color': ROOM_FILL, 'fill-opacity': 0.95 } });
         map.addLayer({ id: 'rooms-outline', type: 'line', source: 'rooms', paint: { 'line-color': '#8FA3BA', 'line-width': 0.8 } });
         map.addLayer({
-          id: 'structures-fill', type: 'fill', source: 'structures',
+          id: 'structures-fill',
+          type: 'fill',
+          source: 'structures',
           paint: { 'fill-color': ['match', ['get', 'type'], 'ramp', '#A2D9CE', '#C5CBD3'], 'fill-opacity': 0.9 },
         });
         map.addLayer({ id: 'floor-paths-line', type: 'line', source: 'floor-paths', paint: { 'line-color': '#B8C4D2', 'line-width': 1.2, 'line-dasharray': [2, 2] } });
         map.addLayer({
-          id: 'rooms-labels', type: 'symbol', source: 'rooms', minzoom: 18.6,
+          id: 'rooms-labels',
+          type: 'symbol',
+          source: 'rooms',
+          minzoom: 18.6,
           layout: { 'text-field': ['get', 'label'], 'text-font': FONT, 'text-size': 9 },
           paint: { 'text-color': '#334155', 'text-halo-color': '#FFFFFF', 'text-halo-width': 1.5 },
         });
         map.addLayer({
-          id: 'route-casing', type: 'line', source: 'route-line',
+          id: 'route-casing',
+          type: 'line',
+          source: 'route-line',
           layout: { 'line-cap': 'round', 'line-join': 'round' },
           paint: { 'line-color': '#FFFFFF', 'line-width': 9 },
         });
         map.addLayer({
-          id: 'route-main', type: 'line', source: 'route-line',
+          id: 'route-main',
+          type: 'line',
+          source: 'route-line',
           layout: { 'line-cap': 'round', 'line-join': 'round' },
           paint: { 'line-color': COLORS.navy, 'line-width': 5 },
         });
+
         setMapLoaded(true);
+        map.triggerRepaint();
       } catch {
-        setMapError(true);
+        if (!disposed) setMapError(true);
       }
     });
 
     return () => {
       disposed = true;
+      cancelAnimationFrame(rafId);
       resizeObserver.disconnect();
       [markers.start, markers.end, markers.guide, ...markers.stairs].forEach((m) => m && m.remove());
       markers.start = null;
@@ -171,7 +223,7 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
   const destCode = route?.to?.type === 'room' && route.to.floor === activeFloor ? route.to.code : null;
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !mapLoaded) return;
+    if (!map || !mapLoaded || !map.getLayer('rooms-fill')) return;
     map.setPaintProperty('rooms-fill', 'fill-color', destCode ? ['case', ['==', ['get', 'code'], destCode], '#F3DE8A', ROOM_FILL] : ROOM_FILL);
   }, [destCode, mapLoaded, activeFloor]);
 
@@ -192,7 +244,6 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
     });
     if (!route) return;
 
-    // A live GPS start is drawn as the pulsing blue "you are here" dot instead of the gold start dot
     const startEl = route.from?.isCurrentLocation ? guideDot() : dot(COLORS.gold);
     if (route.start.floor === activeFloor) m.start = new mapboxgl.Marker({ element: startEl, anchor: 'center' }).setLngLat(route.start.coordinate).addTo(map);
     if (route.end.floor === activeFloor) m.end = new mapboxgl.Marker({ element: pin(), anchor: 'bottom' }).setLngLat(route.end.coordinate).addTo(map);
@@ -202,8 +253,6 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
       m.stairs.push(new mapboxgl.Marker({ element: badge(text), anchor: 'bottom', offset: [0, -4] }).setLngLat(s.coordinate).addTo(map));
     });
 
-    // Fit once per route + floor
-    // (a live GPS route keeps one key so the camera doesn't jump on every fix)
     const key = route.from?.isCurrentLocation
       ? `live-${route.to?.name}-${activeFloor}`
       : `${route.distanceMeters}-${route.steps.length}-${activeFloor}-${route.start.coordinate.join()}`;
@@ -258,8 +307,8 @@ export default function RouteMapPanel({ route, status, activeFloor, onFloorChang
         </div>
       </div>
 
-      <div className={`relative ${mapClassName} rounded-lg overflow-hidden bg-[#F8F9F9]`}>
-        {!mapError && <div ref={containerRef} className="absolute inset-0" />}
+      <div className={`relative w-full ${mapClassName} rounded-lg overflow-hidden bg-[#F8F9F9]`}>
+        {!mapError && <div ref={containerRef} className="absolute inset-0 w-full h-full" />}
 
         {mapError && (
           <div className="absolute inset-0 flex items-center justify-center p-4 text-center text-xs font-medium text-[#607289]">

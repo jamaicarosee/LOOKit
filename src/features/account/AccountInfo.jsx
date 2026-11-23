@@ -5,11 +5,10 @@ import {
   Search,
   X,
   Loader2,
-  User,
 } from 'lucide-react';
 
 import { useViewport } from '../dashboard/hooks/useViewport';
-import useRecentSearches from '../search/hooks/useRecentSearches';
+import { supabase } from '../../services/supabaseClient';
 import apiClient from '../../services/apiClient';
 
 export default function AccountInfo({
@@ -58,28 +57,54 @@ export default function AccountInfo({
   useEffect(() => {
     let isMounted = true;
 
-    setLoadingSearches(true);
+    if (!user?.id) {
+      setRecentSearches([]);
+      setLoadingSearches(false);
+      return () => {
+        isMounted = false;
+      };
+    }
 
-    apiClient
-      .get('/api/navigation/recent-searches')
-      .then((res) => {
+    const fetchRecentSearches = async (hasRetried = false) => {
+      try {
+        const res = await apiClient.get('/api/navigation/recent-searches', {
+          timeout: 20000,
+        });
+
         if (isMounted) {
-          setRecentSearches(
-            res.data?.recent_searches || []
-          );
+          setRecentSearches(res.data?.recent_searches || []);
         }
-      })
-      .catch((err) => {
-        console.error(
-          'Failed to load recent searches:',
-          err
-        );
-      })
-      .finally(() => {
+      } catch (err) {
+        const status = err.response?.status;
+
+        if (status === 401 && !hasRetried) {
+          const { data, error } = await supabase.auth.refreshSession();
+          const nextToken = data?.session?.access_token;
+
+          if (!error && nextToken) {
+            return fetchRecentSearches(true);
+          }
+        }
+
+        if (status === 401) {
+          if (isMounted) {
+            setRecentSearches([]);
+          }
+          return;
+        }
+
+        if (isMounted) {
+          console.error('Failed to load recent searches:', err);
+        }
+      } finally {
         if (isMounted) {
           setLoadingSearches(false);
         }
-      });
+      }
+    };
+
+    setLoadingSearches(true);
+    fetchRecentSearches();
 
     return () => {
       isMounted = false;

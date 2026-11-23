@@ -20,7 +20,6 @@ export default function StaffCard({ staff, onSelect, selected = false }) {
       {/* Details */}
       <div className="min-w-0">
         <p className="text-sm font-extrabold text-[#0B2545] truncate">{staff.name}</p>
-
         {staff.position && (
           <p className="text-xs text-slate-400 truncate">{staff.position}</p>
         )}

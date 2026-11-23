@@ -102,6 +102,18 @@ function mergeProfiles(user, backendProfile) {
   };
 }
 
+async function resolveFreshSession(fallbackSession) {
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (!error && data?.session?.access_token) {
+      return data.session;
+    }
+  } catch {
+    // Fall back to provided session
+  }
+  return fallbackSession;
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -113,8 +125,9 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState('');
   const [loginEventCount, setLoginEventCount] = useState(0);
 
-  // Prevents bootstrapSession and onAuthStateChange from racing during Google OAuth return
+  // Prevents bootstrapSession and onAuthStateChange from racing
   const googleValidationRef = useRef(null);
+  const bootstrappedRef = useRef(false);
 
   const clearAuthError = useCallback(() => setAuthError(''), []);
 
@@ -140,7 +153,8 @@ export function AuthProvider({ children }) {
 
       const checkPromise = (async () => {
         try {
-          await validateGoogleLogin(currentSession.access_token);
+          const freshSession = await resolveFreshSession(currentSession);
+          await validateGoogleLogin(freshSession.access_token);
           if (isMounted) setVerifyingGoogle(false);
           return { allowed: true, wasGoogleLogin: true };
         } catch (err) {
@@ -176,52 +190,43 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      // Session is now parsed by Supabase; strip any OAuth params (?code= / #access_token=)
+      const activeSession = await resolveFreshSession(currentSession);
+      const activeUser = activeSession?.user || currentSession.user;
+
       cleanOAuthUrl();
 
-      const { allowed } = await validatePendingGoogleIfNeeded(currentSession);
+      const { allowed } = await validatePendingGoogleIfNeeded(activeSession);
       if (!allowed || !isMounted || currentRequest !== requestId) return;
 
-      const currentUser = currentSession.user;
-
       if (isMounted) {
-        setUser(currentUser);
-        setSession(currentSession);
+        setUser(activeUser);
+        setSession(activeSession);
 
         setProfile((previous) =>
           mergeProfiles(
-            currentUser,
-            previous?.id === currentUser.id
-              ? previous
-              : null
+            activeUser,
+            previous?.id === activeUser.id ? previous : null
           )
         );
       }
 
-      // Fetch LOOKit backend profile in parallel while the splash finishes
       try {
         const backendProfile = await verifyAndFetchProfile(
-          currentSession.access_token
+          activeSession.access_token
         );
 
-        if (
-          isMounted &&
-          currentRequest === requestId
-        ) {
-          setProfile(
-            mergeProfiles(currentUser, backendProfile)
+        if (isMounted && currentRequest === requestId) {
+          setProfile((previous) =>
+            mergeProfiles(
+              activeUser,
+              backendProfile ?? (previous?.id === activeUser.id ? previous : null)
+            )
           );
         }
       } catch (error) {
-        console.error(
-          '[LOOKit Auth] Profile fetch failed:',
-          error
-        );
+        console.error('[LOOKit Auth] Profile fetch failed:', error);
       } finally {
-        if (
-          isMounted &&
-          currentRequest === requestId
-        ) {
+        if (isMounted && currentRequest === requestId) {
           setAuthLoading(false);
         }
       }
@@ -236,17 +241,19 @@ export function AuthProvider({ children }) {
         if (initialData?.session?.user) {
           cleanOAuthUrl();
 
-          const initialSession = initialData.session;
-          const { allowed, wasGoogleLogin } = await validatePendingGoogleIfNeeded(initialSession);
+          const initialSession = await resolveFreshSession(initialData.session);
+          const { allowed, wasGoogleLogin } =
+            await validatePendingGoogleIfNeeded(initialSession);
           if (!allowed || !isMounted) return;
 
           setUser(initialSession.user);
           setSession(initialSession);
 
-          setProfile(
+          setProfile((previous) =>
             mergeProfiles(
               initialSession.user,
-              initialData.profile
+              initialData.profile ??
+                (previous?.id === initialSession.user.id ? previous : null)
             )
           );
 
@@ -258,11 +265,13 @@ export function AuthProvider({ children }) {
                 }
               })
               .catch((err) => {
-                console.error('[LOOKit Auth] Post-Google profile fetch failed:', err);
+                console.error(
+                  '[LOOKit Auth] Post-Google profile fetch failed:',
+                  err
+                );
               });
           }
         } else if (hasOAuthErrorInUrl() || !hasOAuthCallbackInUrl()) {
-          // Clear pending Google state if no OAuth callback is active or user canceled Google sign-in
           cleanOAuthUrl();
           clearGoogleOAuthPending();
           googleValidationRef.current = null;
@@ -272,12 +281,10 @@ export function AuthProvider({ children }) {
           setProfile(null);
         }
       } catch (error) {
-        console.error(
-          '[LOOKit Auth] Failed to initialize session:',
-          error
-        );
+        console.error('[LOOKit Auth] Failed to initialize session:', error);
         if (isMounted) setVerifyingGoogle(false);
       } finally {
+        bootstrappedRef.current = true;
         if (isMounted) {
           setAuthLoading(false);
         }
@@ -288,42 +295,44 @@ export function AuthProvider({ children }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        if (!isMounted) return;
+    } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      if (!isMounted) return;
 
-        if (
-          event === 'SIGNED_OUT' ||
-          (event === 'INITIAL_SESSION' && !currentSession)
-        ) {
-          if (event === 'INITIAL_SESSION' && hasOAuthCallbackInUrl()) {
-            return;
-          }
-          requestId++;
-          googleValidationRef.current = null;
-
-          setUser(null);
-          setSession(null);
-          setProfile(null);
-          setVerifyingGoogle(false);
-          setAuthLoading(false);
+      if (
+        event === 'SIGNED_OUT' ||
+        (event === 'INITIAL_SESSION' && !currentSession)
+      ) {
+        if (event === 'INITIAL_SESSION' && hasOAuthCallbackInUrl()) {
           return;
         }
+        requestId++;
+        googleValidationRef.current = null;
 
-        if (
-          event === 'SIGNED_IN' ||
-          event === 'TOKEN_REFRESHED' ||
-          event === 'USER_UPDATED' ||
-          (event === 'INITIAL_SESSION' && currentSession)
-        ) {
-          setTimeout(() => {
-            if (isMounted) {
-              applySession(currentSession);
-            }
-          }, 0);
-        }
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+        setVerifyingGoogle(false);
+        setAuthLoading(false);
+        return;
       }
-    );
+
+      if (event === 'INITIAL_SESSION' && !bootstrappedRef.current) {
+        return;
+      }
+
+      if (
+        event === 'SIGNED_IN' ||
+        event === 'TOKEN_REFRESHED' ||
+        event === 'USER_UPDATED' ||
+        (event === 'INITIAL_SESSION' && currentSession)
+      ) {
+        setTimeout(() => {
+          if (isMounted) {
+            applySession(currentSession);
+          }
+        }, 0);
+      }
+    });
 
     return () => {
       isMounted = false;
@@ -332,53 +341,40 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  // Email/password login (in-page -> triggers post-login splash replay)
-  const login = useCallback(
-    async ({ email, password, keepSignedIn }) => {
-      setAuthError('');
-      const result = await signInUser({
-        email,
-        password,
-        keepSignedIn,
-      });
+  const login = useCallback(async ({ email, password, keepSignedIn }) => {
+    setAuthError('');
+    const result = await signInUser({
+      email,
+      password,
+      keepSignedIn,
+    });
 
+    setUser(result.user);
+    setSession(result.session);
+    setProfile(mergeProfiles(result.user, result.profile));
+    setLoginEventCount((c) => c + 1);
+
+    return result;
+  }, []);
+
+  const register = useCallback(async ({ fullName, email, password }) => {
+    setAuthError('');
+    const result = await signUpUser({
+      fullName,
+      email,
+      password,
+    });
+
+    if (result.session) {
       setUser(result.user);
       setSession(result.session);
-      setProfile(
-        mergeProfiles(result.user, result.profile)
-      );
+      setProfile(mergeProfiles(result.user, result.profile));
       setLoginEventCount((c) => c + 1);
+    }
 
-      return result;
-    },
-    []
-  );
+    return result;
+  }, []);
 
-  // Manual registration (in-page -> triggers post-login splash replay if auto-signed in)
-  const register = useCallback(
-    async ({ fullName, email, password }) => {
-      setAuthError('');
-      const result = await signUpUser({
-        fullName,
-        email,
-        password,
-      });
-
-      if (result.session) {
-        setUser(result.user);
-        setSession(result.session);
-        setProfile(
-          mergeProfiles(result.user, result.profile)
-        );
-        setLoginEventCount((c) => c + 1);
-      }
-
-      return result;
-    },
-    []
-  );
-
-  // Logout
   const logout = useCallback(async () => {
     googleValidationRef.current = null;
     setVerifyingGoogle(false);
@@ -389,7 +385,6 @@ export function AuthProvider({ children }) {
     setProfile(null);
   }, []);
 
-  // Password change completed
   const completePasswordChange = useCallback(() => {
     setProfile((previous) =>
       previous
@@ -418,8 +413,7 @@ export function AuthProvider({ children }) {
       Boolean(user && session) &&
       profile?.role === 'admin',
 
-    mustChangePassword:
-      Boolean(profile?.must_change_password),
+    mustChangePassword: Boolean(profile?.must_change_password),
 
     completePasswordChange,
     login,
@@ -427,20 +421,14 @@ export function AuthProvider({ children }) {
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      'useAuth must be used within an AuthProvider'
-    );
+    throw new Error('useAuth must be used within an AuthProvider');
   }
 
   return context;

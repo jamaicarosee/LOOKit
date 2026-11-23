@@ -5,6 +5,8 @@ import DesktopTopNav from '../dashboard/components/desktop/DesktopTopNav';
 import MobileTopBar from '../dashboard/components/MobileTopBar';
 import MobileBottomSheet from '../dashboard/components/MobileBottomSheet';
 import StaffSearchBar from './components/StaffSearchBar';
+import AiSearchResults from '../aiSearch/components/AiSearchResults';
+import useAiSearch from '../aiSearch/hooks/useAiSearch';
 import StaffMapPanel from './components/StaffMapPanel';
 import StaffDirectoryDesktop from './StaffDirectoryDesktop';
 import StaffDirectoryMobile from './StaffDirectoryMobile';
@@ -26,8 +28,26 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
   const { staff, status } = useStaffData(); // Supabase, falls back to the built-in list
   // Skeleton until the staff request finishes (at least 600ms, so it never just flashes by)
   const loading = useMinLoading(status === 'loading');
+  const ai = useAiSearch(); // plain-language search; runs only on the Smart search button / Enter
 
   const closeSelection = () => setSelected(null);
+
+  // A staff result opens the same map card as the list; a place result goes to the Directions flow
+  const pickAiMatch = (match) => {
+    if (match.category === 'staff') {
+      setSelected(staff.find((s) => String(s.id) === String(match.item.id)) || match.item);
+    } else {
+      onShowPath(match.item);
+    }
+    ai.close();
+  };
+  const searchBarProps = {
+    value: searchQuery,
+    onChange: setSearchQuery,
+    onAiSearch: ai.submit,
+    aiLoading: ai.status === 'loading',
+    onAiClose: ai.close,
+  };
 
   // Escape closes the map card
   useEffect(() => {
@@ -61,7 +81,15 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
         {loading ? (
           <StaffSearchSkeleton isDesktop />
         ) : (
-          <StaffSearchBar value={searchQuery} onChange={setSearchQuery} isDesktop />
+          <div className="relative z-50 shrink-0">
+            <StaffSearchBar {...searchBarProps} isDesktop />
+            <AiSearchResults
+              search={ai}
+              onPick={pickAiMatch}
+              className="inset-x-0 top-full -mt-2 px-8"
+              innerClassName="max-w-6xl"
+            />
+          </div>
         )}
 
         <div className="flex flex-1 min-h-0">
@@ -118,7 +146,10 @@ export default function StaffScreen({ onBackToMap, onProfileClick, onShowPath })
             </>
           ) : (
             <>
-              <StaffSearchBar value={searchQuery} onChange={setSearchQuery} />
+              <div className="relative z-50 shrink-0">
+                <StaffSearchBar {...searchBarProps} />
+                <AiSearchResults search={ai} onPick={pickAiMatch} className="inset-x-0 top-full -mt-1 px-5" />
+              </div>
               <StaffDirectoryMobile staff={staff} searchQuery={searchQuery} onSelectStaff={setSelected} />
             </>
           )}

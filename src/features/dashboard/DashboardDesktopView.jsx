@@ -13,7 +13,13 @@ import {
   DesktopMapSkeleton,
 } from '../loading/components/DashboardSkeletonParts';
 
-export default function DashboardDesktopView({ onOpenSearch, onLoginClick, onMapReady }) {  const {
+export default function DashboardDesktopView({
+  onOpenSearch,
+  onSelectDestination,
+  onLoginClick,
+  onMapReady,
+}) {
+  const {
     searchQuery,
     setSearchQuery,
     activeFilter,
@@ -50,6 +56,7 @@ export default function DashboardDesktopView({ onOpenSearch, onLoginClick, onMap
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           onOpenSearch={onOpenSearch}
+          onSelectDestination={onSelectDestination}
         />
       )}
 
