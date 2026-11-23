@@ -101,7 +101,7 @@ def check_account_availability(payload: AccountAvailabilityPayload):
             return {
                 "exists": True,
                 "reason": conflict,
-                "message": "Full name or emal already exists.",
+                "message": "Full name or email already exists.",
             }
         return {"exists": False}
     except Exception as exc:
@@ -203,6 +203,11 @@ def get_user_profile(profile: dict = Depends(get_current_user_profile)):
     Protected endpoint: returns the authenticated user's profile from public.users.
     """
     return {"user": profile}
+
+
+@router.post("/validate-google")
+def validate_google(profile: dict = Depends(get_current_user_profile)):
+    return {"valid": True, "user_id": profile.get("id")}
 
 
 @router.get("/admin-check")
