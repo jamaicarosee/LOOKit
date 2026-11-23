@@ -43,3 +43,4 @@ temp/.env
 __pycache__/
 *.pyc
 data/supabase_graph_cache.json
+.venv-old/

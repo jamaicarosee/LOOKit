@@ -17,7 +17,9 @@ router = APIRouter(prefix="/api/staff", tags=["Staff"])
 # --- Pydantic Models for Admin Forms ---
 class StaffCreate(BaseModel):
     employee_number: Optional[int] = None
+    title: Optional[str] = None
     first_name: str
+    middle_initial: Optional[str] = None
     last_name: str
     role: Optional[str] = None
     email: Optional[str] = None
@@ -29,7 +31,9 @@ class StaffCreate(BaseModel):
 
 
 class StaffUpdate(BaseModel):
+    title: Optional[str] = None
     first_name: Optional[str] = None
+    middle_initial: Optional[str] = None
     last_name: Optional[str] = None
     role: Optional[str] = None
     email: Optional[str] = None
@@ -41,6 +45,32 @@ class StaffUpdate(BaseModel):
 
 
 # --- Internal Helpers ---
+def _clean(value: Optional[str]) -> Optional[str]:
+    """Trims whitespace; returns None for empty strings."""
+    if value is None:
+        return None
+    value = str(value).strip()
+    return value or None
+
+
+def _normalize_middle_initial(value: Optional[str]) -> Optional[str]:
+    """'r' -> 'R.', 'R' -> 'R.', 'M.A.' stays 'M.A.'. Empty -> None."""
+    value = _clean(value)
+    if not value:
+        return None
+    if len(value) > 6:
+        raise HTTPException(status_code=422, detail="Middle initial must be 6 characters or fewer.")
+    if len(value) == 1 and value.isalpha():
+        return value.upper() + "."
+    return value
+
+
+def _compose_full_name(title=None, first_name=None, middle_initial=None, last_name=None) -> str:
+    """Display name: '<Status> <First> <M.I.> <Last>' with any empty part skipped."""
+    parts = [title, first_name, middle_initial, last_name]
+    return " ".join(str(p).strip() for p in parts if p and str(p).strip())
+
+
 def _fetch_department_name(department_id: Optional[int]) -> Optional[str]:
     """Resolves a department's display name by ID for auto-categorization."""
     if not department_id:
@@ -98,7 +128,9 @@ def get_all_staff():
 
             results.append({
                 "id": row["employee_number"],
-                "name": meta.get("full_name") or f"{row.get('first_name', '')} {row.get('last_name', '')}".strip(),
+                "name": _compose_full_name(
+                    row.get("title"), row.get("first_name"), row.get("middle_initial"), row.get("last_name")
+                ) or meta.get("full_name") or "",
                 "position": row.get("role") or "",
                 "secondaryPosition": sec_role,
                 "office": dept_name,
@@ -109,7 +141,9 @@ def get_all_staff():
                 "officeLocationId": loc_id,
                 "room_code": room_code,
                 # Extra fields required by the Admin Update form
+                "title": row.get("title") or "",
                 "firstName": row.get("first_name", ""),
+                "middleInitial": row.get("middle_initial") or "",
                 "lastName": row.get("last_name", ""),
                 "email": row.get("email", ""),
                 "departmentId": row.get("department_id"),
@@ -153,14 +187,15 @@ def get_admin_locations():
 
 
 # --- Audit helpers ---
-STAFF_AUDIT_FIELDS = ("first_name", "last_name", "role", "email", "department_id", "office_location_id")
+STAFF_AUDIT_FIELDS = ("title", "first_name", "middle_initial", "last_name", "role", "email", "department_id", "office_location_id")
 
 
 def _staff_label(row: Optional[dict]) -> Optional[str]:
     row = row or {}
     meta = row.get("metadata")
     full_name = meta.get("full_name") if isinstance(meta, dict) else None
-    return full_name or f"{row.get('first_name') or ''} {row.get('last_name') or ''}".strip() or None
+    composed = _compose_full_name(row.get("title"), row.get("first_name"), row.get("middle_initial"), row.get("last_name"))
+    return composed or full_name or None
 
 
 def _fetch_staff_row(employee_number: int) -> Optional[dict]:
@@ -183,7 +218,19 @@ def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(requ
     secondary_role = data.pop("secondary_role", None)
     secondary_department_id = data.pop("secondary_department_id", None)
 
-    full_name = f"{data.get('first_name', '')} {data.get('last_name', '')}".strip()
+    for key in ("title", "first_name", "last_name"):
+        if key in data:
+            data[key] = _clean(data[key])
+    if not data.get("first_name") or not data.get("last_name"):
+        raise HTTPException(status_code=422, detail="First name and last name are required.")
+    if "middle_initial" in data:
+        data["middle_initial"] = _normalize_middle_initial(data["middle_initial"])
+        if data["middle_initial"] is None:
+            data.pop("middle_initial")
+
+    full_name = _compose_full_name(
+        data.get("title"), data.get("first_name"), data.get("middle_initial"), data.get("last_name")
+    )
     resolved_section = _resolve_target_section(requested_section, data.get("department_id"))
 
     meta = {"full_name": full_name, "groups": [resolved_section]}
@@ -224,6 +271,19 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
             raise HTTPException(status_code=400, detail="No fields provided to update.")
 
         before = _fetch_staff_row(employee_number)
+
+        name_keys = ("title", "first_name", "middle_initial", "last_name")
+        name_touched = any(k in data for k in name_keys)
+        if "title" in data:
+            data["title"] = _clean(data["title"])
+        if "middle_initial" in data:
+            data["middle_initial"] = _normalize_middle_initial(data["middle_initial"])
+        for key in ("first_name", "last_name"):
+            if key in data:
+                data[key] = _clean(data[key])
+                if not data[key]:
+                    raise HTTPException(status_code=422, detail="First name and last name cannot be empty.")
+
         section_provided = "section" in data
         requested_section = data.pop("section", None)
         sec_role_provided = "secondary_role" in data
@@ -233,8 +293,7 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
         dept_changed = "department_id" in data
 
         needs_meta_sync = (
-            "first_name" in data
-            or "last_name" in data
+            name_touched
             or dept_changed
             or section_provided
             or sec_role_provided
@@ -244,10 +303,11 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
         if needs_meta_sync:
             current_meta = dict((before.get("metadata") or {}) if before else {})
 
-            if "first_name" in data or "last_name" in data:
-                new_fn = data.get("first_name", before.get("first_name", "") if before else "")
-                new_ln = data.get("last_name", before.get("last_name", "") if before else "")
-                current_meta["full_name"] = f"{new_fn} {new_ln}".strip()
+            if name_touched:
+                merged = {k: (data[k] if k in data else (before or {}).get(k)) for k in name_keys}
+                current_meta["full_name"] = _compose_full_name(
+                    merged["title"], merged["first_name"], merged["middle_initial"], merged["last_name"]
+                )
 
             if section_provided or dept_changed:
                 target_dept_id = (
