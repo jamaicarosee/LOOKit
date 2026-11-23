@@ -11,8 +11,8 @@ import { AuthProvider, useAuth } from './features/login/context/AuthContext';
 import StaffScreen from './features/staff/StaffScreen';
 import { StaffNavProvider } from './features/staff/StaffNavContext';
 import { AdminNavProvider } from './features/admin/AdminNavContext';
-import { supabase } from './services/supabaseClient'; 
-import ResetPassword from './features/login/components/ResetPassword'; 
+import { supabase } from './services/supabaseClient';
+import ResetPassword from './features/login/components/ResetPassword';
 import LaunchOverlay from './features/loading/LaunchOverlay';
 import AdminScreenSkeleton from './features/admin/components/AdminScreenSkeleton';
 import { useLaunchSequence } from './features/loading/hooks/useLaunchSequence';
@@ -20,12 +20,22 @@ import { useLaunchSequence } from './features/loading/hooks/useLaunchSequence';
 // Loaded on demand so normal users never download the admin dashboard
 const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
 
-
-
 function AppContent() {
   const { isDesktop } = useViewport(1024);
-  const { user, profile, isAuthenticated, isAdmin, authLoading, logout } = useAuth();
-  const { phase: launchPhase, markMapLoaded } = useLaunchSequence();
+  const {
+    user,
+    profile,
+    isAuthenticated,
+    isAdmin,
+    authLoading,
+    verifyingGoogle,
+    authError,
+    clearAuthError,
+    loginEventCount,
+    logout,
+  } = useAuth();
+ const { phase: launchPhase, markMapLoaded, replayLaunch, cancelLaunch } =
+    useLaunchSequence({ holdSplash: verifyingGoogle });
 
   const [screen, setScreen] = useState('dashboard');
   const [previousScreen, setPreviousScreen] = useState('dashboard');
@@ -34,8 +44,9 @@ function AppContent() {
   const [pendingStaff, setPendingStaff] = useState(false);
   const [navTarget, setNavTarget] = useState(null);
   const [navOrigin, setNavOrigin] = useState('dashboard');
-  
-  // Bagong state para sa Reset Password Modal
+  const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
+
+  // Reset Password Modal states
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetError, setResetError] = useState(false);
 
@@ -53,18 +64,19 @@ function AppContent() {
   const closeNavigation = () => setScreen(navOrigin);
 
   const openLogin = () => {
-  if (isAuthenticated) {
-    setPreviousScreen(screen);
-    setScreen('account');
-  } else {
-    setLoginRequired(false);
-    setShowLoginModal(true);
-  }
-};
+    if (isAuthenticated) {
+      setPreviousScreen(screen);
+      setScreen('account');
+    } else {
+      setLoginRequired(false);
+      setShowLoginModal(true);
+    }
+  };
 
   const closeLogin = () => {
     setShowLoginModal(false);
     setLoginRequired(false);
+    clearAuthError();
   };
 
   const requireLogin = () => {
@@ -92,34 +104,46 @@ function AppContent() {
     setScreen('navigation');
   };
 
-  //PASSWORD_RECOVERY event
+  // Immediately dismiss any launch overlay and show LoginModal on auth/validation errors
+  useEffect(() => {
+    if (authError) {
+      cancelLaunch();
+      setShowLoginModal(true);
+    }
+  }, [authError, cancelLaunch]);
+
+  // Replay LOOKit loading logo screen & refresh dashboard on every successful login
+  useEffect(() => {
+    if (loginEventCount === 0) return;
+    setShowLoginModal(false);
+    setLoginRequired(false);
+    setScreen('dashboard');
+    setDashboardRefreshKey((k) => k + 1);
+    replayLaunch();
+  }, [loginEventCount, replayLaunch]);
+
+  // PASSWORD_RECOVERY event
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const type = params.get('type');
 
     if (token && type === 'recovery') {
-  
       window.history.replaceState(null, '', window.location.pathname);
 
-      // 2. Verify token
       supabase.auth.verifyOtp({ token_hash: token, type: 'recovery' })
         .then(async ({ error }) => {
           if (error) {
-            // Check if there is active session
             const { data: { session } } = await supabase.auth.getSession();
-            
+
             if (session) {
-              // Can be back if the 5 mins session is not done
               setShowResetModal(true);
               setShowLoginModal(false);
             } else {
-              // Expired or Invalid
               setResetError(true);
-              await supabase.auth.signOut(); // Make sure no login happened
+              await supabase.auth.signOut();
             }
           } else {
-            // Success for first click
             setShowResetModal(true);
             setShowLoginModal(false);
           }
@@ -207,48 +231,62 @@ function AppContent() {
       {screen === 'account' && isAuthenticated && (
         <main className={mainClass}>
           <AccountInfo
-          user={user}
-          profile={profile}
-          onBackToMap={() => setScreen(previousScreen)}
-          onLogout={handleLogout}
-        />
-      </main>
-    )}
+            user={user}
+            profile={profile}
+            onBackToMap={() => setScreen(previousScreen)}
+            onLogout={handleLogout}
+          />
+        </main>
+      )}
 
       {screen === 'dashboard' && (
         <>
           {isDesktop ? (
             <main className="w-screen h-[100dvh] bg-[#F8F9F9] overflow-hidden">
-              <DashboardDesktopView onOpenSearch={openSearch} onLoginClick={openLogin} onMapReady={markMapLoaded} />
+              <DashboardDesktopView
+                key={`desktop-${dashboardRefreshKey}`}
+                onOpenSearch={openSearch}
+                onLoginClick={openLogin}
+                onMapReady={markMapLoaded}
+              />
             </main>
           ) : (
             <main className="w-screen h-[100dvh] bg-slate-900 flex items-center justify-center overflow-hidden">
-              <DashboardMobileView onOpenSearch={openSearch} onLoginClick={openLogin} onMapReady={markMapLoaded} />
+              <DashboardMobileView
+                key={`mobile-${dashboardRefreshKey}`}
+                onOpenSearch={openSearch}
+                onLoginClick={openLogin}
+                onMapReady={markMapLoaded}
+              />
             </main>
           )}
         </>
       )}
 
       {showLoginModal && (
-        <LoginModal onClose={closeLogin} loginRequired={loginRequired} />
+        <LoginModal
+          onClose={closeLogin}
+          loginRequired={loginRequired}
+          initialError={authError}
+        />
       )}
 
       {/* Reset Password Modal */}
       {showResetModal && (
-        <ResetPassword 
+        <ResetPassword
           onClose={async () => {
             setShowResetModal(false);
-            await supabase.auth.signOut(); // SECURITY: No ghost logins
-          }} 
+            await supabase.auth.signOut();
+          }}
           onBackToLogin={async () => {
             setShowResetModal(false);
-            await supabase.auth.signOut(); // SECURITY: No ghost logins
-            openLogin(); 
-          }} 
+            await supabase.auth.signOut();
+            openLogin();
+          }}
         />
       )}
 
-      {/* Pop-up message*/}
+      {/* Pop-up message */}
       {resetError && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-[#102747]/60 px-3">
           <div className="w-full max-w-[400px] rounded-[20px] bg-white p-6 text-center shadow-xl">
@@ -257,9 +295,9 @@ function AppContent() {
              </div>
              <h3 className="mb-2 text-[19px] font-bold text-[#102747]">Expired reset password</h3>
              <p className="mb-6 text-[14px] text-[#61738A]">This reset link has expired or is invalid. Please request a new one.</p>
-             <button 
-               type="button" 
-               onClick={() => setResetError(false)} 
+             <button
+               type="button"
+               onClick={() => setResetError(false)}
                className="h-[50px] w-full rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E]"
              >
                Close

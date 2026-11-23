@@ -1,4 +1,3 @@
-
 import { supabase } from '../../../services/supabaseClient';
 import { apiClient } from '../../../services/apiClient';
 
@@ -10,9 +9,11 @@ import {
 
 const KEEP_SIGNED_IN_KEY = 'lookit_keep_signed_in';
 const SESSION_ACTIVE_KEY = 'lookit_browser_session_active';
+const GOOGLE_OAUTH_PENDING_KEY = 'lookit_google_oauth_pending';
 
 const DEACTIVATED_MESSAGE =
   'This account has been deactivated. Please contact an administrator.';
+const ACCOUNT_EXISTS_MESSAGE = 'Account already exists.';
 
 // Get basic information from Google or Supabase Auth
 export function getAuthUserProfile(user) {
@@ -64,13 +65,66 @@ export function mergeAuthProfile(user, backendProfile) {
 async function clearSession() {
   localStorage.removeItem(KEEP_SIGNED_IN_KEY);
   sessionStorage.removeItem(SESSION_ACTIVE_KEY);
+  sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
 
   try {
     await supabase.auth.signOut();
   } catch (err) {
     console.warn(
-      '[LOOKit Auth] Sign-out after deactivation failed:',
+      '[LOOKit Auth] Sign-out cleanup failed:',
       err
+    );
+  }
+}
+
+export function isGoogleOAuthPending() {
+  return sessionStorage.getItem(GOOGLE_OAUTH_PENDING_KEY) === 'true';
+}
+
+export function clearGoogleOAuthPending() {
+  sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
+}
+
+export async function checkAccountAvailability({ fullName, email }) {
+  try {
+    const response = await apiClient.post('/api/auth/check-availability', {
+      full_name: fullName,
+      email,
+    });
+    return response.data;
+  } catch (error) {
+    const detail = error.response?.data?.detail;
+    throw new Error(
+      typeof detail === 'string'
+        ? detail
+        : 'Unable to validate account availability. Please try again.'
+    );
+  }
+}
+
+export async function validateGoogleLogin(accessToken) {
+  if (!accessToken) return;
+  try {
+    await apiClient.post(
+      '/api/auth/validate-google',
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    if (error.response?.status === 409) {
+      await clearSession();
+      const detail = error.response?.data?.detail;
+      throw new Error(
+        typeof detail === 'string' ? detail : ACCOUNT_EXISTS_MESSAGE
+      );
+    }
+    console.warn(
+      '[LOOKit Auth] Google validation warning:',
+      error.response?.data?.detail || error.message
     );
   }
 }
@@ -196,6 +250,16 @@ export async function signUpUser({
   const trimmedName = fullName.trim();
   const normalizedEmail = email.trim().toLowerCase();
 
+  // Pre-check against public.users (covers both Email/Password and Google accounts)
+  const availability = await checkAccountAvailability({
+    fullName: trimmedName,
+    email: normalizedEmail,
+  });
+
+  if (availability?.exists) {
+    throw new Error(availability.message || ACCOUNT_EXISTS_MESSAGE);
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email: normalizedEmail,
     password,
@@ -210,9 +274,7 @@ export async function signUpUser({
     const rawMsg = error.message?.toLowerCase() || '';
 
     if (rawMsg.includes('already registered')) {
-      throw new Error(
-        'An account with this email already exists. Please log in instead.'
-      );
+      throw new Error(ACCOUNT_EXISTS_MESSAGE);
     }
 
     throw new Error(
@@ -225,9 +287,7 @@ export async function signUpUser({
     Array.isArray(data.user.identities) &&
     data.user.identities.length === 0
   ) {
-    throw new Error(
-      'An account with this email already exists. Please log in instead.'
-    );
+    throw new Error(ACCOUNT_EXISTS_MESSAGE);
   }
 
   let backendProfile = null;
@@ -262,6 +322,7 @@ export async function signUpUser({
 export async function signInWithGoogle() {
   // Google OAuth always starts a persistent browser session.
   localStorage.setItem(KEEP_SIGNED_IN_KEY, 'true');
+  sessionStorage.setItem(GOOGLE_OAUTH_PENDING_KEY, 'true');
 
   const { data, error } =
     await supabase.auth.signInWithOAuth({
@@ -273,6 +334,7 @@ export async function signInWithGoogle() {
     });
 
   if (error) {
+    clearGoogleOAuthPending();
     throw new Error(
       error.message || 'Unable to sign in with Google.'
     );
@@ -291,6 +353,7 @@ export async function signOutUser({
 
   localStorage.removeItem(KEEP_SIGNED_IN_KEY);
   sessionStorage.removeItem(SESSION_ACTIVE_KEY);
+  sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
 
   const { error } = await supabase.auth.signOut();
 
@@ -334,6 +397,15 @@ export async function initializeAuthSession() {
     SESSION_ACTIVE_KEY,
     'true'
   );
+
+  // Skip pre-validation /api/auth/me during a Google OAuth return so validate-google runs immediately
+  if (isGoogleOAuthPending()) {
+    return {
+      user: data.session.user,
+      session: data.session,
+      profile: null,
+    };
+  }
 
   let backendProfile;
 

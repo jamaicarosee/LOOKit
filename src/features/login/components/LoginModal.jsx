@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import {
   UserRound,
@@ -30,7 +29,7 @@ function PasswordInput({
   onToggle,
   placeholder,
   autoComplete,
-  isSubmitting,
+  isBusy,
 }) {
   return (
     <div>
@@ -46,7 +45,7 @@ function PasswordInput({
           autoComplete={autoComplete}
           required
           minLength={8}
-          disabled={isSubmitting}
+          disabled={isBusy}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className={`${inputClass} pr-[45px]`}
@@ -55,7 +54,7 @@ function PasswordInput({
         <button
           type="button"
           onClick={onToggle}
-          disabled={isSubmitting}
+          disabled={isBusy}
           aria-label={visible ? 'Hide password' : 'Show password'}
           className="absolute inset-y-0 right-[15px] flex items-center text-[#96A7BD] hover:text-[#102747]"
         >
@@ -102,6 +101,7 @@ function GoogleIcon() {
 export default function LoginModal({
   onClose,
   loginRequired = false,
+  initialError = '',
 }) {
   const { login, register } = useAuth();
 
@@ -118,17 +118,29 @@ export default function LoginModal({
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
+  // Scoped loading state: null | 'credentials' | 'google'
+  const [submittingAction, setSubmittingAction] = useState(null);
+  const [message, setMessage] = useState(initialError || '');
+  const [isError, setIsError] = useState(Boolean(initialError));
 
+  const isBusy = submittingAction !== null;
+  const isCredentialsLoading = submittingAction === 'credentials';
+  const isGoogleLoading = submittingAction === 'google';
+  
   const isLogin = mode === 'login';
   const isSignup = mode === 'signup';
   const isForgot = mode === 'forgot';
 
   useEffect(() => {
+    if (initialError) {
+      setMessage(initialError);
+      setIsError(true);
+    }
+  }, [initialError]);
+
+  useEffect(() => {
     const handleEscape = (event) => {
-      if (event.key === 'Escape' && !isSubmitting) {
+      if (event.key === 'Escape' && !isBusy) {
         onClose();
       }
     };
@@ -138,7 +150,7 @@ export default function LoginModal({
     return () => {
       window.removeEventListener('keydown', handleEscape);
     };
-  }, [onClose, isSubmitting]);
+  }, [onClose, isBusy]);
 
   const switchForm = (newMode) => {
     setMode(newMode);
@@ -163,7 +175,7 @@ export default function LoginModal({
       return;
     }
 
-    setIsSubmitting(true);
+    setSubmittingAction('credentials');
 
     try {
       if (isLogin) {
@@ -199,13 +211,13 @@ export default function LoginModal({
           'Authentication failed. Please try again.'
       );
     } finally {
-      setIsSubmitting(false);
+      setSubmittingAction(null);
     }
   };
 
   // GOOGLE LOGIN
   const handleGoogleSignIn = async () => {
-    setIsSubmitting(true);
+    setSubmittingAction('google');
     setMessage('');
     setIsError(false);
 
@@ -216,7 +228,7 @@ export default function LoginModal({
       setMessage(
         err.message || 'Google sign-in failed. Please try again.'
       );
-      setIsSubmitting(false);
+      setSubmittingAction(null);
     }
   };
 
@@ -226,7 +238,7 @@ export default function LoginModal({
       onMouseDown={(event) => {
         if (
           event.target === event.currentTarget &&
-          !isSubmitting
+          !isBusy
         ) {
           onClose();
         }
@@ -282,7 +294,7 @@ export default function LoginModal({
             <button
               type="button"
               onClick={onClose}
-              disabled={isSubmitting}
+              disabled={isBusy}
               aria-label="Close"
               className="rounded-full p-1 text-[#68768A] transition hover:bg-[#E7EDF6]"
             >
@@ -321,7 +333,7 @@ export default function LoginModal({
                     placeholder="Enter your name"
                     autoComplete="name"
                     required
-                    disabled={isSubmitting}
+                    disabled={isBusy}
                     value={fullName}
                     onChange={(event) =>
                       setFullName(event.target.value)
@@ -346,7 +358,7 @@ export default function LoginModal({
                   placeholder="Enter your email"
                   autoComplete="email"
                   required
-                  disabled={isSubmitting}
+                  disabled={isBusy}
                   value={email}
                   onChange={(event) =>
                     setEmail(event.target.value)
@@ -368,7 +380,7 @@ export default function LoginModal({
                   {isLogin && (
                     <button
                       type="button"
-                      disabled={isSubmitting}
+                      disabled={isBusy}
                       onClick={() => switchForm('forgot')}
                       className="text-[11px] text-[#B58B34] hover:underline"
                     >
@@ -391,7 +403,7 @@ export default function LoginModal({
                     }
                     required
                     minLength={8}
-                    disabled={isSubmitting}
+                    disabled={isBusy}
                     value={password}
                     onChange={(event) =>
                       setPassword(event.target.value)
@@ -401,7 +413,7 @@ export default function LoginModal({
 
                   <button
                     type="button"
-                    disabled={isSubmitting}
+                    disabled={isBusy}
                     onClick={() =>
                       setShowPassword(!showPassword)
                     }
@@ -436,7 +448,7 @@ export default function LoginModal({
                       !showConfirmPassword
                     )
                   }
-                  isSubmitting={isSubmitting}
+                  isBusy={isBusy}
                 />
               )}
 
@@ -446,7 +458,7 @@ export default function LoginModal({
                   id="lookit-agreement"
                   type="checkbox"
                   required={isSignup}
-                  disabled={isSubmitting}
+                  disabled={isBusy}
                   checked={
                     isLogin
                       ? keepSignedIn
@@ -497,10 +509,10 @@ export default function LoginModal({
               {/* SUBMIT */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isBusy}
                 className="flex h-[50px] w-full items-center justify-center gap-2 rounded-[10px] bg-[#102747] text-[14px] font-bold text-white transition hover:bg-[#1B3A5E] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isSubmitting ? (
+                {isCredentialsLoading ? (
                   <>
                     <Loader2
                       size={18}
@@ -533,10 +545,10 @@ export default function LoginModal({
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
-                disabled={isSubmitting}
-                className="flex h-[45px] w-full items-center justify-center gap-3 rounded-lg border border-[#D2D9E3] bg-[#F7F8FA] text-[14px] font-medium text-[#102747] transition hover:bg-[#E7EDF6] disabled:opacity-60"
+                disabled={isBusy}
+                className="flex h-[45px] w-full items-center justify-center gap-3 rounded-lg border border-[#D2D9E3] bg-[#F7F8FA] text-[14px] font-medium text-[#102747] transition hover:bg-[#E7EDF6] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isSubmitting ? (
+                {isGoogleLoading ? (
                   <Loader2
                     size={19}
                     className="animate-spin"
@@ -565,7 +577,7 @@ export default function LoginModal({
                   Don't have an account?{' '}
                   <button
                     type="button"
-                    disabled={isSubmitting}
+                    disabled={isBusy}
                     onClick={() => switchForm('signup')}
                     className="font-bold text-[#B58B34] hover:text-[#8F6C20]"
                   >
@@ -577,7 +589,7 @@ export default function LoginModal({
                   Already have an account?{' '}
                   <button
                     type="button"
-                    disabled={isSubmitting}
+                    disabled={isBusy}
                     onClick={() => switchForm('login')}
                     className="font-bold text-[#B58B34] hover:text-[#8F6C20]"
                   >

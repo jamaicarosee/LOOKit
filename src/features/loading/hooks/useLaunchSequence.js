@@ -12,7 +12,8 @@ export const LAUNCH_TIMING = {
 
 // Launch phases, in order:
 //   splash -> splash-out -> skeleton -> skeleton-out -> done
-export function useLaunchSequence() {
+export function useLaunchSequence({ holdSplash = false } = {}) {
+  const [runId, setRunId] = useState(0);
   const [phase, setPhase] = useState('splash');
   const [windowLoaded, setWindowLoaded] = useState(
     () => typeof document === 'undefined' || document.readyState === 'complete',
@@ -25,6 +26,21 @@ export function useLaunchSequence() {
 
   // Called by CampusMapPreview once map.on('load') has finished and its GeoJSON layers are painted
   const markMapLoaded = useCallback(() => setMapLoaded(true), []);
+
+  // Replays the full splash -> skeleton -> live map sequence (used for in-page logins)
+  const replayLaunch = useCallback(() => {
+    setPhase('splash');
+    setMinSplashElapsed(false);
+    setMinSkeletonElapsed(false);
+    setMapLoaded(false);
+    setTimedOut(false);
+    setRunId((id) => id + 1);
+  }, []);
+
+  // Immediately dismisses the launch overlay (used when an auth/validation error occurs)
+  const cancelLaunch = useCallback(() => {
+    setPhase('done');
+  }, []);
 
   // DOM + initial scripts/assets ready
   useEffect(() => {
@@ -41,14 +57,13 @@ export function useLaunchSequence() {
       clearTimeout(minTimer);
       clearTimeout(maxTimer);
     };
-  }, []);
+  }, [runId]);
 
   // Local routing data: warms the campus GeoJSON cache and builds the routing graph
   useEffect(() => {
     let cancelled = false;
     preloadRoutingGraph()
       .catch((err) => {
-        // getGraph() clears its cache on failure, so the first real route simply retries
         console.warn('[LOOKit] Routing graph preload failed; it will retry on the first route.', err);
       })
       .finally(() => {
@@ -59,12 +74,12 @@ export function useLaunchSequence() {
     };
   }, []);
 
-  // splash -> splash-out
+  // splash -> splash-out (waits while holdSplash is true, unless safety timeout hits)
   useEffect(() => {
-    if (phase === 'splash' && minSplashElapsed && (windowLoaded || timedOut)) {
+    if (phase === 'splash' && minSplashElapsed && ((!holdSplash && windowLoaded) || timedOut)) {
       setPhase('splash-out');
     }
-  }, [phase, minSplashElapsed, windowLoaded, timedOut]);
+  }, [phase, minSplashElapsed, holdSplash, windowLoaded, timedOut]);
 
   // splash-out -> skeleton (after the splash fade finishes)
   useEffect(() => {
@@ -94,5 +109,11 @@ export function useLaunchSequence() {
     return () => clearTimeout(t);
   }, [phase]);
 
-  return { phase, isLaunching: phase !== 'done', markMapLoaded };
+  return {
+    phase,
+    isLaunching: phase !== 'done',
+    markMapLoaded,
+    replayLaunch,
+    cancelLaunch,
+  };
 }
