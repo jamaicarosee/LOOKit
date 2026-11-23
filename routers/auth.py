@@ -205,6 +205,11 @@ def get_user_profile(profile: dict = Depends(get_current_user_profile)):
     return {"user": profile}
 
 
+@router.post("/validate-google")
+def validate_google(profile: dict = Depends(get_current_user_profile)):
+    return {"valid": True, "user_id": profile.get("id")}
+
+
 @router.get("/admin-check")
 def verify_admin_status(admin_profile: dict = Depends(require_admin)):
     """

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # Import our modular routers
-from routers import audit, auth, navigation, staff, users
+from routers import ai_search, audit, auth, navigation, staff, users
 # Import graph service to initialize it on startup
 from services.graph_service import campus_graph_service
 
@@ -34,6 +34,7 @@ app.include_router(navigation.router)
 app.include_router(staff.router)
 app.include_router(users.router)
 app.include_router(audit.router)
+app.include_router(ai_search.router)
 
 @app.get("/")
 def root():
