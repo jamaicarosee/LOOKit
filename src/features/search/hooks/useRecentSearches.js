@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../login/context/AuthContext';
 import { apiClient } from '../../../services/apiClient';
@@ -131,3 +132,42 @@ export default function useRecentSearches() {
     reloadSearches: loadUserSearches,
   };
 }
+=======
+import { useState, useCallback } from 'react';
+
+const STORAGE_KEY = 'lookit_recent_routes';
+const MAX_RECENT = 5;
+
+export default function useRecentSearches() {
+  const [recentRoutes, setRecentRoutes] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const saveRecentRoute = useCallback((from, to) => {
+    if (!from || !to) return;
+
+    setRecentRoutes((prev) => {
+      const id = `${from.id || from.name}>${to.id || to.name}`;
+      const filtered = prev.filter(
+        (r) => (r.id || `${r.from?.id}>${r.to?.id}`) !== id
+      );
+      const updated = [{ id, from, to }, ...filtered].slice(0, MAX_RECENT);
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch {
+        // Ignore storage quota / privacy mode errors
+      }
+
+      return updated;
+    });
+  }, []);
+
+  return { recentRoutes, saveRecentRoute };
+}
+>>>>>>> 2ff6cf4 (ai search)

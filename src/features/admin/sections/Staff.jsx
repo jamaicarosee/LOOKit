@@ -384,7 +384,11 @@ export default function Staff() {
         <section aria-labelledby="dir-preview" className="min-w-0 rounded-md border border-[#0B2545] bg-[#F8F9F9]">
           <div className="max-h-[70vh] overflow-y-auto px-5 py-5 lg:px-8">
             <h2 id="dir-preview" className="mb-4 text-xl font-black uppercase tracking-tight text-[#0B2545] lg:text-2xl">Staff Directory</h2>
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 2ff6cf4 (ai search)
             {/* Staff Search Bar matching Users tab style */}
             <div className="mb-5">
               <TextInput
