@@ -21,9 +21,15 @@ const ACTIONS = [
   { id: 'delete', label: 'Delete staff' },
 ];
 
+// Common titles (honorifics / ranks). Anything else can be typed via "Other…".
+const STATUS_OPTIONS = ['Instr.', 'Dr.', 'Atty.', 'Engr.', 'Prof.', 'Assoc. Prof.', 'Asst. Prof.', 'Mr.', 'Ms.', 'Mrs.'];
+const STATUS_OTHER = '__other__';
+
 const EMPTY = {
   employeeNumber: '',
+  title: '',
   firstName: '',
+  middleInitial: '',
   lastName: '',
   role: '',
   email: '',
@@ -33,6 +39,15 @@ const EMPTY = {
   secondaryDepartmentId: '',
   officeLocationId: '',
 };
+
+// 'r' -> 'R.', 'M.A.' stays as is. Mirrors the backend so the confirm dialog matches what is saved.
+const normalizeInitial = (v = '') => {
+  const t = v.trim();
+  return t.length === 1 && /[a-z]/i.test(t) ? `${t.toUpperCase()}.` : t;
+};
+
+const fullName = ({ title, firstName, middleInitial, lastName }) =>
+  [title, firstName, middleInitial, lastName].map((p) => (p || '').trim()).filter(Boolean).join(' ');
 
 export default function Staff() {
   const { staff, status, reload } = useStaffData({ fallback: false });
@@ -45,6 +60,7 @@ export default function Staff() {
   const [targetId, setTargetId] = useState('');
   const [form, setForm] = useState(EMPTY);
   const [hasSecondPosition, setHasSecondPosition] = useState(false);
+  const [statusOther, setStatusOther] = useState(false);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState(null);
 
@@ -67,6 +83,16 @@ export default function Staff() {
   }, []);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+
+  const handleStatusSelect = (value) => {
+    if (value === STATUS_OTHER) {
+      setStatusOther(true);
+      setField('title', '');
+    } else {
+      setStatusOther(false);
+      setField('title', value);
+    }
+  };
 
   // Auto-select the matching Directory Section whenever the primary Department changes
   const handleDepartmentChange = (deptId) => {
@@ -105,6 +131,7 @@ export default function Staff() {
     setTargetId('');
     setForm(EMPTY);
     setHasSecondPosition(false);
+    setStatusOther(false);
     setNotice(null);
   }
 
@@ -115,6 +142,7 @@ export default function Staff() {
     if (!p) {
       setForm(EMPTY);
       setHasSecondPosition(false);
+      setStatusOther(false);
       return;
     }
     const resolvedOfficeId = p.officeLocationId ?? p.office_location_id;
@@ -123,9 +151,12 @@ export default function Staff() {
     const secDeptId = p.secondaryDepartmentId == null ? '' : String(p.secondaryDepartmentId);
 
     setHasSecondPosition(Boolean(secRole || secDeptId));
+    setStatusOther(Boolean(p.title) && !STATUS_OPTIONS.includes(p.title));
     setForm({
       ...EMPTY,
+      title: p.title || '',
       firstName: p.firstName || '',
+      middleInitial: p.middleInitial || '',
       lastName: p.lastName || '',
       role: p.position || '',
       email: p.email || '',
@@ -159,9 +190,12 @@ export default function Staff() {
 
   function apply() {
     const names = {
+      title: (form.title || '').trim(),
       firstName: (form.firstName || '').trim(),
+      middleInitial: normalizeInitial(form.middleInitial || ''),
       lastName: (form.lastName || '').trim(),
     };
+    const displayName = fullName(names);
 
     if (action === 'add') {
       if (!names.firstName || !names.lastName) return setNotice({ type: 'error', text: 'Enter a first and last name.' });
@@ -171,10 +205,11 @@ export default function Staff() {
         secondaryRole: hasSecondPosition ? (form.secondaryRole || '').trim() : '',
         secondaryDepartmentId: hasSecondPosition ? form.secondaryDepartmentId : '',
       };
-      run(() => addStaff(payload), `Added ${names.firstName} ${names.lastName}.`).then((ok) => {
+      run(() => addStaff(payload), `Added ${displayName}.`).then((ok) => {
         if (ok) {
           setForm(EMPTY);
           setHasSecondPosition(false);
+          setStatusOther(false);
         }
       });
       return;
@@ -200,7 +235,7 @@ export default function Staff() {
 
     setConfirmConfig({
       title: 'Update Staff',
-      message: `Are you sure you want to update the details of ${names.firstName} ${names.lastName}?`,
+      message: `Are you sure you want to update the details of ${displayName}?`,
       isDanger: false,
       confirmAction: async () => {
         const next = {
@@ -216,7 +251,9 @@ export default function Staff() {
         const beforeOfficeId = target.officeLocationId ?? target.office_location_id;
         const beforeSection = normalizeSectionId(target.section || target.groups?.[0] || sectionForDepartment(target.office));
         const before = {
+          title: target.title || '',
           firstName: target.firstName || '',
+          middleInitial: target.middleInitial || '',
           lastName: target.lastName || '',
           role: target.position || '',
           email: target.email || '',
@@ -228,7 +265,7 @@ export default function Staff() {
         };
         const patch = Object.fromEntries(Object.entries(next).filter(([k, v]) => v !== before[k]));
         if (Object.keys(patch).length === 0) return setNotice({ type: 'error', text: 'Nothing has changed yet.' });
-        await run(() => updateStaff(target.id, patch), `Updated ${names.firstName} ${names.lastName}.`);
+        await run(() => updateStaff(target.id, patch), `Updated ${displayName}.`);
       },
     });
     setConfirmModalOpen(true);
@@ -247,15 +284,44 @@ export default function Staff() {
           />
         </Field>
       )}
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="First name">
-          <TextInput value={form.firstName} onChange={(e) => setField('firstName', e.target.value)} placeholder="First name" disabled={busy} />
+      <Field label="Title">
+        <SelectInput
+          value={statusOther ? STATUS_OTHER : form.title}
+          onChange={(e) => handleStatusSelect(e.target.value)}
+          disabled={busy}
+        >
+          <option value="">None</option>
+          {STATUS_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+          <option value={STATUS_OTHER}>Other…</option>
+        </SelectInput>
+      </Field>
+      {statusOther && (
+        <TextInput
+          value={form.title}
+          onChange={(e) => setField('title', e.target.value)}
+          placeholder="Type title, e.g. Hon."
+          maxLength={30}
+          disabled={busy}
+        />
+      )}
+      <Field label="First name">
+        <TextInput value={form.firstName} onChange={(e) => setField('firstName', e.target.value)} placeholder="Juan" disabled={busy} />
+      </Field>
+      <div className="grid grid-cols-[88px_1fr] gap-3">
+        <Field label="M.I.">
+          <TextInput
+            value={form.middleInitial}
+            onChange={(e) => setField('middleInitial', e.target.value.replace(/[^A-Za-z.]/g, ''))}
+            placeholder="R."
+            maxLength={6}
+            disabled={busy}
+          />
         </Field>
         <Field label="Last name">
-          <TextInput value={form.lastName} onChange={(e) => setField('lastName', e.target.value)} placeholder="Last name" disabled={busy} />
+          <TextInput value={form.lastName} onChange={(e) => setField('lastName', e.target.value)} placeholder="Dela Cruz" disabled={busy} />
         </Field>
       </div>
-      <Field label="Title">
+      <Field label="Position">
         <TextInput value={form.role} onChange={(e) => setField('role', e.target.value)} placeholder="e.g. Head - Unit Name" disabled={busy} />
       </Field>
       <Field label="Email">
@@ -289,7 +355,7 @@ export default function Staff() {
 
       {hasSecondPosition && (
         <div className="space-y-3 rounded-lg border border-slate-200 bg-[#F8F9F9] p-3">
-          <Field label="Title">
+          <Field label="Position">
             <TextInput
               value={form.secondaryRole}
               onChange={(e) => setField('secondaryRole', e.target.value)}

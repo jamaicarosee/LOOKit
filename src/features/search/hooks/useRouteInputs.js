@@ -34,6 +34,8 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   const [emergency, setEmergency] = useState(false);
   const [pwd, setPwd] = useState(false);
   const [gpsError, setGpsError] = useState(null);
+  // GPS cannot detect floors, so the user says which floor they are on (used only with Current Location)
+  const [gpsFloor, setGpsFloor] = useState(1);
 
   // Real-time GPS runs only while "Current Location" is the starting point
   const gps = useCurrentLocation(!!from?.isCurrentLocation);
@@ -41,8 +43,8 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   // latest coordinates and is what the routing engine receives. null until the first fix arrives.
   const liveFrom = useMemo(() => {
     if (!from?.isCurrentLocation) return from;
-    return gps.coord ? makeLiveLocation(gps) : null;
-  }, [from, gps]);
+    return gps.coord ? makeLiveLocation({ ...gps, floor: gpsFloor }) : null;
+  }, [from, gps, gpsFloor]);
 
   // GPS failed (permission denied, no signal): drop the placeholder so a start can be picked by hand
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   // Starts GPS tracking (the browser asks for permission) and shows the live label in the From field
   const selectCurrentLocation = useCallback(() => {
     setGpsError(null);
+    setGpsFloor(1);
     setFrom(CURRENT_LOCATION);
     setFromTextRaw(CURRENT_LOCATION.name);
   }, []);
@@ -110,7 +113,7 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   return {
     from, to, fromText, toText,
     setFromText, setToText, selectFrom, selectTo, swap,
-    selectCurrentLocation, liveFrom, gps, gpsError,
+    selectCurrentLocation, liveFrom, gps, gpsError, gpsFloor, setGpsFloor,
     emergency, setEmergency, pwd, setPwd,
     canNavigate, error, resolvePending,
   };

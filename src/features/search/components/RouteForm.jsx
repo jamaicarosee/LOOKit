@@ -4,6 +4,7 @@ import RouteInputCard from './RouteInputCard';
 import RouteOptionToggles from './RouteOptionToggles';
 import LocationSuggestions from './LocationSuggestions';
 import StartNavigationButton from './StartNavigationButton';
+import GpsAssist from './GpsAssist';
 import useLocationSearch from '../hooks/useLocationSearch';
 import { CURRENT_LOCATION } from '../../navigation/services/locationService';
 
@@ -98,13 +99,7 @@ export default function RouteForm({ inputs, onBack, onStart, isLoading = false }
         </p>
       )}
 
-      {inputs.from?.isCurrentLocation && (
-        <p role="status" className="mt-2 px-1 text-[11px] font-semibold text-[#607289]">
-          {inputs.gps.coord
-            ? `Live GPS on · accuracy ±${Math.round(inputs.gps.accuracy)} m · your route updates as you walk`
-            : 'Getting your location…'}
-        </p>
-      )}
+      {inputs.from?.isCurrentLocation && <GpsAssist inputs={inputs} />}
       {inputs.gpsError && (
         <p role="alert" className="mt-2 px-1 text-[11px] font-semibold text-red-600">
           {inputs.gpsError}

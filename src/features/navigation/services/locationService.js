@@ -14,8 +14,8 @@ export const CURRENT_LOCATION = {
   isCurrentLocation: true,
 };
 
-export function makeLiveLocation({ coord, accuracy, heading }) {
-  return { ...CURRENT_LOCATION, coordinate: coord, accuracy, heading, geometry: { type: 'Point', coordinates: coord } };
+export function makeLiveLocation({ coord, accuracy, heading, quality = null, floor = 1 }) {
+  return { ...CURRENT_LOCATION, floor, coordinate: coord, accuracy, heading, quality, geometry: { type: 'Point', coordinates: coord } };
 }
 
 let locationsPromise = null;

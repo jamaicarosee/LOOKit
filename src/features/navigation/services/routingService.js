@@ -13,6 +13,11 @@ const EMERGENCY_EXITS = ['Gate 1', 'Gate 2'];
 
 let graphPromise = null;
 
+// Floor-1 ramp edges of a building (used for the step-free fallback to the ground floor)
+function getBuildingPwdRamps(graph, building) {
+  return graph.edges.filter((e) => e.kind === 'ramp' && e.floor === 1 && !e.floorTo && !e.virtual && e.building === building);
+}
+
 function withBuildings(graph, raw) {
   graph.buildingGeometry = new Map((raw.campus?.features || []).map((f) => [f.properties.name, f.geometry]));
   return graph;
@@ -80,7 +85,9 @@ async function getLocalRoute(from, to, options) {
   // Live GPS start: snap the position onto the nearest walkway (virtual start node on a copy of the graph)
   let src;
   if (from.isCurrentLocation) {
-    const snap = from.coordinate ? attachPoint(graph, from.coordinate, { maxSnapM: GPS_SNAP_MAX_M }) : null;
+    // GPS cannot tell floors apart: the floor comes from the user's floor selector (default 1)
+    const gpsFloor = from.floor || 1;
+    const snap = from.coordinate ? attachPoint(graph, from.coordinate, { floor: gpsFloor, maxSnapM: GPS_SNAP_MAX_M }) : null;
     if (!snap) return null;
     graph = snap.graph;
     src = { ids: [snap.sourceId], exact: true };
@@ -140,7 +147,9 @@ async function getLocalRoute(from, to, options) {
     : toLabel;
 
   const result = buildRouteResult(path, {
-    fromLabel: from.type === 'room' ? `${from.name} (${from.building}, Floor ${from.floor})` : from.name,
+    fromLabel: from.type === 'room'
+      ? `${from.name} (${from.building}, Floor ${from.floor})`
+      : from.isCurrentLocation && (from.floor || 1) > 1 ? `${from.name} (Floor ${from.floor})` : from.name,
     toLabel,
     arriveText: emergency ? `You have reached the emergency exit at ${exitName}` : `You have arrived at ${dest}`,
     mode,
@@ -148,9 +157,12 @@ async function getLocalRoute(from, to, options) {
     insideBuilding: (c) => (raw.campus?.features || []).some((f) => f.properties.category !== 'outdoor_structure' && pointInPolygon(c, f.geometry)),
     startCoord: graph.nodes[path.nodeIds[0]].coord,
     startFloor: graph.nodes[path.nodeIds[0]].floor,
-    startZone: from.type === 'room' ? 'indoor' : 'outdoor',
+    startZone: from.type === 'room' || (from.isCurrentLocation && (from.floor || 1) > 1) ? 'indoor' : 'outdoor',
     endFloor: graph.nodes[path.target].floor,
   });
+
+  // PWD asked for an upper floor but the route still climbs by stairs: the note below tells the user
+  const usedUpperFloorStairs = pwd && !emergency && !pwdUpperBlocked && (result.steps || []).some((st) => st.type === 'stairs');
 
   // Insert inline accessibility note right after the final 1st-floor PWD ramp step
   if (usedUpperFloorStairs && Array.isArray(result.steps)) {

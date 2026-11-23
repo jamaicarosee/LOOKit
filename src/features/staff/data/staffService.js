@@ -15,7 +15,9 @@ export function sectionForDepartment(name = '') {
 }
 
 const COLUMN = {
+  title: 'title',
   firstName: 'first_name',
+  middleInitial: 'middle_initial',
   lastName: 'last_name',
   role: 'role',
   email: 'email',
