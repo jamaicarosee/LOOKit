@@ -1,6 +1,6 @@
 @import "mapbox-gl/dist/mapbox-gl.css";
 
-@import "tailwindcss";
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
