@@ -7,6 +7,10 @@ from database import supabase
 from dependencies import get_current_user_profile, require_admin
 from services.audit_service import error_text, get_client_ip, log_audit
 from services.supabase_retry import execute_with_retry
+from services.validation_service import (
+    validate_email_address,
+    validate_strong_password,
+)
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
@@ -92,16 +96,25 @@ def _is_newly_created_user(user_obj) -> bool:
 @router.post("/check-availability")
 def check_account_availability(payload: AccountAvailabilityPayload):
     """
-    Public pre-check for manual Sign Up: blocks duplicate email or full name
-    regardless of whether the existing account used Email/Password or Google.
+    Public pre-check for manual Sign Up:
+    1. Validates email format, blocks disposable domains, and verifies DNS MX records.
+    2. Blocks duplicate email or full name across Email/Password and Google accounts.
     """
+    if payload.email is not None:
+        is_valid, error_message = validate_email_address(payload.email)
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error_message,
+            )
+
     try:
         conflict = _find_duplicate_user(payload.email, payload.full_name)
         if conflict:
             return {
                 "exists": True,
                 "reason": conflict,
-                "message": "Full name or email already exists.",
+                "message": "Account already exists.",
             }
         return {"exists": False}
     except Exception as exc:
@@ -110,7 +123,6 @@ def check_account_availability(payload: AccountAvailabilityPayload):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Authentication service is temporarily unavailable. Please try again.",
         )
-
 
 @router.post("/validate-google")
 def validate_google_account(authorization: Optional[str] = Header(default=None)):
@@ -227,11 +239,7 @@ class ChangePassword(BaseModel):
     @field_validator("new_password")
     @classmethod
     def _password(cls, value: str) -> str:
-        if len(value) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        if len(value) > 72:  # bcrypt ignores everything past 72 bytes
-            raise ValueError("Password must be at most 72 characters")
-        return value
+        return validate_strong_password(value)
 
 
 @router.post("/change-password")
