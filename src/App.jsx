@@ -31,10 +31,12 @@ function AppContent() {
     verifyingGoogle,
     authError,
     clearAuthError,
+    authNotice,
+    clearAuthNotice,
     loginEventCount,
     logout,
   } = useAuth();
- const { phase: launchPhase, markMapLoaded, replayLaunch, cancelLaunch } =
+  const { phase: launchPhase, markMapLoaded, replayLaunch, cancelLaunch } =
     useLaunchSequence({ holdSplash: verifyingGoogle });
 
   const [screen, setScreen] = useState('dashboard');
@@ -82,6 +84,7 @@ function AppContent() {
     setShowLoginModal(false);
     setLoginRequired(false);
     clearAuthError();
+    clearAuthNotice();
   };
 
   const requireLogin = () => {
@@ -116,6 +119,14 @@ function AppContent() {
       setShowLoginModal(true);
     }
   }, [authError, cancelLaunch]);
+
+  // Open LoginModal with verification notice after returning from email confirmation
+  useEffect(() => {
+    if (authNotice) {
+      cancelLaunch();
+      setShowLoginModal(true);
+    }
+  }, [authNotice, cancelLaunch]);
 
   // Replay LOOKit loading logo screen & refresh dashboard on every successful login
   useEffect(() => {
@@ -249,6 +260,7 @@ function AppContent() {
           {isDesktop ? (
             <main className="w-screen h-[100dvh] bg-[#F8F9F9] overflow-hidden">
               <DashboardDesktopView
+                key={dashboardRefreshKey}
                 onOpenSearch={openSearch}
                 onSelectDestination={selectDestination}
                 onLoginClick={openLogin}
@@ -258,6 +270,7 @@ function AppContent() {
           ) : (
             <main className="w-screen h-[100dvh] bg-slate-900 flex items-center justify-center overflow-hidden">
               <DashboardMobileView
+                key={dashboardRefreshKey}
                 onOpenSearch={openSearch}
                 onSelectDestination={selectDestination}
                 onLoginClick={openLogin}
@@ -273,6 +286,7 @@ function AppContent() {
           onClose={closeLogin}
           loginRequired={loginRequired}
           initialError={authError}
+          initialNotice={authNotice}
         />
       )}
 

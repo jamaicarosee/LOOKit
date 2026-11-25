@@ -10,10 +10,25 @@ import {
 const KEEP_SIGNED_IN_KEY = 'lookit_keep_signed_in';
 const SESSION_ACTIVE_KEY = 'lookit_browser_session_active';
 const GOOGLE_OAUTH_PENDING_KEY = 'lookit_google_oauth_pending';
+const EMAIL_CONFIRM_PENDING_KEY = 'lookit_email_confirm_pending';
 
 const DEACTIVATED_MESSAGE =
   'This account has been deactivated. Please contact an administrator.';
 const ACCOUNT_EXISTS_MESSAGE = 'Account already exists.';
+
+function extractApiError(error, fallback) {
+  const detail = error?.response?.data?.detail;
+  if (typeof detail === 'string' && detail.trim()) {
+    return detail;
+  }
+  if (Array.isArray(detail) && detail.length > 0) {
+    const firstMsg = detail[0]?.msg;
+    if (typeof firstMsg === 'string' && firstMsg.trim()) {
+      return firstMsg.replace(/^Value error,\s*/i, '');
+    }
+  }
+  return fallback;
+}
 
 // Get basic information from Google or Supabase Auth
 export function getAuthUserProfile(user) {
@@ -68,7 +83,7 @@ async function clearSession() {
   sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
 
   try {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope: 'local' });
   } catch (err) {
     console.warn(
       '[LOOKit Auth] Sign-out cleanup failed:',
@@ -85,6 +100,14 @@ export function clearGoogleOAuthPending() {
   sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
 }
 
+export function isEmailConfirmPending() {
+  return localStorage.getItem(EMAIL_CONFIRM_PENDING_KEY) === 'true';
+}
+
+export function clearEmailConfirmPending() {
+  localStorage.removeItem(EMAIL_CONFIRM_PENDING_KEY);
+}
+
 export async function checkAccountAvailability({ fullName, email }) {
   try {
     const response = await apiClient.post('/api/auth/check-availability', {
@@ -93,11 +116,11 @@ export async function checkAccountAvailability({ fullName, email }) {
     });
     return response.data;
   } catch (error) {
-    const detail = error.response?.data?.detail;
     throw new Error(
-      typeof detail === 'string'
-        ? detail
-        : 'Unable to validate account availability. Please try again.'
+      extractApiError(
+        error,
+        'Unable to validate account availability. Please try again.'
+      )
     );
   }
 }
@@ -216,6 +239,7 @@ export async function signInUser({
   keepSignedIn = true,
 }) {
   const normalizedEmail = email.trim().toLowerCase();
+  clearEmailConfirmPending();
 
   const { data, error } =
     await supabase.auth.signInWithPassword({
@@ -272,7 +296,7 @@ export async function signInUser({
   };
 }
 
-// Manual registration
+// Manual registration (never auto-logs in; requires email confirmation)
 export async function signUpUser({
   fullName,
   email,
@@ -281,7 +305,7 @@ export async function signUpUser({
   const trimmedName = fullName.trim();
   const normalizedEmail = email.trim().toLowerCase();
 
-  // Pre-check against public.users (covers both Email/Password and Google accounts)
+  // Pre-check against public.users and Layer 1 email validation
   const availability = await checkAccountAvailability({
     fullName: trimmedName,
     email: normalizedEmail,
@@ -295,6 +319,7 @@ export async function signUpUser({
     email: normalizedEmail,
     password,
     options: {
+      emailRedirectTo: `${window.location.origin}/?email_confirmed=true`,
       data: {
         full_name: trimmedName,
       },
@@ -321,36 +346,25 @@ export async function signUpUser({
     throw new Error(ACCOUNT_EXISTS_MESSAGE);
   }
 
-  let backendProfile = null;
-
-  if (data?.session?.access_token) {
-    localStorage.setItem(KEEP_SIGNED_IN_KEY, 'true');
-    sessionStorage.setItem(SESSION_ACTIVE_KEY, 'true');
-
-    backendProfile = await verifyAndFetchProfile(
-      data.session.access_token,
-      { throwOnDeactivated: true }
-    );
+  // Strictly prevent auto-login if Supabase returned a session
+  if (data?.session) {
+    await clearSession();
   }
+
+  // Mark pending confirmation across tabs so ?code= callbacks never auto-login
+  localStorage.setItem(EMAIL_CONFIRM_PENDING_KEY, 'true');
 
   return {
     user: data.user,
-    session: data.session,
-
-    profile: mergeAuthProfile(data.user, backendProfile) || {
-      id: data.user?.id,
-      email: normalizedEmail,
-      full_name: trimmedName,
-      avatar_url: '',
-      role: 'user',
-    },
-
-    requiresEmailConfirmation: !data.session,
+    session: null,
+    profile: null,
+    requiresEmailConfirmation: true,
   };
 }
 
 // Google OAuth login
 export async function signInWithGoogle() {
+  clearEmailConfirmPending();
   // Google OAuth always starts a persistent browser session.
   localStorage.setItem(KEEP_SIGNED_IN_KEY, 'true');
   sessionStorage.setItem(GOOGLE_OAUTH_PENDING_KEY, 'true');
@@ -386,7 +400,7 @@ export async function signOutUser({
   sessionStorage.removeItem(SESSION_ACTIVE_KEY);
   sessionStorage.removeItem(GOOGLE_OAUTH_PENDING_KEY);
 
-  const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
 
   if (error) {
     throw new Error(error.message);
@@ -492,12 +506,8 @@ export async function submitNewPassword(newPassword) {
 
     await signOutUser({ skipAudit: true });
   } catch (error) {
-    const detail = error.response?.data?.detail;
-
     throw new Error(
-      typeof detail === 'string'
-        ? detail
-        : 'Failed to reset password.'
+      extractApiError(error, 'Failed to reset password.')
     );
   }
 }

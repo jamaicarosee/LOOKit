@@ -10,8 +10,14 @@ import {
 
 import TermsAndConditions from './TermsAndConditions';
 import ForgotPassword from './ForgotPassword';
+import PasswordStrengthChecklist from './PasswordStrengthChecklist';
 import { useAuth } from '../context/AuthContext';
 import { signInWithGoogle } from '../services/authService';
+import {
+  INVALID_EMAIL_MESSAGE,
+  isValidEmailFormat,
+  getPasswordError,
+} from '../utils/signupValidation';
 
 const inputClass =
   'h-[45px] w-full rounded-lg bg-[#E7EDF6] px-[15px] text-[13px] text-[#102747] placeholder:text-[#96A7BD] outline-none focus:ring-2 focus:ring-[#B58B34]/40 disabled:opacity-60';
@@ -102,6 +108,7 @@ export default function LoginModal({
   onClose,
   loginRequired = false,
   initialError = '',
+  initialNotice = '',
 }) {
   const { login, register } = useAuth();
 
@@ -117,16 +124,17 @@ export default function LoginModal({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
   // Scoped loading state: null | 'credentials' | 'google'
   const [submittingAction, setSubmittingAction] = useState(null);
-  const [message, setMessage] = useState(initialError || '');
+  const [message, setMessage] = useState(initialError || initialNotice || '');
   const [isError, setIsError] = useState(Boolean(initialError));
 
   const isBusy = submittingAction !== null;
   const isCredentialsLoading = submittingAction === 'credentials';
   const isGoogleLoading = submittingAction === 'google';
-  
+
   const isLogin = mode === 'login';
   const isSignup = mode === 'signup';
   const isForgot = mode === 'forgot';
@@ -135,8 +143,12 @@ export default function LoginModal({
     if (initialError) {
       setMessage(initialError);
       setIsError(true);
+    } else if (initialNotice) {
+      setMode('login');
+      setMessage(initialNotice);
+      setIsError(false);
     }
-  }, [initialError]);
+  }, [initialError, initialNotice]);
 
   useEffect(() => {
     const handleEscape = (event) => {
@@ -158,6 +170,7 @@ export default function LoginModal({
     setConfirmPassword('');
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setIsPasswordFocused(false);
     setMessage('');
     setIsError(false);
   };
@@ -169,10 +182,37 @@ export default function LoginModal({
     setMessage('');
     setIsError(false);
 
-    if (isSignup && password !== confirmPassword) {
-      setIsError(true);
-      setMessage('Passwords do not match.');
-      return;
+    if (isSignup) {
+      if (!fullName.trim()) {
+        setIsError(true);
+        setMessage('Please enter your full name.');
+        return;
+      }
+
+      if (!isValidEmailFormat(email)) {
+        setIsError(true);
+        setMessage(INVALID_EMAIL_MESSAGE);
+        return;
+      }
+
+      const passwordError = getPasswordError(password);
+      if (passwordError) {
+        setIsError(true);
+        setMessage(passwordError);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setIsError(true);
+        setMessage('Passwords do not match.');
+        return;
+      }
+
+      if (!agreedToTerms) {
+        setIsError(true);
+        setMessage('Please agree to the Terms and Conditions.');
+        return;
+      }
     }
 
     setSubmittingAction('credentials');
@@ -187,22 +227,19 @@ export default function LoginModal({
 
         onClose();
       } else {
-        const result = await register({
+        await register({
           fullName,
           email,
           password,
         });
 
-        if (result.requiresEmailConfirmation) {
-          setIsError(false);
-          setMessage(
-            'Account created! Please check your email inbox to confirm your account before logging in.'
-          );
-          setPassword('');
-          setConfirmPassword('');
-        } else {
-          onClose();
-        }
+        setIsError(false);
+        setMessage(
+          'Account created! Please check your email inbox or spam to verify your account before logging in.'
+        );
+        setPassword('');
+        setConfirmPassword('');
+        setIsPasswordFocused(false);
       }
     } catch (err) {
       setIsError(true);
@@ -316,6 +353,7 @@ export default function LoginModal({
             <form
               key={mode}
               onSubmit={handleSubmit}
+              noValidate={isSignup}
               className="space-y-[17px]"
             >
               {isSignup && (
@@ -405,6 +443,8 @@ export default function LoginModal({
                     minLength={8}
                     disabled={isBusy}
                     value={password}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={() => setIsPasswordFocused(false)}
                     onChange={(event) =>
                       setPassword(event.target.value)
                     }
@@ -414,6 +454,7 @@ export default function LoginModal({
                   <button
                     type="button"
                     disabled={isBusy}
+                    onMouseDown={(event) => event.preventDefault()}
                     onClick={() =>
                       setShowPassword(!showPassword)
                     }
@@ -431,6 +472,10 @@ export default function LoginModal({
                     )}
                   </button>
                 </div>
+
+                {isSignup && isPasswordFocused && (
+                  <PasswordStrengthChecklist password={password} />
+                )}
               </div>
 
               {/* CONFIRM PASSWORD */}
@@ -496,10 +541,10 @@ export default function LoginModal({
               {message && (
                 <p
                   role="status"
-                  className={`text-center text-[12px] ${
+                  className={`text-center text-[12px] font-medium ${
                     isError
                       ? 'text-red-600'
-                      : 'text-[#B58B34]'
+                      : 'text-emerald-700'
                   }`}
                 >
                   {message}

@@ -2,6 +2,22 @@ import React, { useState } from 'react';
 import { KeyRound, X, ArrowLeft, Eye, EyeOff, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { apiClient } from '../../../services/apiClient';
 import { useAuth } from '../context/AuthContext';
+import PasswordStrengthChecklist from './PasswordStrengthChecklist';
+import { getPasswordError } from '../utils/signupValidation';
+
+function extractErrorMessage(err) {
+  const detail = err?.response?.data?.detail;
+  if (typeof detail === 'string' && detail.trim()) {
+    return detail;
+  }
+  if (Array.isArray(detail) && detail.length > 0) {
+    const firstMsg = detail[0]?.msg;
+    if (typeof firstMsg === 'string' && firstMsg.trim()) {
+      return firstMsg.replace(/^Value error,\s*/i, '');
+    }
+  }
+  return err?.message || 'Failed to update password.';
+}
 
 export default function ResetPassword({ onClose, onBackToLogin, isForced = false }) {
   const { completePasswordChange } = useAuth();
@@ -9,6 +25,7 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,12 +34,9 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
     e.preventDefault();
     setError('');
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-    if (password.length > 72) {
-      setError('Password must be at most 72 characters.');
+    const passwordError = getPasswordError(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
     if (password !== confirmPassword) {
@@ -40,8 +54,7 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
       completePasswordChange();
       setSuccess(true);
     } catch (err) {
-      const msg = err.response?.data?.detail || err.message || 'Failed to update password.';
-      setError(msg);
+      setError(extractErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +124,7 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
               </div>
             )}
 
-            <form onSubmit={handleReset} className="space-y-5">
+            <form onSubmit={handleReset} noValidate className="space-y-5">
               <div>
                 <label
                   htmlFor="new-password"
@@ -123,8 +136,10 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
                   <input
                     id="new-password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter new password (min. 8 characters)"
+                    placeholder="Enter new password"
                     value={password}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={() => setIsPasswordFocused(false)}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={isLoading}
@@ -132,12 +147,16 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
                   />
                   <button
                     type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[#61738A]"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
+                {isPasswordFocused && (
+                  <PasswordStrengthChecklist password={password} />
+                )}
               </div>
 
               <div>
@@ -160,6 +179,7 @@ export default function ResetPassword({ onClose, onBackToLogin, isForced = false
                   />
                   <button
                     type="button"
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[#61738A]"
                   >
