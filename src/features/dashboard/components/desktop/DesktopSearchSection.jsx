@@ -61,7 +61,7 @@ export default function DesktopSearchSection({
   };
 
   return (
-    <section className="w-full bg-transparent py-2 px-8 shrink-0 select-none z-20">
+    <section className="relative w-full bg-transparent py-2 px-8 shrink-0 select-none z-30">
       <div className="max-w-3xl mx-auto relative">
         <div className="w-full h-14 bg-[#E5EEF7] rounded-full pl-6 pr-3 flex items-center gap-2.5 shadow-inner focus-within:ring-2 focus-within:ring-[#0B2545]/20 transition">
           <MapPin className="w-5 h-5 text-[#475569] shrink-0 stroke-[2]" />
