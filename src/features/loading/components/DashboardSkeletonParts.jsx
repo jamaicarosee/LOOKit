@@ -17,10 +17,10 @@ export function DesktopSearchSkeleton() {
 
 export function DesktopRibbonSkeleton() {
   return (
-    <section className="w-full bg-[#0B2545] py-3.5 px-8 shrink-0">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+    <section className="w-full bg-transparent py-2 px-8 shrink-0">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <SkeletonBlock key={i} tone="dark" className="flex-1 h-9 rounded-xl" />
+          <SkeletonBlock key={i} className="flex-1 h-7 rounded-xl" />
         ))}
       </div>
     </section>
@@ -31,7 +31,7 @@ export function DesktopRibbonSkeleton() {
 export function DesktopMapSkeleton() {
   return (
     <>
-      <div className="absolute inset-0 bg-[#F8F9F9]" />
+      <div className="absolute inset-0 bg-white" />
 
       <div className="absolute top-5 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-8 flex flex-col items-center">
         <div className="h-10 flex items-center justify-center w-full">
@@ -64,10 +64,10 @@ export function MobileSearchSkeleton() {
 
 export function MobileFiltersSkeleton() {
   return (
-    <div className="bg-[#0B2545] px-4 py-2.5 shrink-0 shadow-sm">
+    <div className="bg-transparent px-4 py-2 shrink-0">
       <div className="flex items-center gap-2 overflow-hidden">
         {FILTER_PILL_WIDTHS.map((width, i) => (
-          <SkeletonBlock key={i} tone="dark" className={`h-[27px] ${width} rounded-full shrink-0`} />
+          <SkeletonBlock key={i} className={`h-[27px] ${width} rounded-full shrink-0`} />
         ))}
       </div>
     </div>
