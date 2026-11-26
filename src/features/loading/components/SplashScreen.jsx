@@ -9,7 +9,7 @@ const EYE_LIDS = [
   { left: 79.5, top: 7.5 },
 ];
 const EYE_LID_SIZE = 40;
-const LOGO_NAVY = '#03005B';
+const LOGO_NAVY = '#0B2545';
 
 // Full-bleed launch splash: logo, app title and a subtle indeterminate loader.
 // The logo PNG has transparent padding, so it is cropped to the wordmark (same idea as MobileTopBar).
