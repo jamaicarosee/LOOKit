@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RefreshCw, Search, Sparkles } from 'lucide-react';
+import { RefreshCw, Search } from 'lucide-react';
 import AiSearchResults from './AiSearchResults';
 import { AI_QUERY_MAX } from '../services/aiSearchService';
 
@@ -21,7 +21,6 @@ export default function AiSearchBox({ search, onPick, onFocus }) {
           role="search"
           className="flex items-center gap-2 pl-3.5 pr-1 h-10 rounded-xl bg-[#E5EEF7] focus-within:bg-[#DBE7F3] focus-within:ring-2 focus-within:ring-[#0B2545] transition-colors"
         >
-          <Sparkles className="w-4 h-4 text-[#A8830F] stroke-[2.2] shrink-0" aria-hidden="true" />
           <input
             type="text"
             value={text}
