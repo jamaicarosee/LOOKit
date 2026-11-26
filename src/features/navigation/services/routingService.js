@@ -4,7 +4,8 @@
 import { apiClient } from '../../../services/apiClient';
 import { USE_REMOTE_ROUTING, API_BASE_URL, GPS_SNAP_MAX_M, GPS_OFF_PATH_WARN_M } from '../constants';
 import { fetchCampusData } from './dataService';
-import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, attachPoint, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
+import { buildGraph, shortestPath, shortestPathVia, nodesNearGeometry, attachPoint,
+  findTwoWayConnectorNodes, JAVIER_BUILDING, JAVIER_LOBBY_TAG } from './graph';
 import { buildRouteResult } from './stepBuilder';
 import { buildingAtFactory } from './locationService';
 import { haversine, pointInPolygon } from './geo';
@@ -121,6 +122,15 @@ async function getLocalRoute(from, to, options) {
   let mode = { avoidStairs: pwd, preferRamps: pwd };
   let pwdUpperBlocked = false;
   let path = findPath(graph, from, to, emergency, src.ids, targets, mode);
+
+  // If GPS start landed on a one-way Gate 1 exit lane or near an entrance staircase in PWD mode,
+  // attach to the nearest two-way accessible connector node instead of failing with a false "not on campus" error.
+  if (!path && from?.type === 'gps' && Array.isArray(from.coordinate)) {
+    const recoveryIds = findTwoWayConnectorNodes(graph, from.coordinate, { floor: from.floor || 1, maxDistM: 75 });
+    if (recoveryIds.length) {
+      path = findPath(graph, from, to, emergency, recoveryIds, targets, mode);
+    }
+  }
   if (!path && pwd && !emergency && to && (to.floor || 1) > 1) {
     const bRamps = to.building ? getBuildingPwdRamps(graph, to.building) : [];
     const f1Targets = bRamps.length

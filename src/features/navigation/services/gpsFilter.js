@@ -1,56 +1,80 @@
-// Light-weight GPS smoothing (a 1-D Kalman filter on latitude and longitude).
-// Each fix is weighted by its reported accuracy, so a good reading pulls the estimate hard and a poor
-// indoor one barely moves it. Between fixes the uncertainty grows a little (people walk), so the filter
-// keeps following real movement.
-//
-//   const f = createGpsFilter();
-//   const { coord, accuracy } = f.update([lng, lat], accuracyM, timestampMs);
+import { haversine } from './geo';
 
-const M_PER_DEG_LAT = 111320;
-
-export function createGpsFilter({ walkSpeedMps = 1.4, minAccuracyM = 3 } = {}) {
-  let lat = null;
-  let lng = null;
-  let variance = 0; // m^2
-  let t = 0;
-
-  return {
-    update([lngIn, latIn], accuracy, at = Date.now()) {
-      const acc = Math.max(Number.isFinite(accuracy) ? accuracy : 50, minAccuracyM);
-      if (lat === null) {
-        lat = latIn;
-        lng = lngIn;
-        variance = acc * acc;
-        t = at;
-      } else {
-        const dt = Math.max((at - t) / 1000, 0);
-        variance += dt * walkSpeedMps * walkSpeedMps; // uncertainty grows with time since the last fix
-        const k = variance / (variance + acc * acc); // 0..1, how much to trust the new fix
-        lat += k * (latIn - lat);
-        lng += k * (lngIn - lng);
-        variance = (1 - k) * variance;
-        t = at;
-      }
-      return { coord: [lng, lat], accuracy: Math.max(Math.sqrt(variance), minAccuracyM) };
-    },
-    current() {
-      return lat === null ? null : { coord: [lng, lat], accuracy: Math.max(Math.sqrt(variance), minAccuracyM) };
-    },
-    reset() {
-      lat = null;
-      lng = null;
-      variance = 0;
-      t = 0;
-    },
-    get ready() {
-      return lat !== null;
-    },
-  };
+export function quickDistanceM(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return Infinity;
+  return haversine(a, b);
 }
 
-// Distance in metres between two [lng, lat] points (small-distance approximation, plenty for jitter checks)
-export function quickDistanceM(a, b) {
-  const dLat = (b[1] - a[1]) * M_PER_DEG_LAT;
-  const dLng = (b[0] - a[0]) * M_PER_DEG_LAT * Math.cos(((a[1] + b[1]) / 2) * (Math.PI / 180));
-  return Math.hypot(dLat, dLng);
+const MAX_WALK_SPEED_MPS = 2.6; // Rejects indoor Wi-Fi teleports even if phone claims good accuracy
+
+export function createGpsFilter() {
+  let est = null; // { coord: [lng, lat], accuracy: number, timestamp: number }
+  let consecutiveRejects = 0;
+
+  function reset() {
+    est = null;
+    consecutiveRejects = 0;
+  }
+
+  // Supports both update(coord, accuracy, now, options) and update({ coord, accuracy, timestamp }, options)
+  function update(arg1, arg2, arg3, arg4 = {}) {
+    let coord, accuracy, now, options;
+    if (Array.isArray(arg1)) {
+      coord = arg1;
+      accuracy = Number.isFinite(arg2) ? arg2 : 30;
+      now = arg3 || Date.now();
+      options = arg4 || {};
+    } else if (arg1 && Array.isArray(arg1.coord)) {
+      coord = arg1.coord;
+      accuracy = Number.isFinite(arg1.accuracy) ? arg1.accuracy : 30;
+      now = arg1.timestamp || Date.now();
+      options = arg2 || {};
+    } else {
+      return est;
+    }
+
+    const [lng, lat] = coord;
+    if (!Number.isFinite(lng) || !Number.isFinite(lat)) return est;
+    const { snapToPath, crossesWall } = options;
+
+    if (!est) {
+      const snapped = snapToPath ? snapToPath([lng, lat]) : [lng, lat];
+      est = { coord: snapped, accuracy, timestamp: now };
+      return est;
+    }
+
+    const dtSec = Math.max(0.5, (now - est.timestamp) / 1000);
+    const candidate = snapToPath ? snapToPath([lng, lat]) : [lng, lat];
+    const dist = haversine(est.coord, candidate);
+    const maxPlausibleDist = Math.max(7, MAX_WALK_SPEED_MPS * dtSec + Math.min(accuracy, 20) * 0.3);
+    const wallBlocked = typeof crossesWall === 'function' && dist > 3 && crossesWall(est.coord, candidate);
+
+    // Block sudden indoor Wi-Fi teleports or wall-crossing jumps (do NOT auto-accept after just 3 jumps)
+    if (dist > maxPlausibleDist || wallBlocked) {
+      consecutiveRejects += 1;
+      if (consecutiveRejects < 6 || dtSec < 12) {
+        return est;
+      }
+    }
+
+    consecutiveRejects = 0;
+    const alpha = Math.max(0.22, Math.min(0.65, 18 / Math.max(12, accuracy)));
+    const blended = [
+      est.coord[0] + alpha * (candidate[0] - est.coord[0]),
+      est.coord[1] + alpha * (candidate[1] - est.coord[1]),
+    ];
+    const finalCoord = snapToPath ? snapToPath(blended) : blended;
+    est = { coord: finalCoord, accuracy, timestamp: now };
+    return est;
+  }
+
+  return {
+    update,
+    reset,
+    get ready() {
+      return est !== null;
+    },
+    current: () => est,
+    getState: () => est,
+  };
 }

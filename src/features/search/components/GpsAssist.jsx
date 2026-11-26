@@ -1,70 +1,140 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { LocateFixed, MapPin } from 'lucide-react';
-import { getAll } from '../../navigation/services/locationService';
+import { Building2, LocateFixed, MapPin } from 'lucide-react';
+import { getAll, buildingAtFactory } from '../../navigation/services/locationService';
+import { fetchCampusData } from '../../navigation/services/dataService';
 import { haversine } from '../../navigation/services/geo';
-import { FLOORS, GPS_NEARBY_ROOMS_MAX_M } from '../../navigation/constants';
+import { FLOORS } from '../../navigation/constants';
 
 const ordinal = (n) => ({ 1: '1st', 2: '2nd', 3: '3rd' }[n] || `${n}th`);
 
-// Shown under the From field while "Current Location" is the start. It reports GPS quality honestly and,
-// because GPS cannot see floors or walls, lets the user (1) say which floor they are on and
-// (2) tap the room they are standing near for an exact indoor start.
 export default function GpsAssist({ inputs }) {
-  const { gps, gpsFloor, setGpsFloor, selectFrom } = inputs;
+  const { gps, gpsFloor, setGpsFloor, gpsAnchor, setGpsAnchor } = inputs;
   const [rooms, setRooms] = useState([]);
-  const [showNearby, setShowNearby] = useState(false);
+  const [campusFeatures, setCampusFeatures] = useState([]);
+  const [showOtherRooms, setShowOtherRooms] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    getAll().then((list) => !cancelled && setRooms(list.filter((l) => l.type === 'room' && l.coordinates))).catch(() => {});
-    return () => { cancelled = true; };
+    getAll()
+      .then((list) => !cancelled && setRooms(list.filter((l) => l.type === 'room' && l.coordinates)))
+      .catch(() => {});
+    fetchCampusData()
+      .then((data) => !cancelled && setCampusFeatures(data?.campus?.features || []))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const floors = useMemo(() => {
-    const present = [...new Set(rooms.map((r) => r.floor))].filter(Number.isFinite).sort((a, b) => a - b);
-    return present.length ? present : FLOORS;
-  }, [rooms]);
+  const activeCoord = gpsAnchor?.coord || gps.coord;
 
-  const weak = gps.quality === 'weak';
-  // Open the room list automatically when GPS is weak or the user is above the ground floor
+  // 1. Detect which building the user is inside
+  const detectedBuilding = useMemo(() => {
+    if (!activeCoord) return null;
+    if (campusFeatures.length) {
+      const detector = buildingAtFactory(campusFeatures);
+      const hit = detector(activeCoord);
+      if (hit) return hit;
+    }
+    let best = null;
+    for (const r of rooms) {
+      if (!r.building) continue;
+      const d = haversine(activeCoord, r.coordinates);
+      if (d <= 35 && (!best || d < best.d)) best = { d, building: r.building };
+    }
+    return best ? best.building : null;
+  }, [activeCoord, campusFeatures, rooms]);
+
   useEffect(() => {
-    if (weak || gpsFloor > 1) setShowNearby(true);
-  }, [weak, gpsFloor]);
+    setShowOtherRooms(false);
+  }, [detectedBuilding, gpsFloor]);
 
-  const nearby = useMemo(() => {
-    if (!gps.coord) return [];
-    return rooms
+  // 2. Floors available in that building
+  const floors = useMemo(() => {
+    const scoped = detectedBuilding ? rooms.filter((r) => r.building === detectedBuilding) : rooms;
+    const present = [...new Set(scoped.map((r) => r.floor))].filter(Number.isFinite).sort((a, b) => a - b);
+    return present.length ? present : FLOORS;
+  }, [rooms, detectedBuilding]);
+
+  useEffect(() => {
+    if (floors.length && !floors.includes(gpsFloor)) {
+      setGpsFloor(floors[0]);
+    }
+  }, [floors, gpsFloor, setGpsFloor]);
+
+  // 3. Only rooms within 25m of your current dot on that building & floor (max 4 closest)
+  const { nearbyRooms, hasMoreRooms } = useMemo(() => {
+    if (!activeCoord) return { nearbyRooms: [], hasMoreRooms: false };
+
+    const scoped = rooms
       .filter((r) => r.floor === gpsFloor)
-      .map((r) => ({ room: r, d: haversine(gps.coord, r.coordinates) }))
-      .filter((x) => x.d <= GPS_NEARBY_ROOMS_MAX_M)
-      .sort((a, b) => a.d - b.d)
-      .slice(0, 5);
-  }, [rooms, gps.coord, gpsFloor]);
+      .filter((r) => !detectedBuilding || r.building === detectedBuilding)
+      .map((r) => ({ room: r, d: haversine(activeCoord, r.coordinates) }))
+      .sort((a, b) => a.d - b.d);
 
+    if (showOtherRooms) {
+      return { nearbyRooms: scoped, hasMoreRooms: false };
+    }
+
+    const strictClose = scoped.filter((x) => x.d <= 25).slice(0, 4);
+    const list = strictClose.length ? strictClose : scoped.slice(0, 3);
+    return {
+      nearbyRooms: list,
+      hasMoreRooms: scoped.length > list.length,
+    };
+  }, [rooms, activeCoord, gpsFloor, detectedBuilding, showOtherRooms]);
+
+  const weak = gps.quality === 'weak' || (gps.accuracy && gps.accuracy > 45);
   const status = !gps.coord
-    ? 'Getting a stable GPS fix…'
-    : weak
-      ? `Weak GPS signal (±${Math.round(gps.accuracy)} m), which is normal indoors.`
-      : `Live GPS on · accuracy ±${Math.round(gps.accuracy)} m · your route updates as you walk`;
+    ? 'Detecting your current location…'
+    : gpsAnchor
+      ? `Anchored near ${gpsAnchor.name} (${ordinal(gpsFloor)} floor)`
+      : weak
+        ? `Weak indoor GPS signal (±${Math.round(gps.accuracy)} m) — tap a nearby room below to move your blue dot`
+        : `Live GPS active · accuracy ±${Math.round(gps.accuracy)} m`;
 
   return (
-    <div className="mt-2 space-y-2 px-1" aria-live="polite">
-      <p role="status" className={`flex items-center gap-1.5 text-[11px] font-semibold ${weak ? 'text-[#9A6B00]' : 'text-[#607289]'}`}>
+    <div className="mt-2 space-y-2.5 px-1" aria-live="polite">
+      <p role="status" className={`flex items-center gap-1.5 text-[11px] font-semibold ${weak && !gpsAnchor ? 'text-[#9A6B00]' : 'text-[#607289]'}`}>
         <LocateFixed className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         {status}
       </p>
 
-      {gps.coord && (
+      {activeCoord && (
         <>
+          <div className="flex items-center gap-2 rounded-lg border border-[#CBD8E8] bg-[#F2F6FB] px-2.5 py-2">
+            <Building2 className="h-4 w-4 shrink-0 text-[#0B2545]" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-[#607289]">Detected Location</p>
+              <p className="truncate text-xs font-bold text-[#0B2545]">
+                {detectedBuilding ? `You are at ${detectedBuilding}` : 'Outdoor Campus Area'}
+              </p>
+            </div>
+            {gpsAnchor && (
+              <button
+                type="button"
+                onClick={() => setGpsAnchor(null)}
+                className="shrink-0 rounded bg-white px-2 py-1 text-[10px] font-bold text-[#0B2545] shadow-sm"
+              >
+                Use raw GPS
+              </button>
+            )}
+          </div>
+
           <div>
-            <p className="mb-1 text-[11px] font-bold text-[#0B2545]">Which floor are you on?</p>
+            <p className="mb-1 text-[11px] font-bold text-[#0B2545]">
+              {detectedBuilding ? `Which floor of ${detectedBuilding} are you on?` : 'Which floor are you on?'}
+            </p>
             <div className="flex flex-wrap gap-1.5" role="group" aria-label="Your floor">
               {floors.map((f) => (
                 <button
                   key={f}
                   type="button"
                   aria-pressed={gpsFloor === f}
-                  onClick={() => setGpsFloor(f)}
+                  onClick={() => {
+                    setGpsFloor(f);
+                    setGpsAnchor(null);
+                  }}
                   className={`min-w-[2.25rem] rounded-md px-2.5 py-1 text-[11px] font-bold ${
                     gpsFloor === f ? 'bg-[#0B2545] text-white' : 'bg-[#E5EEF7] text-[#0B2545]'
                   }`}
@@ -73,44 +143,61 @@ export default function GpsAssist({ inputs }) {
                 </button>
               ))}
             </div>
-            {gpsFloor > 1 && (
-              <p className="mt-1 text-[10px] font-medium text-[#607289]">
-                GPS cannot detect floors. Your start is placed on the {ordinal(gpsFloor)} floor at the closest hallway. Pick a nearby room below for an exact start.
-              </p>
-            )}
           </div>
 
-          {!showNearby ? (
-            <button type="button" onClick={() => setShowNearby(true)} className="text-[11px] font-bold text-[#0B2545] underline">
-              Not accurate? Pick the room you are near
-            </button>
-          ) : (
-            <div>
-              <p className="mb-1 text-[11px] font-bold text-[#0B2545]">Rooms near you · {ordinal(gpsFloor)} floor</p>
-              {nearby.length === 0 ? (
-                <p className="text-[10px] font-medium text-[#607289]">No rooms found near your position on this floor. Try another floor or search for your start above.</p>
-              ) : (
+          <div>
+            <p className="mb-1 text-[11px] font-bold text-[#0B2545]">
+              Rooms near you ({ordinal(gpsFloor)} floor{detectedBuilding ? ` · ${detectedBuilding}` : ''})
+            </p>
+            {nearbyRooms.length === 0 ? (
+              <p className="text-[10px] font-medium text-[#607289]">
+                No mapped rooms within 25 m of your spot on {ordinal(gpsFloor)} floor.
+              </p>
+            ) : (
+              <>
                 <ul className="space-y-1">
-                  {nearby.map(({ room, d }) => (
-                    <li key={room.id}>
-                      <button
-                        type="button"
-                        onClick={() => selectFrom(room)}
-                        className="flex w-full items-center gap-2 rounded-md bg-[#E5EEF7] px-2.5 py-1.5 text-left text-[11px] font-semibold text-[#0B2545] hover:bg-[#D5E2EE]"
-                      >
-                        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C9A227]" aria-hidden="true" />
-                        <span className="min-w-0 flex-1 truncate">
-                          {room.name}
-                          {room.fullName && room.fullName !== room.name ? ` · ${room.fullName}` : ''}
-                        </span>
-                        <span className="shrink-0 text-[10px] text-[#607289]">~{Math.round(d)} m</span>
-                      </button>
-                    </li>
-                  ))}
+                  {nearbyRooms.map(({ room, d }) => {
+                    const selected = gpsAnchor?.id === room.id;
+                    return (
+                      <li key={room.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (room.floor) setGpsFloor(room.floor);
+                            setGpsAnchor({ id: room.id, name: room.name, coord: room.coordinates, room });
+                          }}
+                          className={`flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-[11px] font-semibold transition ${
+                            selected
+                              ? 'bg-[#0B2545] text-white'
+                              : 'bg-[#E5EEF7] text-[#0B2545] hover:bg-[#D5E2EE]'
+                          }`}
+                        >
+                          <MapPin className={`h-3.5 w-3.5 shrink-0 ${selected ? 'text-[#F3DE8A]' : 'text-[#C9A227]'}`} aria-hidden="true" />
+                          <span className="min-w-0 flex-1 truncate">
+                            {room.name}
+                            {room.fullName && room.fullName !== room.name ? ` · ${room.fullName}` : ''}
+                          </span>
+                          <span className={`shrink-0 text-[10px] ${selected ? 'text-white/80' : 'text-[#607289]'}`}>
+                            ~{Math.round(d)} m
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
-              )}
-            </div>
-          )}
+
+                {hasMoreRooms && (
+                  <button
+                    type="button"
+                    onClick={() => setShowOtherRooms(true)}
+                    className="mt-1.5 text-[10px] font-bold text-[#0B2545] underline"
+                  >
+                    Not near these? Show other rooms on {ordinal(gpsFloor)} floor
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </>
       )}
     </div>

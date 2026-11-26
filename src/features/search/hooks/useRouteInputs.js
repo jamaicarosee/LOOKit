@@ -36,6 +36,7 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   const [gpsError, setGpsError] = useState(null);
   // GPS cannot detect floors, so the user says which floor they are on (used only with Current Location)
   const [gpsFloor, setGpsFloor] = useState(1);
+  const [gpsAnchor, setGpsAnchor] = useState(null);
 
   // Real-time GPS runs only while "Current Location" is the starting point
   const gps = useCurrentLocation(!!from?.isCurrentLocation);
@@ -43,8 +44,26 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   // latest coordinates and is what the routing engine receives. null until the first fix arrives.
   const liveFrom = useMemo(() => {
     if (!from?.isCurrentLocation) return from;
+    if (gpsAnchor?.room) {
+      return {
+        ...gpsAnchor.room,
+        ...makeLiveLocation({
+          ...gps,
+          coord: gpsAnchor.room.coordinates || gpsAnchor.coord,
+          floor: gpsAnchor.room.floor || gpsFloor,
+        }),
+        type: 'room',
+        code: gpsAnchor.room.code,
+        building: gpsAnchor.room.building,
+        floor: gpsAnchor.room.floor || gpsFloor,
+        coordinate: gpsAnchor.room.coordinates || gpsAnchor.coord,
+        coordinates: gpsAnchor.room.coordinates || gpsAnchor.coord,
+        isCurrentLocation: true,
+        anchoredRoomName: gpsAnchor.room.name,
+      };
+    }
     return gps.coord ? makeLiveLocation({ ...gps, floor: gpsFloor }) : null;
-  }, [from, gps, gpsFloor]);
+  }, [from, gps, gpsFloor, gpsAnchor]);
 
   // GPS failed (permission denied, no signal): drop the placeholder so a start can be picked by hand
   useEffect(() => {
@@ -73,6 +92,7 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   const selectCurrentLocation = useCallback(() => {
     setGpsError(null);
     setGpsFloor(1);
+    setGpsAnchor(null);
     setFrom(CURRENT_LOCATION);
     setFromTextRaw(CURRENT_LOCATION.name);
   }, []);
@@ -113,7 +133,7 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   return {
     from, to, fromText, toText,
     setFromText, setToText, selectFrom, selectTo, swap,
-    selectCurrentLocation, liveFrom, gps, gpsError, gpsFloor, setGpsFloor,
+    selectCurrentLocation, liveFrom, gps, gpsError, gpsFloor, setGpsFloor, gpsAnchor, setGpsAnchor,
     emergency, setEmergency, pwd, setPwd,
     canNavigate, error, resolvePending,
   };

@@ -793,3 +793,53 @@ export function attachPoint(graph, coord, { floor = 1, maxSnapM = 150, slack = 6
 
   return { graph: { ...graph, nodes, edges, adj: [...graph.adj, out] }, sourceId, snapDistance: hits[0].distance };
 }
+
+
+export function snapCoordToWalkablePath(graph, coord, { floor = 1, maxSnapM = 35, avoidStairs = false } = {}) {
+  if (!graph || !Array.isArray(coord)) return coord;
+  let bestCoord = coord;
+  let bestDist = maxSnapM;
+  for (const edge of graph.edges || []) {
+    if ((edge.floor || 1) !== floor) continue;
+    if (edge.floorTo && edge.floorTo !== floor) continue;
+    if (avoidStairs && (edge.kind === 'stairs' || edge.kind === 'entrance-stairs')) continue;
+    const coords = edge.coords || [];
+    for (let i = 0; i < coords.length - 1; i += 1) {
+      const a = coords[i];
+      const b = coords[i + 1];
+      const dx = b[0] - a[0];
+      const dy = b[1] - a[1];
+      const len2 = dx * dx + dy * dy;
+      const t = len2 > 0 ? Math.max(0, Math.min(1, ((coord[0] - a[0]) * dx + (coord[1] - a[1]) * dy) / len2)) : 0;
+      const proj = [a[0] + t * dx, a[1] + t * dy];
+      const d = haversine(coord, proj);
+      if (d < bestDist) {
+        bestDist = d;
+        bestCoord = proj;
+      }
+    }
+  }
+  return bestCoord;
+}
+
+export function findTwoWayConnectorNodes(graph, coord, { floor = 1, maxDistM = 65 } = {}) {
+  if (!graph || !Array.isArray(coord)) return [];
+  const twoWayNodeIds = new Set();
+  for (const edge of graph.edges || []) {
+    if ((edge.floor || 1) !== floor) continue;
+    if (edge.floorTo && edge.floorTo !== floor) continue;
+    if (edge.oneway) continue;
+    if (edge.kind === 'stairs' || edge.kind === 'entrance-stairs') continue;
+    twoWayNodeIds.add(edge.a);
+    twoWayNodeIds.add(edge.b);
+  }
+  const scored = [];
+  for (const id of twoWayNodeIds) {
+    const node = graph.nodes[id];
+    if (!node) continue;
+    const d = haversine(coord, node.coord);
+    if (d <= maxDistM) scored.push({ id, d });
+  }
+  scored.sort((x, y) => x.d - y.d);
+  return scored.slice(0, 4).map((x) => x.id);
+}

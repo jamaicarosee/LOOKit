@@ -77,15 +77,15 @@ export default function useCurrentLocation(enabled) {
         heading = Number.isFinite(h) ? h : null;
 
         // Outlier: hopelessly inaccurate (only enforced once a position is showing)
-        if (published && accuracy > GPS_MAX_ACCURACY_M) return;
+        if (published && accuracy > Math.max(GPS_MAX_ACCURACY_M, 85)) return;
 
         // Outlier: implied speed is not human walking and the fix is no better than the previous one
         if (rawLast) {
           const dt = Math.max((now - rawLast.at) / 1000, 0.5);
           const speed = quickDistanceM(rawLast.coord, coord) / dt;
-          if (speed > GPS_MAX_SPEED_MPS && accuracy >= rawLast.accuracy * 0.7) {
+          if (speed > GPS_MAX_SPEED_MPS) {
             jumpStreak += 1;
-            if (jumpStreak < 3) return; // three in a row means the user really moved (car, fast ride): accept
+            if (jumpStreak < 6) return; // reject indoor Wi-Fi teleports even when accuracy looks good
             filter.reset();
           }
           jumpStreak = 0;
@@ -122,7 +122,7 @@ export default function useCurrentLocation(enabled) {
               },
         );
       },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+      { enableHighAccuracy: true, maximumAge: 5000, timeout: 8000 },
     );
 
     return () => {
