@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, RefreshCw, Search, Sparkles } from 'lucide-react';
+import { MapPin, RefreshCw, Search } from 'lucide-react';
 import useAiSearch from '../../../aiSearch/hooks/useAiSearch';
 import AiSearchResults from '../../../aiSearch/components/AiSearchResults';
 import { resolveStaffLocation } from '../../../staff/data/staffLocations';
@@ -96,11 +96,7 @@ export default function DesktopSearchSection({
             title="Smart search: describe a place or person"
             className="h-9 px-3.5 rounded-full bg-[#0B2545] text-white hover:bg-[#16365F] disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 text-xs font-semibold shrink-0"
           >
-            {loading ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Sparkles className="w-4 h-4 text-[#FACC15] stroke-[2.2]" />
-            )}
+            {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
             <span>Smart</span>
           </button>
         </div>
