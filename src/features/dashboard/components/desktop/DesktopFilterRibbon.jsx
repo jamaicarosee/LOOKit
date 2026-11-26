@@ -3,7 +3,7 @@ import { BUILDING_FILTERS } from '../../hooks/useDashboardState';
 
 export default function DesktopFilterRibbon({ activeFilter, setActiveFilter }) {
   return (
-    <section className="w-full bg-white border-b border-slate-200 py-2 px-8 shrink-0 select-none z-20">
+    <section className="w-full bg-transparent py-2 px-8 shrink-0 select-none z-20">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
         {BUILDING_FILTERS.map((filter) => {
           const isActive = activeFilter === filter.id;
