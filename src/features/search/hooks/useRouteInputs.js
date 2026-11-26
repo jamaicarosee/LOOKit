@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { search, CURRENT_LOCATION, makeLiveLocation } from '../../navigation/services/locationService';
+import { search, getById, CURRENT_LOCATION, makeLiveLocation } from '../../navigation/services/locationService';
 import useCurrentLocation from './useCurrentLocation';
 
 const RECENT_KEY = 'lookit.recentRoutes';
@@ -45,21 +45,24 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
   const liveFrom = useMemo(() => {
     if (!from?.isCurrentLocation) return from;
     if (gpsAnchor?.room) {
+      const r = gpsAnchor.room;
+      const roomCoord = r.coordinates || r.coordinate || gpsAnchor.coord;
       return {
-        ...gpsAnchor.room,
-        ...makeLiveLocation({
-          ...gps,
-          coord: gpsAnchor.room.coordinates || gpsAnchor.coord,
-          floor: gpsAnchor.room.floor || gpsFloor,
-        }),
+        ...r,
+        id: r.id,
+        code: r.code || r.id,
+        name: r.name,
         type: 'room',
-        code: gpsAnchor.room.code,
-        building: gpsAnchor.room.building,
-        floor: gpsAnchor.room.floor || gpsFloor,
-        coordinate: gpsAnchor.room.coordinates || gpsAnchor.coord,
-        coordinates: gpsAnchor.room.coordinates || gpsAnchor.coord,
+        building: r.building,
+        floor: r.floor || gpsFloor,
+        coordinate: roomCoord,
+        coordinates: roomCoord,
+        geometry: r.geometry || { type: 'Point', coordinates: roomCoord },
+        accuracy: gps.accuracy,
+        heading: gps.heading,
+        quality: gps.quality,
         isCurrentLocation: true,
-        anchoredRoomName: gpsAnchor.room.name,
+        anchoredRoomName: r.name,
       };
     }
     return gps.coord ? makeLiveLocation({ ...gps, floor: gpsFloor }) : null;
@@ -120,14 +123,25 @@ export default function useRouteInputs({ initialFrom = null, initialTo = null } 
 
   // Turns typed-but-unselected text into locations. Returns { from, to } or null when a side has no match.
   const resolvePending = useCallback(async () => {
-    const pick = async (loc, text) => loc || (text.trim() ? (await search(text, { limit: 1 }))[0] || null : null);
+    const pick = async (loc, text) => {
+      if (loc) {
+        if (loc.isCurrentLocation || loc.id === CURRENT_LOCATION.id || loc.name === CURRENT_LOCATION.name) {
+          return CURRENT_LOCATION;
+        }
+        if (loc.type && (loc.building || loc.geometry || loc.coordinates)) return loc;
+        const hydrated = (loc.id ? await getById(loc.id).catch(() => null) : null)
+          || (loc.name ? (await search(loc.name, { limit: 1 }).catch(() => []))[0] : null);
+        return hydrated || loc;
+      }
+      return text.trim() ? (await search(text, { limit: 1 }))[0] || null : null;
+    };
     const f = await pick(from, fromText);
     const t = emergency ? to : await pick(to, toText);
     if (!f || (!emergency && !t)) return null;
     if (f !== from) selectFrom(f);
     if (!emergency && t !== to) selectTo(t);
     // A GPS start goes to the router with its live coordinates
-    return { from: f === from ? liveFrom : f, to: t };
+    return { from: f?.isCurrentLocation ? liveFrom : f, to: t };
   }, [from, to, fromText, toText, emergency, liveFrom, selectFrom, selectTo]);
 
   return {

@@ -42,7 +42,19 @@ const LOBBY_LINE = /^Lobby (column )?to courtyard ring/i;
 // --- Line collection ---
 
 function isRampName(name) {
-  return /^(PWD|PCED) ramp/i.test(name || '');
+  const n = (name || '').trim();
+  if (/^PWD RAMP$/i.test(n)) return false;
+  return /\bramp\b/i.test(n);
+}
+
+function inferPathBuilding(name, explicitBuilding) {
+  if (explicitBuilding) return explicitBuilding;
+  const n = (name || '').toLowerCase();
+  if (/\b(mae|m\.a\.e)\b/.test(n)) return 'M.A.E Building';
+  if (/\b(lobby|javier|jav)\b/.test(n)) return 'Javier Building';
+  if (/\b(pced|ced)\b/.test(n)) return 'CED Building';
+  if (/\b(storage|cas|pcasmab)\b/.test(n)) return 'CAS Building';
+  return null;
 }
 
 function macroLines(macroPaths) {
@@ -63,13 +75,14 @@ function floorLines(floor, paths) {
     const p = f.properties;
     const name = p.name || `Floor ${floor} path`;
     const ramp = isRampName(name);
+    const entranceStair = floor === 1 && /(stair|stairs|staircase|lobby stairs path)/i.test(name);
     return {
       id: p.id || `f${floor}_path_${i}`,
       name,
-      kind: ramp ? 'ramp' : 'walk',
+      kind: ramp ? 'ramp' : entranceStair ? 'entrance-stairs' : 'walk',
       zone: floor === 1 && !/corridor/i.test(name) && !ramp ? 'outdoor' : 'indoor',
       oneway: false,
-      building: p.building || null,
+      building: inferPathBuilding(name, p.building),
       spur: /(Access|Entrance) — /.test(name),
       coords: f.geometry.coordinates.map((c) => [c[0], c[1]]),
       // Connector tops (first vertex) bridge the plaza gap to the ramps / corridor
@@ -631,9 +644,13 @@ class MinHeap {
 
 // Travel time (seconds) of one edge, or Infinity when the mode forbids it
 export function edgeCost(edge, mode = {}) {
-  const isStairs = edge.kind === 'stairs' || edge.kind === 'entrance-stairs';
-  if (isStairs && mode.avoidStairs) return Infinity;
-  if (edge.kind === 'stairs') return STAIRS_SECONDS_PER_FLOOR;
+  if ((mode.avoidStairs || mode.preferRamps) && (edge.kind === 'entrance-stairs' || isBlockedPwdFloor1StairSegment(edge))) return Infinity;
+  if (edge.kind === 'stairs') {
+    if (mode.avoidStairs && !(Array.isArray(mode.stairBuildings) && edge.building && mode.stairBuildings.includes(edge.building))) {
+      return Infinity;
+    }
+    return STAIRS_SECONDS_PER_FLOOR;
+  }
   if (edge.kind === 'entrance-stairs') return edge.len / WALKING_SPEED_MPS + 6;
   if (edge.kind === 'ramp') return edge.len / RAMP_SPEED_MPS;
   return edge.len / WALKING_SPEED_MPS;
@@ -641,10 +658,57 @@ export function edgeCost(edge, mode = {}) {
 
 // Length (metres) of one edge for route search, or Infinity when the mode forbids it.
 // Routes are ranked by distance only; a flight of stairs counts as STAIRS_LENGTH_M.
+export function isPwdRampEdge(edge) {
+  const name = (edge.name || '').trim();
+  if (/^PWD RAMP$/i.test(name)) return false;
+  if (/PCED Ramp to Activity Hall/i.test(name)) return false;
+  // For Javier Lobby PWD Ramp links, only the vertical ramp span (14.573016 <-> 14.573097) is the ramp;
+  // its flat horizontal lobby tail along 14.573016 is a normal walkway.
+  if (/Lobby PWD Ramp/i.test(name)) {
+    const cs = edge.coords || [];
+    if (cs.length < 2) return false;
+    const dLat = Math.abs(cs[0][1] - cs[cs.length - 1][1]);
+    return dLat > 0.00003;
+  }
+  return edge.kind === 'ramp' || /\bramp\b/i.test(name);
+}
+
+function isBlockedPwdFloor1StairSegment(edge) {
+  if ((edge.floor || 1) !== 1 || edge.floorTo) return false;
+  const name = (edge.name || '').trim();
+  const coords = edge.coords || [];
+  // Only block the center Lobby Stairs Path (keep Lobby column to courtyard ring open so interior stairs reach Lobby PWD Ramp West/East Link)
+  if (/^Lobby Stairs Path$/i.test(name)) return true;
+  // PCED main entrance stairs
+  if (/^Court east line up to the PCED stair$/i.test(name)) return true;
+  // M.A.E main plaza staircase approaches (Connector 2 & Connector 4 upper step into M.A.E corridor)
+  if (/^Connector (2|4)/i.test(name) && coords.some((c) => Math.abs(c[1] - 14.573332911) < 1e-5)) return true;
+  return false;
+}
+
 export function edgeDistance(edge, mode = {}) {
-  const isStairs = edge.kind === 'stairs' || edge.kind === 'entrance-stairs';
-  if (isStairs && mode.avoidStairs) return Infinity;
-  return edge.kind === 'stairs' ? STAIRS_LENGTH_M : edge.len;
+  const ramp = isPwdRampEdge(edge);
+  // Standard mode (pwd=false): never use PWD ramps
+  if (ramp && !mode.avoidStairs && !mode.preferRamps && !mode.allowRamps) return Infinity;
+
+  // PWD mode: block all 1st-floor building entrance staircase segments so ramps are mandatory
+  if ((mode.avoidStairs || mode.preferRamps) && isBlockedPwdFloor1StairSegment(edge)) return Infinity;
+
+  // Entrance stairs (including lobby/plaza staircase approaches) are always forbidden in PWD mode
+  if (edge.kind === 'entrance-stairs' && (mode.avoidStairs || mode.preferRamps)) return Infinity;
+
+  // Interior vertical stairs (stairs between floors)
+  if (edge.kind === 'stairs') {
+    if (mode.avoidStairs) {
+      if (Array.isArray(mode.stairBuildings) && edge.building && mode.stairBuildings.includes(edge.building)) {
+        return STAIRS_LENGTH_M;
+      }
+      return Infinity;
+    }
+    return STAIRS_LENGTH_M;
+  }
+
+  return edge.len;
 }
 
 // Shortest (by distance) path from `sources` (node ids) to the cheapest of `targets`.
@@ -706,6 +770,42 @@ export function shortestPathVia(graph, sources, via, targets, mode = {}) {
     target: second.target,
     via,
   };
+}
+
+export function shortestPathThroughRamp(graph, sources, rampEdges, targets, mode = {}) {
+  let best = null;
+  for (const r of rampEdges) {
+    for (const [entry, exit] of [[r.a, r.b], [r.b, r.a]]) {
+      const toEntry = shortestPath(graph, sources, [entry], mode);
+      if (!toEntry) continue;
+      const fromExit = shortestPath(graph, [exit], targets, mode);
+      if (!fromExit) continue;
+      const forward = r.a === entry;
+      const cost = toEntry.cost + edgeDistance(r, mode) + fromExit.cost;
+      if (!best || cost < best.cost) {
+        best = {
+          nodeIds: [...toEntry.nodeIds, exit, ...fromExit.nodeIds.slice(1)],
+          steps: [...toEntry.steps, { edge: r, forward }, ...fromExit.steps],
+          cost,
+          target: fromExit.target,
+        };
+      }
+    }
+  }
+  return best;
+}
+
+export function buildingF1StairNodes(graph, building) {
+  if (!building) return [];
+  const ids = new Set();
+  for (const e of graph.edges) {
+    if (e.kind !== 'stairs') continue;
+    const b = e.building || graph.nodes[e.a]?.building || graph.nodes[e.b]?.building;
+    if (b !== building) continue;
+    if ((graph.nodes[e.a]?.floor || 1) === 1) ids.add(e.a);
+    if ((graph.nodes[e.b]?.floor || 1) === 1) ids.add(e.b);
+  }
+  return [...ids];
 }
 
 

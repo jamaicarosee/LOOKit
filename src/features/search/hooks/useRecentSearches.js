@@ -62,10 +62,24 @@ export default function useRecentSearches() {
     async (fromLoc, toLoc) => {
       if (!isAuthenticated || !userId || !fromLoc || !toLoc) return;
 
+      const sanitizeLoc = (loc) => ({
+        id: loc.id,
+        code: loc.code,
+        name: loc.name,
+        fullName: loc.fullName,
+        type: loc.type,
+        building: loc.building,
+        floor: loc.floor,
+        coordinates: loc.coordinates,
+        coordinate: loc.coordinate,
+        geometry: loc.geometry,
+        isCurrentLocation: !!loc.isCurrentLocation,
+      });
+
       const newRoute = {
         id: `${fromLoc.id || fromLoc.name}>${toLoc.id || toLoc.name}`,
-        from: { id: fromLoc.id, name: fromLoc.name },
-        to: { id: toLoc.id, name: toLoc.name },
+        from: sanitizeLoc(fromLoc),
+        to: sanitizeLoc(toLoc),
         timestamp: Date.now(),
       };
 
