@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, RefreshCw, Search } from 'lucide-react';
+import { MapPin, RefreshCw, Search, Sparkles } from 'lucide-react';
 import useAiSearch from '../../../aiSearch/hooks/useAiSearch';
 import AiSearchResults from '../../../aiSearch/components/AiSearchResults';
 import { resolveStaffLocation } from '../../../staff/data/staffLocations';
@@ -80,24 +80,27 @@ export default function DesktopSearchSection({
 
           <button
             type="button"
-            aria-label="Open route search"
-            onClick={onOpenSearch}
-            title="Open route search"
-            className="text-[#475569] hover:text-[#0B2545] transition p-2 shrink-0"
-          >
-            <Search className="w-5 h-5 stroke-[2]" />
-          </button>
-
-          <button
-            type="button"
             aria-label="Run smart search"
             onClick={runSmartSearch}
             disabled={loading || navigatingMatch || !searchQuery?.trim()}
             title="Smart search: describe a place or person"
-            className="h-9 px-3.5 rounded-full bg-[#0B2545] text-white hover:bg-[#16365F] disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 text-xs font-semibold shrink-0"
+            className="text-[#B48200] hover:text-[#8F6500] hover:bg-[#0B2545]/5 disabled:opacity-40 disabled:cursor-not-allowed rounded-full transition p-2 shrink-0"
           >
-            {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-            <span>Smart</span>
+            {loading ? (
+              <RefreshCw className="w-5 h-5 animate-spin stroke-[2]" />
+            ) : (
+              <Sparkles className="w-5 h-5 stroke-[2]" />
+            )}
+          </button>
+
+          <button
+            type="button"
+            aria-label="Open route search"
+            onClick={onOpenSearch}
+            title="Open route search"
+            className="text-[#475569] hover:text-[#0B2545] hover:bg-[#0B2545]/5 rounded-full transition p-2 shrink-0"
+          >
+            <Search className="w-5 h-5 stroke-[2]" />
           </button>
         </div>
 
