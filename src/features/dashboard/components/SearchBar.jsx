@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, RefreshCw, Search, Sparkles } from 'lucide-react';
+import { MapPin, RefreshCw, Search } from 'lucide-react';
 import useAiSearch from '../../aiSearch/hooks/useAiSearch';
 import AiSearchResults from '../../aiSearch/components/AiSearchResults';
 import { resolveStaffLocation } from '../../staff/data/staffLocations';
@@ -86,11 +86,7 @@ export default function SearchBar({ value, onChange, onOpenSearch, onSelectDesti
           title="Smart search"
           className="h-7 px-2.5 rounded-full bg-[#0B2545] text-white disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1 text-[11px] font-semibold shrink-0 active:scale-95"
         >
-          {loading ? (
-            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <Sparkles className="w-3.5 h-3.5 text-[#FACC15] stroke-[2.2]" />
-          )}
+          {loading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
           <span>Smart</span>
         </button>
       </div>
