@@ -19,6 +19,7 @@ export default function NavigationFlow({
 
   const saveToRecentSearchesDatabase = async (destination) => {
     if (!destination) return;
+    if (typeof navigator !== 'undefined' && !navigator.online) return;
     try {
       
       const isString = typeof destination === 'string';

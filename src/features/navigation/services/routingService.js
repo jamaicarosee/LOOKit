@@ -16,6 +16,11 @@ import {
   JAVIER_BUILDING,
   JAVIER_LOBBY_TAG,
 } from './graph';
+import {
+  getCachedRoute,
+  saveCachedRoute,
+  OfflineRouteError,
+} from '../../offline/services/routeCache';
 import { buildRouteResult } from './stepBuilder';
 import { buildingAtFactory } from './locationService';
 import { haversine, pointInPolygon } from './geo';
@@ -351,13 +356,30 @@ async function getRemoteRoute(from, to, options) {
 }
 
 export async function getRoute(fromLocation, toLocation, options = {}) {
+  const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
+
+  // Option A: Offline serves previously cached routes only; block brand-new route searches
+  if (isOffline) {
+    const cached = getCachedRoute(fromLocation, toLocation, options);
+    if (cached) return cached;
+    throw new OfflineRouteError();
+  }
+
+  let route = null;
   if (fromLocation?.isCurrentLocation || !USE_REMOTE_ROUTING) {
-    return getLocalRoute(fromLocation, toLocation, options);
+    route = await getLocalRoute(fromLocation, toLocation, options);
+  } else {
+    try {
+      route = await getRemoteRoute(fromLocation, toLocation, options);
+    } catch (err) {
+      console.warn('[LOOKit Routing] FastAPI unreachable, falling back to local graph:', err.message);
+      route = await getLocalRoute(fromLocation, toLocation, options);
+    }
   }
-  try {
-    return await getRemoteRoute(fromLocation, toLocation, options);
-  } catch (err) {
-    console.warn('[LOOKit Routing] FastAPI unreachable, falling back to local graph:', err.message);
-    return getLocalRoute(fromLocation, toLocation, options);
+
+  if (route) {
+    saveCachedRoute(fromLocation, toLocation, options, route);
   }
+
+  return route;
 }

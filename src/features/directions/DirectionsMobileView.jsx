@@ -10,6 +10,7 @@ import StepByStepPanel from './components/StepByStepPanel';
 import DirectoryPanel from './components/DirectoryPanel';
 import useRoute from './hooks/useRoute';
 import useRoutePlayback from './hooks/useRoutePlayback';
+import RouteErrorBanner from './components/RouteErrorBanner';
 
 export default function DirectionsMobileView({
   inputs,
@@ -24,7 +25,7 @@ export default function DirectionsMobileView({
 }) {
   const { isDesktop } = useViewport(1024);
 
-  const { route, status } = useRoute(request);
+  const { route, status, error } = useRoute(request);
   const playback = useRoutePlayback(route);
 
   const [activeFloor, setActiveFloor] = useState(1);
@@ -83,6 +84,10 @@ export default function DirectionsMobileView({
   const steps = route?.steps || [];
   const destination = request?.to || inputs.to;
 
+
+  const errorBanner =
+    status === 'error' && error && <RouteErrorBanner error={error} />;
+  
   const warnings =
     route?.warnings?.length > 0 &&
     route.warnings.map((w) => (
@@ -109,6 +114,7 @@ export default function DirectionsMobileView({
     <RouteMapPanel
       route={route}
       status={status}
+      error={error}
       activeFloor={activeFloor}
       onFloorChange={setActiveFloor}
       guide={isAuthenticated ? playback : null}
@@ -144,6 +150,7 @@ export default function DirectionsMobileView({
     <StepByStepPanel
       steps={steps}
       status={status}
+      error={error}
       activeIndex={
         isAuthenticated && playback.engaged
           ? playback.stepIndex
@@ -171,6 +178,7 @@ export default function DirectionsMobileView({
           <div className="max-w-6xl mx-auto h-full grid grid-cols-[minmax(340px,420px)_1fr] gap-6">
             <div className="min-h-0 overflow-y-auto no-scrollbar space-y-3 pr-1">
               {form}
+              {errorBanner}
               {stepsPanel}
               {directory}
             </div>
@@ -185,6 +193,7 @@ export default function DirectionsMobileView({
       ) : (
         <main className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 pb-4 space-y-3">
           {form}
+          {errorBanner}
           {mapPanel()}
           {warnings}
           {guide}

@@ -47,6 +47,17 @@ export default function useAiSearch() {
       return;
     }
 
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      setState({
+        ...IDLE,
+        open: true,
+        status: 'error',
+        query,
+        error: 'AI Smart Search requires an internet connection.',
+      });
+      return;
+    }
+
     const key = query.toLowerCase();
     if (!force && cache.current.has(key)) {
       setState({ ...cache.current.get(key), open: true });

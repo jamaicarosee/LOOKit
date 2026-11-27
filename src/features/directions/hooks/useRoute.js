@@ -15,7 +15,13 @@ export default function useRoute(request) {
         if (!cancelled) setState({ route, status: route ? 'success' : 'empty', error: null });
       })
       .catch((error) => {
-        if (!cancelled) setState({ route: null, status: 'error', error });
+        if (cancelled) return;
+        // Option A: If user is already viewing a route and a live GPS update fires offline, keep the active route
+        if (request.live && error?.code === 'OFFLINE_ROUTE_UNAVAILABLE') {
+          setState((s) => (s.route ? s : { route: null, status: 'error', error }));
+          return;
+        }
+        setState({ route: null, status: 'error', error });
       });
     return () => {
       cancelled = true;

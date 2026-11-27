@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, WifiOff } from 'lucide-react';
 import { fetchCampusData } from '../../navigation/services/dataService';
 import { coordsBounds } from '../../navigation/services/geo';
 import { MAPBOX_TOKEN, RTU_PASIG_CENTER, COLORS } from '../../navigation/constants';
@@ -119,6 +119,7 @@ function floorFeatures(data, floor) {
 export default function RouteMapPanel({
   route,
   status,
+  error,
   activeFloor,
   onFloorChange,
   guide,
@@ -380,8 +381,19 @@ export default function RouteMapPanel({
           </div>
         )}
         {status === 'error' && (
-          <div className="absolute inset-0 z-30 bg-white/85 flex items-center justify-center p-4 text-center text-xs font-semibold text-red-700">
-            Something went wrong while computing the route.
+          <div className="absolute inset-0 z-30 bg-white/90 flex flex-col items-center justify-center gap-2 p-4 text-center">
+            {error?.code === 'OFFLINE_ROUTE_UNAVAILABLE' ? (
+              <>
+                <WifiOff className="w-5 h-5 text-amber-600" />
+                <p className="max-w-[260px] text-xs font-semibold text-[#0B2545]">
+                  {error.message}
+                </p>
+              </>
+            ) : (
+              <p className="text-xs font-semibold text-red-700">
+                {error?.message || 'Something went wrong while computing the route.'}
+              </p>
+            )}
           </div>
         )}
         {status === 'idle' && !hasRequest && (

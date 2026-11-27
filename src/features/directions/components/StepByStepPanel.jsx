@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import StepItem from './StepItem';
 
 // "Step-by-step directions" panel (scrolls internally; the active step stays in view)
-export default function StepByStepPanel({ steps, status, activeIndex, onSelect }) {
+export default function StepByStepPanel({ steps, status, error, activeIndex, onSelect }) {
   const listRef = useRef(null);
   const itemRefs = useRef([]);
 
@@ -26,7 +26,16 @@ export default function StepByStepPanel({ steps, status, activeIndex, onSelect }
         </div>
       )}
       {status === 'empty' && <p className="text-xs text-[#607289] py-2">No walkable route found between these locations.</p>}
-      {(status === 'idle' || status === 'error') && <p className="text-xs text-[#607289] py-2">Directions will appear here.</p>}
+      {status === 'idle' && (
+        <p className="text-xs text-[#607289] py-2">Directions will appear here.</p>
+      )}
+      {status === 'error' && (
+        <p className="text-xs text-[#607289] py-2">
+          {error?.code === 'OFFLINE_ROUTE_UNAVAILABLE'
+            ? 'Connect to the internet to load directions for a new route.'
+            : 'Directions could not be loaded.'}
+        </p>
+      )}
 
       {status === 'success' && steps?.length > 0 && (
         <ol ref={listRef} className="relative max-h-[40dvh] overflow-y-auto no-scrollbar space-y-1">

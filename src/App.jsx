@@ -16,6 +16,8 @@ import ResetPassword from './features/login/components/ResetPassword';
 import LaunchOverlay from './features/loading/LaunchOverlay';
 import AdminScreenSkeleton from './features/admin/components/AdminScreenSkeleton';
 import { useLaunchSequence } from './features/loading/hooks/useLaunchSequence';
+import OfflineBanner from './features/offline/components/OfflineBanner';
+import UpdateToast from './features/offline/components/UpdateToast';
 
 // Loaded on demand so normal users never download the admin dashboard
 const AdminScreen = lazy(() => import('./features/admin/AdminScreen'));
@@ -327,6 +329,10 @@ function AppContent() {
 
       {/* Launch splash -> skeleton -> map reveal */}
       <LaunchOverlay phase={launchPhase} isDesktop={isDesktop} isAdmin={isAdmin} />
+
+      {/* Offline status indicator & Service Worker update prompt */}
+      <OfflineBanner />
+      <UpdateToast />
 
     </AdminNavProvider>
     </StaffNavProvider>
