@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { BookOpen, CodeXml, Mail } from 'lucide-react';
 import AccordionItem from './AccordionItem';
+import { useViewport } from '../../dashboard/hooks/useViewport';
 import {
   HOW_TO_USE,
   DEVELOPERS_TEXT,
@@ -13,11 +14,16 @@ import {
 } from '../aboutContent';
 
 export default function OtherInformation() {
-  // One panel open at a time, matching the Figma states
   const [openId, setOpenId] = useState(null);
+  const { isDesktop } = useViewport(1024);
 
   const toggle = (id) =>
     setOpenId((cur) => (cur === id ? null : id));
+
+  // Email link based on desktop or mobile view
+  const emailLink = isDesktop
+    ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}`
+    : `mailto:${CONTACT_EMAIL}`;
 
   return (
     <section>
@@ -84,17 +90,17 @@ export default function OtherInformation() {
             {CONTACT_TEXT}
           </p>
 
-        {/* EMAIL ADDRESS */}
-        <div className="mt-3 flex justify-center">
-          <a
-            href="https://mail.google.com/mail/?view=cm&fs=1&to=lookit2026%40gmail.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-10 inline-block cursor-pointer text-blue-600 underline underline-offset-2 hover:text-blue-800"
-          >
-            {CONTACT_EMAIL}
-          </a>
+          {/* EMAIL ADDRESS */}
+          <div className="mt-3 flex justify-center">
+            <a
+              href={emailLink}
+              target={isDesktop ? '_blank' : undefined}
+              rel={isDesktop ? 'noopener noreferrer' : undefined}
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-10 inline-block cursor-pointer text-blue-600 underline underline-offset-2 hover:text-blue-800"
+            >
+              {CONTACT_EMAIL}
+            </a>
           </div>
 
           {/* FEEDBACK SECTION */}
