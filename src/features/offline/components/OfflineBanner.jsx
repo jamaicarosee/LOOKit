@@ -15,12 +15,12 @@ export default function OfflineBanner() {
     >
       {isOffline ? (
         <div className="flex items-center gap-2 rounded-full bg-[#102747] px-4 py-2 text-[12px] font-medium text-white shadow-lg ring-1 ring-white/15">
-          <WifiOff className="h-3.5 w-3.5 shrink-0 text-amber-400" />
+          <WifiOff className="h-3.5 w-3.5 shrink-0 text-white" />
           <span>You are currently offline</span>
         </div>
       ) : (
         <div className="flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-[12px] font-medium text-white shadow-lg">
-          <Wifi className="h-3.5 w-3.5 shrink-0" />
+          <Wifi className="h-3.5 w-3.5 shrink-0 text-white" />
           <span>Back online</span>
         </div>
       )}
