@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SearchMobileView from '../search/SearchMobileView';
 import DirectionsMobileView from '../directions/DirectionsMobileView';
 import useRouteInputs, { saveRecent } from '../search/hooks/useRouteInputs';
@@ -38,14 +38,6 @@ export default function NavigationFlow({
       console.warn("Background task: Failed to save recent search to database", error);
     }
   };
-
-  // Live GPS: while the route starts at Current Location, every new fix re-runs the route from where
-  // the user now stands. `live` makes useRoute refresh quietly (no loading overlay).
-  const { liveFrom } = inputs;
-  useEffect(() => {
-    if (screen !== 'directions' || !liveFrom?.isCurrentLocation) return;
-    setRequest((r) => (r?.from?.isCurrentLocation && r.from !== liveFrom ? { ...r, from: liveFrom, live: true } : r));
-  }, [screen, liveFrom]);
 
   const run = (from, to) => {
     setRequest({
@@ -88,8 +80,7 @@ export default function NavigationFlow({
       inputs.setEmergency(false);
     }
 
-    // liveFrom = the picked start, or the live GPS position when Current Location is the start
-    if (inputs.liveFrom && inputs.liveFrom.id !== room.id) {
+    if (inputs.from && inputs.from.id !== room.id) {
       if (!isAuthenticated) {
         requireLogin();
         return;
@@ -98,7 +89,7 @@ export default function NavigationFlow({
       saveToRecentSearchesDatabase(room); // 4. Wire into the quick-pick destination flow
 
       setRequest({
-        from: inputs.liveFrom,
+        from: inputs.from,
         to: room,
         options: {
           emergency: false,

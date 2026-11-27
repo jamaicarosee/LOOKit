@@ -11,17 +11,6 @@ export class OfflineRouteError extends Error {
 
 function normalizeEndpoint(loc) {
   if (!loc) return 'none';
-  if (loc.isCurrentLocation) {
-    if (loc.anchoredRoomName) {
-      return `gps:room:${loc.anchoredRoomName.toLowerCase()}:f${loc.floor || 1}`;
-    }
-    if (Array.isArray(loc.coordinate) && loc.coordinate.length >= 2) {
-      const lng = Number(loc.coordinate[0]).toFixed(4);
-      const lat = Number(loc.coordinate[1]).toFixed(4);
-      return `gps:${lng},${lat}:f${loc.floor || 1}`;
-    }
-    return `gps:f${loc.floor || 1}`;
-  }
   const id = loc.id ?? loc.code ?? loc.name ?? 'unknown';
   return `${String(id).toLowerCase()}:f${loc.floor || 1}`;
 }
@@ -38,7 +27,8 @@ function readStore() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
+    // Ignore routes cached back when "Current Location" existed (their keys start with "gps:")
+    return Array.isArray(parsed) ? parsed.filter((item) => !String(item?.key || '').startsWith('gps:')) : [];
   } catch {
     return [];
   }

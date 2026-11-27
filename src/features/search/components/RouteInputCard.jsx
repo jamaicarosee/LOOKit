@@ -82,7 +82,7 @@ export default function RouteInputCard({ inputs, activeField, setActiveField, on
       <button
         type="button"
         onClick={swap}
-        disabled={emergency || !!inputs.from?.isCurrentLocation}
+        disabled={emergency}
         aria-label="Swap start and destination"
         className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-[#0B2545] active:scale-95 transition disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]"
       >

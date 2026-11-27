@@ -833,12 +833,11 @@ export function nodesNearGeometry(graph, geometry, { floor = 1, slack = 6, max =
 }
 
 
-// --- Live GPS start ---
+// --- Point snapping ---
 
-// Snaps a GPS position onto the ground-floor walkways and returns a copy of the graph with a virtual
-// start node. Its "approach" edges run from the user along the nearest walkway to each end of it, so a
-// route starts exactly where the user stands (no jump to the closest junction). The shared graph is
-// never modified, so this is safe to call on every GPS fix.
+// Snaps a coordinate onto the ground-floor walkways and returns a copy of the graph with a virtual
+// start node (used to attach a room that has no mapped doorway node). Its "approach" edges run from the
+// point along the nearest walkway to each end of it. The shared graph is never modified here.
 //   -> { graph, sourceId, snapDistance } or null when no walkway is within maxSnapM
 const APPROACH_SKIP_KINDS = new Set(['door', 'landing', 'stairs']);
 
@@ -920,26 +919,4 @@ export function snapCoordToWalkablePath(graph, coord, { floor = 1, maxSnapM = 35
     }
   }
   return bestCoord;
-}
-
-export function findTwoWayConnectorNodes(graph, coord, { floor = 1, maxDistM = 65 } = {}) {
-  if (!graph || !Array.isArray(coord)) return [];
-  const twoWayNodeIds = new Set();
-  for (const edge of graph.edges || []) {
-    if ((edge.floor || 1) !== floor) continue;
-    if (edge.floorTo && edge.floorTo !== floor) continue;
-    if (edge.oneway) continue;
-    if (edge.kind === 'stairs' || edge.kind === 'entrance-stairs') continue;
-    twoWayNodeIds.add(edge.a);
-    twoWayNodeIds.add(edge.b);
-  }
-  const scored = [];
-  for (const id of twoWayNodeIds) {
-    const node = graph.nodes[id];
-    if (!node) continue;
-    const d = haversine(coord, node.coord);
-    if (d <= maxDistM) scored.push({ id, d });
-  }
-  scored.sort((x, y) => x.d - y.d);
-  return scored.slice(0, 4).map((x) => x.id);
 }

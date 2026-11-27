@@ -3,7 +3,7 @@ import ScreenShell from '../navigation/ScreenShell';
 import { useViewport } from '../dashboard/hooks/useViewport';
 import RouteForm from './components/RouteForm';
 import useRecentSearches from './hooks/useRecentSearches';
-import { CURRENT_LOCATION, getById, search } from '../navigation/services/locationService';
+import { getById, search } from '../navigation/services/locationService';
 
 export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect, onProfileClick }) {
   const { isDesktop } = useViewport(1024);
@@ -29,9 +29,6 @@ export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect,
               onClick={async () => {
                 const hydrate = async (loc) => {
                   if (!loc) return null;
-                  if (loc.isCurrentLocation || loc.id === CURRENT_LOCATION.id || loc.name === CURRENT_LOCATION.name) {
-                    return CURRENT_LOCATION;
-                  }
                   if (loc.type && (loc.building || loc.geometry || loc.coordinates)) return loc;
                   const byId = loc.id ? await getById(loc.id).catch(() => null) : null;
                   if (byId) return byId;
@@ -40,11 +37,7 @@ export default function SearchMobileView({ inputs, onBack, onStart, onNavSelect,
                 };
 
                 const [fullFrom, fullTo] = await Promise.all([hydrate(r.from), hydrate(r.to)]);
-                if (fullFrom?.isCurrentLocation) {
-                  if (!inputs.from?.isCurrentLocation) inputs.selectCurrentLocation();
-                } else {
-                  inputs.selectFrom(fullFrom);
-                }
+                inputs.selectFrom(fullFrom);
                 inputs.selectTo(fullTo);
               }}
               className="w-full text-left px-4 py-2.5 rounded-xl bg-[#E5EEF7] hover:bg-[#D5E2EE] text-xs lg:text-sm font-semibold text-[#0B2545] active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B2545]"

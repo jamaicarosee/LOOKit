@@ -4,6 +4,9 @@ import { apiClient } from '../../../services/apiClient';
 
 const MAX_RECENT = 5;
 
+// Entries saved back when "Current Location (GPS)" existed: dropped on load
+const isLegacyGps = (loc) => !!loc && (loc.isCurrentLocation || loc.type === 'gps' || loc.id === 'current-location');
+
 function getStorageKey(userId) {
   return userId ? `lookit_recent_routes_${userId}` : null;
 }
@@ -31,7 +34,10 @@ export default function useRecentSearches() {
         const raw = localStorage.getItem(key);
         if (raw) {
           const parsed = JSON.parse(raw);
-          setRecentRoutes(Array.isArray(parsed) ? parsed : []);
+          const list = Array.isArray(parsed) ? parsed : [];
+          const cleaned = list.filter((r) => !isLegacyGps(r?.from) && !isLegacyGps(r?.to));
+          if (cleaned.length !== list.length) localStorage.setItem(key, JSON.stringify(cleaned)); // purge old GPS entries
+          setRecentRoutes(cleaned);
         } else {
           setRecentRoutes([]);
         }
@@ -61,6 +67,7 @@ export default function useRecentSearches() {
   const saveRecentRoute = useCallback(
     async (fromLoc, toLoc) => {
       if (!isAuthenticated || !userId || !fromLoc || !toLoc) return;
+      if (isLegacyGps(fromLoc) || isLegacyGps(toLoc)) return;
 
       const sanitizeLoc = (loc) => ({
         id: loc.id,
@@ -73,7 +80,6 @@ export default function useRecentSearches() {
         coordinates: loc.coordinates,
         coordinate: loc.coordinate,
         geometry: loc.geometry,
-        isCurrentLocation: !!loc.isCurrentLocation,
       });
 
       const newRoute = {

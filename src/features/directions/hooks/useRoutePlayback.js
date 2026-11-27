@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { pointAlong } from '../../navigation/services/geo';
 import { GUIDE_METERS_PER_SECOND, GUIDE_MIN_STEP_MS, GUIDE_MAX_STEP_MS } from '../../navigation/constants';
 
+// Speech rate for voice guidance (1 = browser default). Lower = slower.
+const VOICE_RATE = 0.7;
+
 function stepDuration(step) {
   if (step.type === 'stairs-up' || step.type === 'stairs-down') return 3200;
   if (step.type === 'arrive' || step.type === 'note') return 3000;
@@ -73,41 +76,46 @@ export default function useRoutePlayback(route) {
     return () => cancelAnimationFrame(raf);
   }, [isPlaying, steps, voice, canSpeak]);
 
-  // Voice guidance at 0.85x speed with onend synchronization
+  // Voice guidance: slower speech, and each step waits for its own utterance to finish.
+  // Depends on the step's text (not the `steps` array) so a re-created steps array with the same
+  // wording never cancels a sentence that is still being read.
+  const stepText = steps?.[stepIndex]?.instruction || '';
   useEffect(() => {
-    if (!canSpeak || !voice || !engaged || !steps?.[stepIndex]) {
+    if (!canSpeak || !voice || !engaged || !stepText) {
       live.current.speaking = false;
       return undefined;
     }
     window.speechSynthesis.cancel();
-    const text = steps[stepIndex].instruction || '';
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.85;
+    const utterance = new SpeechSynthesisUtterance(stepText);
+    utterance.rate = VOICE_RATE;
     utterance.pitch = 1.0;
 
+    // Handlers of a cancelled utterance fire late; `active` stops them from clearing the flag of the
+    // utterance that replaced them (which made the next step start before the sentence finished).
+    let active = true;
     live.current.speaking = true;
-    // Safety timeout in case mobile Chrome drops onend event
-    const fallbackMs = Math.max(3000, text.length * 95);
+    // Safety net in case mobile Chrome drops onend; scaled to the speech rate so it never fires mid-sentence
+    const fallbackMs = Math.max(4000, ((stepText.length * 80) / VOICE_RATE) * 1.6);
     const guardTimer = window.setTimeout(() => {
-      live.current.speaking = false;
+      if (active) live.current.speaking = false;
     }, fallbackMs);
 
-    utterance.onend = () => {
+    const finish = () => {
+      if (!active) return;
       window.clearTimeout(guardTimer);
       live.current.speaking = false;
     };
-    utterance.onerror = () => {
-      window.clearTimeout(guardTimer);
-      live.current.speaking = false;
-    };
+    utterance.onend = finish;
+    utterance.onerror = finish;
 
     window.speechSynthesis.speak(utterance);
     return () => {
+      active = false;
       window.clearTimeout(guardTimer);
       live.current.speaking = false;
       window.speechSynthesis.cancel();
     };
-  }, [stepIndex, voice, engaged, canSpeak, steps]);
+  }, [stepIndex, stepText, voice, engaged, canSpeak]);
 
   const goTo = useCallback(
     (i) => {

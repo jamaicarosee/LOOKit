@@ -1,19 +1,10 @@
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import BackTitleRow from './BackTitleRow';
 import RouteInputCard from './RouteInputCard';
 import RouteOptionToggles from './RouteOptionToggles';
 import LocationSuggestions from './LocationSuggestions';
 import StartNavigationButton from './StartNavigationButton';
-import GpsAssist from './GpsAssist';
 import useLocationSearch from '../hooks/useLocationSearch';
-import { CURRENT_LOCATION } from '../../navigation/services/locationService';
-
-// "Current Location" is offered for an empty From field and for queries like "cur", "my loc", "gps"
-const CURRENT_WORDS = ['current', 'location', 'gps', 'my'];
-const matchesCurrentLocation = (q) => {
-  const t = q.trim().toLowerCase();
-  return !t || CURRENT_WORDS.some((w) => w.startsWith(t));
-};
 
 // Title row + From/To card + route toggles + suggestions + Start Navigation (shared by both screens)
 export default function RouteForm({ inputs, onBack, onStart, isLoading = false }) {
@@ -27,17 +18,12 @@ export default function RouteForm({ inputs, onBack, onStart, isLoading = false }
   const { results, isLoading: searching, error, retry } = useLocationSearch(resolved ? '' : query, enabled);
   const open = enabled && !resolved;
 
-  // Current Location is pinned at the top of the From suggestions (and takes part in arrow-key navigation)
-  const options = useMemo(
-    () => (activeField === 'from' && matchesCurrentLocation(query) ? [CURRENT_LOCATION, ...results] : results),
-    [activeField, query, results],
-  );
+  const options = results;
 
   useEffect(() => setHighlight(0), [options]);
 
   const pick = (loc) => {
-    if (loc.isCurrentLocation) inputs.selectCurrentLocation();
-    else if (activeField === 'from') inputs.selectFrom(loc);
+    if (activeField === 'from') inputs.selectFrom(loc);
     else inputs.selectTo(loc);
     setActiveField(null);
   };
@@ -96,13 +82,6 @@ export default function RouteForm({ inputs, onBack, onStart, isLoading = false }
       {inputs.error && (
         <p role="alert" className="mt-2 px-1 text-[11px] font-semibold text-red-600">
           {inputs.error}
-        </p>
-      )}
-
-      {inputs.from?.isCurrentLocation && <GpsAssist inputs={inputs} />}
-      {inputs.gpsError && (
-        <p role="alert" className="mt-2 px-1 text-[11px] font-semibold text-red-600">
-          {inputs.gpsError}
         </p>
       )}
 

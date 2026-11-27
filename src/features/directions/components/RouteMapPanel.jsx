@@ -51,42 +51,6 @@ function normalizeCollection(fc) {
 }
 
 
-function snapMarkerToFloorPaths(coord, pathsFc, maxMeters = 28) {
-  if (!Array.isArray(coord) || !pathsFc?.features?.length) return coord;
-  const toRad = (d) => (d * Math.PI) / 180;
-  const metersBetween = (a, b) => {
-    const R = 6371000;
-    const dLat = toRad(b[1] - a[1]);
-    const dLng = toRad(b[0] - a[0]);
-    const x = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.sin(dLng / 2) ** 2;
-    return 2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
-  };
-  let best = coord;
-  let bestD = maxMeters;
-  for (const feat of pathsFc.features) {
-    const geom = feat?.geometry;
-    if (!geom) continue;
-    const lines = geom.type === 'LineString' ? [geom.coordinates] : geom.type === 'MultiLineString' ? geom.coordinates : [];
-    for (const line of lines) {
-      for (let i = 0; i < line.length - 1; i += 1) {
-        const a = line[i];
-        const b = line[i + 1];
-        const dx = b[0] - a[0];
-        const dy = b[1] - a[1];
-        const len2 = dx * dx + dy * dy;
-        const t = len2 > 0 ? Math.max(0, Math.min(1, ((coord[0] - a[0]) * dx + (coord[1] - a[1]) * dy) / len2)) : 0;
-        const proj = [a[0] + t * dx, a[1] + t * dy];
-        const d = metersBetween(coord, proj);
-        if (d < bestD) {
-          bestD = d;
-          best = proj;
-        }
-      }
-    }
-  }
-  return best;
-}
-
 function floorFeatures(data, floor) {
   const fd = data?.floors?.[floor] || {};
   const rawStructures = Array.isArray(fd.structures)
@@ -282,13 +246,8 @@ export default function RouteMapPanel({
     });
     if (!route) return;
 
-    const startEl = route.from?.isCurrentLocation ? guideDot() : dot(COLORS.gold);
     if (route.start.floor === activeFloor) {
-      const fActive = floorFeatures(dataRef.current, activeFloor);
-      const startCoord = route.from?.isCurrentLocation && !route.from?.anchoredRoomName
-        ? snapMarkerToFloorPaths(route.start.coordinate, fActive.paths, 45)
-        : route.start.coordinate;
-      m.start = new mapboxgl.Marker({ element: startEl, anchor: 'center' }).setLngLat(startCoord).addTo(map);
+      m.start = new mapboxgl.Marker({ element: dot(COLORS.gold), anchor: 'center' }).setLngLat(route.start.coordinate).addTo(map);
     }
     if (route.end.floor === activeFloor) m.end = new mapboxgl.Marker({ element: pin(), anchor: 'bottom' }).setLngLat(route.end.coordinate).addTo(map);
     const stairs = route.stairMarkers.filter((s) => s.floor === activeFloor);
@@ -297,9 +256,7 @@ export default function RouteMapPanel({
       m.stairs.push(new mapboxgl.Marker({ element: badge(text), anchor: 'bottom', offset: [0, -4] }).setLngLat(s.coordinate).addTo(map));
     });
 
-    const key = route.from?.isCurrentLocation
-      ? `live-${route.to?.name}-${activeFloor}`
-      : `${route.distanceMeters}-${route.steps.length}-${activeFloor}-${route.start.coordinate.join()}`;
+    const key = `${route.distanceMeters}-${route.steps.length}-${activeFloor}-${route.start.coordinate.join()}`;
     if (lastFitRef.current !== key) {
       lastFitRef.current = key;
       const pts = legs.flatMap((l) => l.coords).concat(stairs.map((s) => s.coordinate));

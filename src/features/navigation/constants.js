@@ -32,18 +32,3 @@ export const MAPBOX_TOKEN =
 export const GUIDE_METERS_PER_SECOND = 7; // animation speed along a step (1x)
 export const GUIDE_MIN_STEP_MS = 1600;
 export const GUIDE_MAX_STEP_MS = 6000;
-
-// --- Current Location (GPS) ---
-export const CURRENT_LOCATION_ID = 'current-location';
-export const CURRENT_LOCATION_LABEL = 'Current Location (GPS)';
-export const GPS_MIN_MOVE_M = 3; // ignore fixes closer than this to the last one (jitter while standing still)
-export const GPS_MIN_INTERVAL_MS = 1500; // and fixes arriving faster than this
-export const GPS_MAX_ACCURACY_M = 50; // after warm-up, fixes less accurate than this are ignored
-export const GPS_WARMUP_MS = 6000; // collect fixes this long (or until one is good) before showing the first position
-export const GPS_GOOD_ACCURACY_M = 20; // a fix this accurate ends the warm-up early
-export const GPS_QUALITY_GOOD_M = 15; // smoothed accuracy <= this -> 'good'
-export const GPS_QUALITY_FAIR_M = 35; // <= this -> 'fair', above -> 'weak' (typical indoors)
-export const GPS_MAX_SPEED_MPS = 6; // a fix implying faster movement than this (and no better accuracy) is a jump, not walking
-export const GPS_NEARBY_ROOMS_MAX_M = 80; // 'pick the room you are near' lists rooms within this distance
-export const GPS_SNAP_MAX_M = 150; // further than this from any walkway = not on campus, no route
-export const GPS_OFF_PATH_WARN_M = 25; // further than this from a walkway: route starts at the nearest one, with a warning

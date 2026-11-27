@@ -1,10 +1,9 @@
 import React from 'react';
-import { Building2, DoorClosed, Car, Landmark, LocateFixed, RefreshCw } from 'lucide-react';
+import { Building2, DoorClosed, Car, Landmark, RefreshCw } from 'lucide-react';
 
-const ICONS = { building: Building2, room: DoorClosed, parking: Car, gate: Landmark, gps: LocateFixed };
+const ICONS = { building: Building2, room: DoorClosed, parking: Car, gate: Landmark };
 
 function secondary(loc) {
-  if (loc.type === 'gps') return 'Use your live GPS position';
   if (loc.type === 'room') return `${loc.fullName && loc.fullName !== loc.name ? `${loc.fullName} · ` : ''}${loc.building || 'Campus'}, Floor ${loc.floor}`;
   if (loc.type === 'building') return loc.floors ? `${loc.floors} floor${loc.floors > 1 ? 's' : ''}` : 'Campus area';
   return loc.type === 'gate' ? 'Campus gate' : 'Parking area';
@@ -12,8 +11,8 @@ function secondary(loc) {
 
 // Autocomplete list; rendered absolutely so it never shifts the layout below
 export default function LocationSuggestions({ id, results, isLoading, error, onRetry, query, highlightedIndex, onPick, onHover }) {
-  // The "Popular" heading goes above the first real place, below the pinned Current Location row
-  const firstPopular = results.findIndex((r) => r.type !== 'gps');
+  // The "Popular" heading goes above the first place
+  const firstPopular = results.length ? 0 : -1;
   return (
     <div
       className="absolute left-0 right-0 top-full mt-1 z-40 rounded-2xl bg-white border border-gray-200 shadow-xl overflow-hidden"
@@ -31,8 +30,7 @@ export default function LocationSuggestions({ id, results, isLoading, error, onR
           </button>
         </div>
       )}
-      {/* Current Location is pinned first and works even when the location search is down */}
-      {(!error || results.some((r) => r.type === 'gps')) && (
+      {!error && (
         <ul id={id} role="listbox" aria-label="Location suggestions" className="max-h-[38dvh] overflow-y-auto no-scrollbar">
           {results.map((loc, i) => {
             const Icon = ICONS[loc.type] || Building2;

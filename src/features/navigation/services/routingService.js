@@ -1,7 +1,7 @@
 // Route computation: resolves locations to graph nodes, runs Dijkstra and builds steps.
 
 import { apiClient } from '../../../services/apiClient';
-import { USE_REMOTE_ROUTING, GPS_SNAP_MAX_M, GPS_OFF_PATH_WARN_M } from '../constants';
+import { USE_REMOTE_ROUTING } from '../constants';
 import { fetchCampusData } from './dataService';
 import {
   buildGraph,
@@ -12,7 +12,6 @@ import {
   isPwdRampEdge,
   nodesNearGeometry,
   attachPoint,
-  findTwoWayConnectorNodes,
   JAVIER_BUILDING,
   JAVIER_LOBBY_TAG,
 } from './graph';
@@ -156,32 +155,11 @@ function findPath(graph, from, to, emergency, sources, targets, mode) {
 async function getLocalRoute(from, to, options) {
   const base = await getGraph();
   const { buildingAt, raw } = base;
-  let { graph } = base;
+  const { graph } = base;
   const { emergency = false, pwd = false } = options;
   const warnings = [];
 
-  let src;
-  if (from.isCurrentLocation && from.type !== 'room') {
-    const reqFloor = from.floor || 1;
-    let snap = from.coordinate ? attachPoint(graph, from.coordinate, { floor: reqFloor, maxSnapM: GPS_SNAP_MAX_M }) : null;
-    if ((!snap || snap.snapDistance > 60) && reqFloor > 1) {
-      const f1Snap = attachPoint(graph, from.coordinate, { floor: 1, maxSnapM: GPS_SNAP_MAX_M });
-      if (f1Snap && (!snap || f1Snap.snapDistance < snap.snapDistance)) {
-        snap = f1Snap;
-        warnings.push(`No corridor found near your GPS on Floor ${reqFloor}; routing from Floor 1 instead.`);
-      }
-    }
-    if (!snap) return null;
-    graph = snap.graph;
-    src = { ids: [snap.sourceId], exact: true };
-    if (snap.snapDistance > GPS_OFF_PATH_WARN_M) {
-      warnings.push(`You are about ${Math.round(snap.snapDistance)} m from the nearest campus path; the route starts from that path.`);
-    }
-    const inside = (raw.campus?.features || []).find((f) => f.properties.category !== 'outdoor_structure' && pointInPolygon(from.coordinate, f.geometry));
-    from = { ...from, building: inside?.properties?.name || null };
-  } else {
-    src = resolveNodes(graph, from);
-  }
+  const src = resolveNodes(graph, from);
   if (!src.ids.length) return null;
   if (!src.exact) warnings.push(`Indoor path to ${from.name} is not mapped; the route starts at the ${from.building || 'building'} entrance.`);
 
@@ -214,14 +192,6 @@ async function getLocalRoute(from, to, options) {
   let mode = baseMode;
   let pwdUpperBlocked = false;
   let path = findPath(graph, from, to, emergency, src.ids, targets, mode);
-
-  // Two-way connector recovery if GPS landed on one-way Gate 1 lane
-  if (!path && from?.type === 'gps' && Array.isArray(from.coordinate)) {
-    const recoveryIds = findTwoWayConnectorNodes(graph, from.coordinate, { floor: srcFloor, maxDistM: 75 });
-    if (recoveryIds.length) {
-      path = findPath(graph, from, to, emergency, recoveryIds, targets, mode);
-    }
-  }
 
   // PWD upper-floor destination (2F+): route via 1F PWD ramps and stop at destination building's 1st-floor stairs + validation
   if (!path && pwd && !emergency && to && dstFloor > 1) {
@@ -258,11 +228,9 @@ async function getLocalRoute(from, to, options) {
     ? `${to.name}${to.fullName && to.fullName !== to.name ? ` – ${to.fullName}` : ''} (${to.building || 'building'}, Floor ${to.floor})`
     : toLabel;
 
-  const fromDisplay = from.isCurrentLocation
-    ? (from.anchoredRoomName ? `Current Location near ${from.anchoredRoomName} (${from.building}, Floor ${from.floor})` : srcFloor > 1 ? `${from.name} (Floor ${srcFloor})` : from.name)
-    : from.type === 'room'
-      ? `${from.name} (${from.building}, Floor ${from.floor})`
-      : from.name;
+  const fromDisplay = from.type === 'room'
+    ? `${from.name} (${from.building}, Floor ${from.floor})`
+    : from.name;
 
   const result = buildRouteResult(path, {
     fromLabel: fromDisplay,
@@ -366,7 +334,7 @@ export async function getRoute(fromLocation, toLocation, options = {}) {
   }
 
   let route = null;
-  if (fromLocation?.isCurrentLocation || !USE_REMOTE_ROUTING) {
+  if (!USE_REMOTE_ROUTING) {
     route = await getLocalRoute(fromLocation, toLocation, options);
   } else {
     try {
