@@ -1575,27 +1575,6 @@ class CampusGraphService:
             for f in self.campus_features
         )
 
-    def _nearest_twoway_connector_nodes(self, coord: List[float], floor: int = 1, max_dist_m: float = 75.0) -> List[int]:
-        twoway_ids = set()
-        for edge in self.edges:
-            if (edge.get("floor") or 1) != floor:
-                continue
-            if edge.get("floorTo") and edge.get("floorTo") != floor:
-                continue
-            if edge.get("oneway"):
-                continue
-            if edge.get("kind") in ("stairs", "entrance-stairs"):
-                continue
-            twoway_ids.add(edge["a"])
-            twoway_ids.add(edge["b"])
-        scored = []
-        for nid in twoway_ids:
-            d = haversine(coord, self.nodes[nid]["coord"])
-            if d <= max_dist_m:
-                scored.append((d, nid))
-        scored.sort(key=lambda x: x[0])
-        return [nid for _, nid in scored[:4]]
-
     def compute_route(
         self, from_input: Any, to_input: Any, emergency: bool = False, pwd: bool = False
     ) -> Optional[Dict[str, Any]]:
@@ -1639,10 +1618,6 @@ class CampusGraphService:
 
         mode = {"avoidStairs": pwd, "preferRamps": pwd}
         path = self._find_path(from_loc, to_loc, emergency, src["ids"], targets, mode)
-        if not path and from_loc.get("type") == "gps" and isinstance(from_loc.get("coordinate"), list):
-            rec_ids = self._nearest_twoway_connector_nodes(from_loc["coordinate"], floor=from_loc.get("floor") or 1)
-            if rec_ids:
-                path = self._find_path(from_loc, to_loc, emergency, rec_ids, targets, mode)
         pwd_upper_blocked = False
         pwd_down_stairs_used = False
         if not path and pwd and not emergency and to_loc:
