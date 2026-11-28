@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { Component, lazy, Suspense, useEffect, useState } from 'react';
 import DashboardMobileView from './features/dashboard/DashboardMobileView';
 import DashboardDesktopView from './features/dashboard/DashboardDesktopView';
 import NavigationFlow from './features/navigation/NavigationFlow';
@@ -340,10 +340,50 @@ function AppContent() {
   );
 }
 
+class AppErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('[LOOKit] Unhandled application error:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex h-[100dvh] w-screen items-center justify-center bg-[#F8F9F9] px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-lg">
+            <h1 className="text-xl font-bold text-[#0B2545]">Something went wrong</h1>
+            <p className="mt-2 text-sm text-[#61738A]">
+              LOOKit ran into an unexpected error. Reload the page to continue.
+            </p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mt-5 h-11 w-full rounded-xl bg-[#0B2545] text-sm font-bold text-white hover:bg-[#1B3A5E]"
+            >
+              Reload LOOKit
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <AppErrorBoundary>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </AppErrorBoundary>
   );
 }
