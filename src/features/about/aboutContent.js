@@ -7,7 +7,7 @@ export const FEEDBACK_TEXT =
   'You may send your feedback or comments through the link below:';
 
 export const FEEDBACK_LINK =
-  'https://forms.gle/Uen8tab5bnUwMYLx7';
+  'https://forms.gle/EYczcV7AFfgnbX2Q6';
 
 export const ABOUT_TEXT =
   'LOOKit is a web-based campus navigation system designed to help students, faculty, staff, and visitors easily locate rooms, offices, buildings, and school personnel within Rizal Technological University – Pasig Branch.';
