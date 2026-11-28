@@ -13,12 +13,10 @@ def get_current_user(
     """
     token = credentials.credentials.strip()
 
-    # Clean double "Bearer " prefix if manually typed
     if token.lower().startswith("bearer "):
         token = token[7:].strip()
 
     try:
-        # Supabase verifies token validity, signature, and expiration
         user_response = supabase.auth.get_user(token)
 
         if not user_response or not user_response.user:
@@ -36,13 +34,14 @@ def get_current_user(
 
     except HTTPException:
         raise
-    except Exception as e:
-        error_msg = str(e)
+    except Exception as exc:
+        error_msg = str(exc)
         if "expired" in error_msg.lower():
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Session has expired. Please sign in again.",
             )
+        print(f"[LOOKit Auth] Token verification failed: {type(exc).__name__}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Authentication failed. Please sign in again.",
@@ -53,7 +52,7 @@ def get_current_user_profile(
     user: dict = Depends(get_current_user),
 ) -> dict:
     """
-    Fetches the full user profile (including role) from public.users.
+    Fetches the full user profile (including role & is_active) from public.users.
     """
     try:
         response = (
@@ -63,19 +62,19 @@ def get_current_user_profile(
             .maybe_single()
             .execute()
         )
-    except Exception as e:
+    except Exception as exc:
+        print(f"[LOOKit Auth] Failed to query user profile for {user['id']}: {exc}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to query user profile: {str(e)}",
+            detail="Failed to load user profile.",
         )
 
     if not response or not response.data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User profile not found in public.users.",
+            detail="User profile not found.",
         )
 
-    # Deactivated accounts are blocked immediately, even if their JWT is still valid.
     if not response.data.get("is_active", True):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -89,14 +88,14 @@ def require_admin(
     profile: dict = Depends(get_current_user_profile),
 ) -> dict:
     """
-    Guard dependency that restricts endpoint access strictly to users with role == 'admin'.
+    Guard dependency that restricts endpoint access strictly to active admins
+    who have completed any forced temporary-password change.
     """
     if profile.get("role") != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin privileges are required to access this resource.",
         )
-    # Admin-created accounts start with a temporary password that must be changed first.
     if profile.get("must_change_password"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

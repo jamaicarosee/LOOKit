@@ -222,8 +222,8 @@ class Catalog:
     version: str
 
 
-_loc_cache: Dict[str, Any] = {"src": None, "n": -1, "entries": []}
-_staff_cache: Dict[str, Any] = {"at": 0.0, "entries": []}
+_loc_cache: Dict[str, Any] = {"src": None, "n": -1, "entries": [], "ver": "0"}
+_staff_cache: Dict[str, Any] = {"at": 0.0, "entries": [], "ver": "0"}
 _cache_lock = threading.Lock()
 
 
@@ -252,8 +252,9 @@ def _location_entries() -> List[Entry]:
         )
         entries.append(_make_entry(cid, "location", name, loc["type"], loc.get("building"), loc.get("floor"),
                                    tags, loc, extra=loc.get("keywords")))
+    ver = hashlib.sha1("|".join(f"{e.id}:{e.name}:{e.floor}" for e in entries).encode()).hexdigest()[:8]
     with _cache_lock:
-        _loc_cache.update(src=locations, n=len(locations), entries=entries)
+        _loc_cache.update(src=locations, n=len(locations), entries=entries, ver=ver)
     return entries
 
 
@@ -262,8 +263,8 @@ def _staff_entries() -> List[Entry]:
         if time.monotonic() - _staff_cache["at"] < STAFF_CACHE_SECONDS and _staff_cache["entries"]:
             return _staff_cache["entries"]
     try:
-        from routers.staff import get_all_staff  # same data/shape as the Staff Directory page
-        rows = get_all_staff().get("staff", [])
+        from routers.staff import get_staff_directory_cached
+        rows = get_staff_directory_cached(include_admin_fields=False)
     except Exception as exc:  # staff are optional: locations still work
         print(f"{LOG} Could not load staff ({type(exc).__name__}); continuing without staff.")
         return _staff_cache["entries"]
@@ -280,7 +281,6 @@ def _staff_entries() -> List[Entry]:
         if emp_id is None or not name:
             continue
         office_loc = by_code.get(str(row.get("room_code") or "").lower())
-        # Public directory fields only. No email or employee number is sent anywhere.
         item = {k: row.get(k) for k in (
             "id", "name", "position", "secondaryPosition", "office", "secondaryOffice", "groups",
             "section", "office_location_id", "officeLocationId", "room_code",
@@ -290,8 +290,9 @@ def _staff_entries() -> List[Entry]:
             f"staff:{emp_id}", "staff", name, str(row.get("position") or "staff"),
             (office_loc or {}).get("building"), (office_loc or {}).get("floor"), tags, item,
         ))
+    ver = hashlib.sha1("|".join(f"{e.id}:{e.name}" for e in entries).encode()).hexdigest()[:8]
     with _cache_lock:
-        _staff_cache.update(at=time.monotonic(), entries=entries)
+        _staff_cache.update(at=time.monotonic(), entries=entries, ver=ver)
     return entries
 
 
@@ -308,13 +309,17 @@ def _make_entry(cid, category, name, kind, building, floor, tags, raw, extra=Non
 
 
 def build_catalog(include_staff: bool) -> Catalog:
-    entries = list(_location_entries())
+    loc_entries = _location_entries()
+    entries = list(loc_entries)
+    with _cache_lock:
+        ver = _loc_cache.get("ver", "0")
     if include_staff:
-        entries += _staff_entries()
+        staff_entries = _staff_entries()
+        entries += staff_entries
+        with _cache_lock:
+            ver = f"{ver}:{_staff_cache.get('ver', '0')}"
     by_id = {e.id: e for e in entries}
-    digest = hashlib.sha1("|".join(f"{e.id}:{e.name}:{e.floor}" for e in entries).encode()).hexdigest()[:12]
-    return Catalog(entries, by_id, digest)
-
+    return Catalog(entries, by_id, ver)
 
 def _prompt_lines(entries: List[Entry]) -> str:
     # One compact line per item: id|type|name|building|floor|details

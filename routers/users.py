@@ -2,13 +2,13 @@ import re
 from datetime import datetime, timezone
 from typing import Literal, Optional
 from uuid import UUID
-
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from pydantic import BaseModel, field_validator
-
 from database import supabase
 from dependencies import require_admin
 from services.audit_service import diff, error_text, get_client_ip, log_audit
+from services.rate_limit_service import rate_limit
+from services.validation_service import validate_strong_password
 
 router = APIRouter(prefix="/api/users", tags=["Users"])
 
@@ -18,7 +18,6 @@ USER_COLUMNS = (
 )
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 BAN_FOREVER = "876000h"
-MIN_PASSWORD_LENGTH = 8
 MAX_PASSWORD_LENGTH = 72
 LIST_FETCH_LIMIT = 5000
 
@@ -31,11 +30,13 @@ def _clean_name(value: str) -> str:
         raise ValueError("full_name must be 200 characters or fewer")
     return value
 
+
 def _clean_email(value: str) -> str:
     value = value.strip().lower()
     if len(value) > 254 or not EMAIL_RE.match(value):
         raise ValueError("Invalid email address")
     return value
+
 
 class UserCreate(BaseModel):
     full_name: str
@@ -56,11 +57,10 @@ class UserCreate(BaseModel):
     @field_validator("password")
     @classmethod
     def _password(cls, value: str) -> str:
-        if len(value) < MIN_PASSWORD_LENGTH:
-            raise ValueError(f"Password must be at least {MIN_PASSWORD_LENGTH} characters")
         if len(value) > MAX_PASSWORD_LENGTH:
             raise ValueError(f"Password must be at most {MAX_PASSWORD_LENGTH} characters")
-        return value
+        return validate_strong_password(value)
+
 
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
@@ -90,6 +90,7 @@ def _public(row: dict) -> dict:
         "must_change_password": row.get("must_change_password"),
     }
 
+
 def _label(row: dict) -> str:
     name = row.get("full_name") or ""
     email = row.get("email") or ""
@@ -97,20 +98,25 @@ def _label(row: dict) -> str:
         return f"{name} ({email})"
     return name or email or str(row.get("id") or "")
 
+
 def _fetch_user(uid: str) -> Optional[dict]:
     res = supabase.table("users").select(USER_COLUMNS).eq("id", uid).limit(1).execute()
     return res.data[0] if res and res.data else None
+
 
 def _other_active_admins(exclude_id: str) -> int:
     res = supabase.table("users").select("id").eq("role", "admin").eq("is_active", True).execute()
     return len([r for r in (res.data or []) if r["id"] != exclude_id])
 
+
 def _email_taken(email: str, exclude_id: Optional[str] = None) -> bool:
-    query = supabase.table("users").select("id").eq("email", email)
+    escaped = email.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    query = supabase.table("users").select("id").ilike("email", escaped)
     if exclude_id:
         query = query.neq("id", exclude_id)
     res = query.limit(1).execute()
     return bool(res and res.data)
+
 
 def _is_duplicate_email_error(exc: Exception) -> bool:
     if getattr(exc, "code", None) == "email_exists":
@@ -118,42 +124,76 @@ def _is_duplicate_email_error(exc: Exception) -> bool:
     msg = str(exc).lower()
     return "already" in msg and ("registered" in msg or "exists" in msg)
 
+
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
-def _failure(admin: dict, action: str, uid: Optional[str], label: Optional[str],
-             changes: Optional[dict], ip: Optional[str], exc: Exception) -> HTTPException:
+
+def _failure(
+    admin: dict,
+    action: str,
+    uid: Optional[str],
+    label: Optional[str],
+    changes: Optional[dict],
+    ip: Optional[str],
+    exc: Exception,
+) -> HTTPException:
     log_audit(
         admin, action, "user", entity_id=uid, entity_label=label,
         changes=changes, status="failed", error=error_text(exc), ip=ip,
     )
     if isinstance(exc, HTTPException):
         return exc
-    return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Operation failed: {exc}")
+    print(f"[LOOKit Users] {action} failed for {uid}: {exc}")
+    return HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Operation failed. Please try again.",
+    )
+
 
 def _raise(err: HTTPException, original: Exception):
     if err is original:
         raise err
     raise err from original
 
-@router.get("")
-def list_users(include_inactive: bool = False, q: Optional[str] = None, _admin: dict = Depends(require_admin)):
+
+@router.get(
+    "",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="users_list"))],
+)
+def list_users(
+    include_inactive: bool = False,
+    q: Optional[str] = Query(default=None, max_length=100),
+    _admin: dict = Depends(require_admin),
+):
     try:
         query = supabase.table("users").select(USER_COLUMNS)
         if not include_inactive:
             query = query.eq("is_active", True)
-        res = query.limit(LIST_FETCH_LIMIT).execute()
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to fetch users: {str(e)}")
+        res = query.order("full_name").limit(LIST_FETCH_LIMIT).execute()
+    except Exception as exc:
+        print(f"[LOOKit Users] Failed to fetch users: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to load users.",
+        )
 
     rows = res.data or []
     needle = (q or "").strip().casefold()
     if needle:
-        rows = [r for r in rows if needle in (r.get("full_name") or "").casefold() or needle in (r.get("email") or "").casefold()]
+        rows = [
+            r for r in rows
+            if needle in (r.get("full_name") or "").casefold()
+            or needle in (r.get("email") or "").casefold()
+        ]
     rows.sort(key=lambda r: ((r.get("full_name") or "").casefold(), (r.get("email") or "").casefold()))
     return {"users": [_public(r) for r in rows]}
 
-@router.post("")
+
+@router.post(
+    "",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="users_write"))],
+)
 def create_user(payload: UserCreate, request: Request, admin: dict = Depends(require_admin)):
     ip = get_client_ip(request)
     label = f"{payload.full_name} ({payload.email})"
@@ -179,7 +219,8 @@ def create_user(payload: UserCreate, request: Request, admin: dict = Depends(req
         except Exception as exc:
             if _is_duplicate_email_error(exc):
                 raise HTTPException(status_code=409, detail="A user with this email already exists.")
-            raise HTTPException(status_code=400, detail=f"Could not create the auth account: {exc}")
+            print(f"[LOOKit Users] Auth create_user failed: {exc}")
+            raise HTTPException(status_code=400, detail="Could not create the authentication account.")
 
         row = {
             "id": new_id,
@@ -196,18 +237,23 @@ def create_user(payload: UserCreate, request: Request, admin: dict = Depends(req
             if not res.data:
                 raise RuntimeError("Upsert returned no row.")
         except Exception as exc:
+            print(f"[LOOKit Users] Profile upsert failed for {new_id}: {exc}")
             try:
                 supabase.auth.admin.delete_user(new_id)
             except Exception as cleanup_exc:
                 print(f"[LOOKit Users] Could not remove orphan auth user {new_id}: {cleanup_exc}")
-            raise HTTPException(status_code=500, detail=f"Failed to save the user profile: {exc}")
+            raise HTTPException(status_code=500, detail="Failed to save the user profile.")
 
         log_audit(admin, "CREATE", "user", entity_id=new_id, entity_label=label, changes=changes, ip=ip)
         return {"status": "created", "user": _public(res.data[0])}
     except Exception as exc:
         _raise(_failure(admin, "CREATE", new_id, label, changes, ip, exc), exc)
 
-@router.put("/{user_id}")
+
+@router.put(
+    "/{user_id}",
+    dependencies=[Depends(rate_limit(limit=30, window_seconds=60, scope="users_write"))],
+)
 def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dict = Depends(require_admin)):
     uid = str(user_id)
     ip = get_client_ip(request)
@@ -253,19 +299,21 @@ def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dic
             except Exception as exc:
                 if _is_duplicate_email_error(exc):
                     raise HTTPException(status_code=409, detail="A user with this email already exists.")
-                raise HTTPException(status_code=400, detail=f"Could not update the auth account: {exc}")
+                print(f"[LOOKit Users] Auth update failed for {uid}: {exc}")
+                raise HTTPException(status_code=400, detail="Could not update the authentication account.")
 
         try:
             res = supabase.table("users").update({k: v for k, v in data.items() if k in changes}).eq("id", uid).execute()
             if not res.data:
                 raise RuntimeError("Update returned no row.")
         except Exception as exc:
+            print(f"[LOOKit Users] Profile update failed for {uid}: {exc}")
             if auth_restore:
                 try:
                     supabase.auth.admin.update_user_by_id(uid, auth_restore)
                 except Exception as rollback_exc:
                     print(f"[LOOKit Users] Auth rollback failed for {uid}: {rollback_exc}")
-            raise HTTPException(status_code=500, detail=f"Failed to update the user profile: {exc}")
+            raise HTTPException(status_code=500, detail="Failed to update the user profile.")
 
         after = res.data[0]
         log_audit(admin, "UPDATE", "user", entity_id=uid, entity_label=_label(after), changes=changes, ip=ip)
@@ -274,7 +322,10 @@ def update_user(user_id: UUID, payload: UserUpdate, request: Request, admin: dic
         _raise(_failure(admin, "UPDATE", uid, label, changes, ip, exc), exc)
 
 
-@router.delete("/{user_id}")
+@router.delete(
+    "/{user_id}",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="users_write"))],
+)
 def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(require_admin)):
     """Admin-only SOFT delete: archives the user, marks inactive, and bans the Auth account."""
     uid = str(user_id)
@@ -294,13 +345,12 @@ def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
         if before.get("role") == "admin" and _other_active_admins(uid) == 0:
             raise HTTPException(status_code=400, detail="Cannot deactivate the last active admin.")
 
-        # ARCHIVE LOGIC: Insert to archived_users table first
         archive_payload = {
             "original_user_id": uid,
             "full_name": before.get("full_name"),
             "email": before.get("email"),
             "role": before.get("role"),
-            "archived_by": admin["id"]
+            "archived_by": admin["id"],
         }
         try:
             supabase.table("archived_users").insert(archive_payload).execute()
@@ -308,25 +358,38 @@ def deactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
             print(f"[LOOKit Users] Failed to archive user {uid}: {archive_exc}")
             raise HTTPException(status_code=500, detail="Failed to archive user data before deactivation.")
 
-        res = supabase.table("users").update({"is_active": False, "deactivated_at": _now_iso(), "deactivated_by": admin["id"]}).eq("id", uid).execute()
+        res = supabase.table("users").update({
+            "is_active": False,
+            "deactivated_at": _now_iso(),
+            "deactivated_by": admin["id"],
+        }).eq("id", uid).execute()
         if not res.data:
             raise HTTPException(status_code=500, detail="Failed to deactivate the user.")
 
         try:
             supabase.auth.admin.update_user_by_id(uid, {"ban_duration": BAN_FOREVER})
         except Exception as exc:
-            try:  
-                supabase.table("users").update({"is_active": True, "deactivated_at": None, "deactivated_by": None}).eq("id", uid).execute()
+            print(f"[LOOKit Users] Auth ban failed for {uid}: {exc}")
+            try:
+                supabase.table("users").update({
+                    "is_active": True,
+                    "deactivated_at": None,
+                    "deactivated_by": None,
+                }).eq("id", uid).execute()
             except Exception as revert_exc:
                 print(f"[LOOKit Users] Could not revert deactivation of {uid}: {revert_exc}")
-            raise HTTPException(status_code=502, detail=f"Could not ban the account in Supabase Auth: {exc}")
+            raise HTTPException(status_code=502, detail="Could not suspend the authentication account.")
 
         log_audit(admin, "DEACTIVATE", "user", entity_id=uid, entity_label=label, changes=changes, ip=ip)
         return {"status": "deactivated", "user": _public(res.data[0])}
     except Exception as exc:
         _raise(_failure(admin, "DEACTIVATE", uid, label, changes, ip, exc), exc)
 
-@router.post("/{user_id}/reactivate")
+
+@router.post(
+    "/{user_id}/reactivate",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="users_write"))],
+)
 def reactivate_user(user_id: UUID, request: Request, admin: dict = Depends(require_admin)):
     uid = str(user_id)
     ip = get_client_ip(request)
@@ -344,18 +407,24 @@ def reactivate_user(user_id: UUID, request: Request, admin: dict = Depends(requi
         try:
             supabase.auth.admin.update_user_by_id(uid, {"ban_duration": "none"})
         except Exception as exc:
-            raise HTTPException(status_code=502, detail=f"Could not lift the ban in Supabase Auth: {exc}")
+            print(f"[LOOKit Users] Auth unban failed for {uid}: {exc}")
+            raise HTTPException(status_code=502, detail="Could not restore the authentication account.")
 
         try:
-            res = supabase.table("users").update({"is_active": True, "deactivated_at": None, "deactivated_by": None}).eq("id", uid).execute()
+            res = supabase.table("users").update({
+                "is_active": True,
+                "deactivated_at": None,
+                "deactivated_by": None,
+            }).eq("id", uid).execute()
             if not res.data:
                 raise RuntimeError("Update returned no row.")
         except Exception as exc:
-            try:  
+            print(f"[LOOKit Users] Profile reactivation failed for {uid}: {exc}")
+            try:
                 supabase.auth.admin.update_user_by_id(uid, {"ban_duration": BAN_FOREVER})
             except Exception as revert_exc:
                 print(f"[LOOKit Users] Could not re-ban {uid} after failed reactivation: {revert_exc}")
-            raise HTTPException(status_code=500, detail=f"Failed to reactivate the user: {exc}")
+            raise HTTPException(status_code=500, detail="Failed to reactivate the user.")
 
         log_audit(admin, "REACTIVATE", "user", entity_id=uid, entity_label=label, changes=changes, ip=ip)
         return {"status": "reactivated", "user": _public(res.data[0])}

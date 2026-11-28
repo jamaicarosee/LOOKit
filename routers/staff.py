@@ -1,9 +1,13 @@
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from pydantic import BaseModel
+import re
+import threading
+import time
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from pydantic import BaseModel, Field, field_validator
 from database import supabase
-from dependencies import require_admin
+from dependencies import get_current_user_profile, require_admin
 from services.audit_service import diff, error_text, get_client_ip, log_audit
+from services.rate_limit_service import rate_limit
 from services.staff_categorizer import (
     STAFF_SECTIONS,
     normalize_groups,
@@ -13,40 +17,77 @@ from services.staff_categorizer import (
 
 router = APIRouter(prefix="/api/staff", tags=["Staff"])
 
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+STAFF_CACHE_TTL_SECONDS = 120
+
+_staff_cache_lock = threading.Lock()
+_staff_cache: dict = {"at": 0.0, "full": [], "public": []}
+
+
+def invalidate_staff_cache() -> None:
+    """Clears the in-memory staff directory cache after any admin mutation."""
+    with _staff_cache_lock:
+        _staff_cache["at"] = 0.0
+        _staff_cache["full"] = []
+        _staff_cache["public"] = []
+
 
 # --- Pydantic Models for Admin Forms ---
+
 class StaffCreate(BaseModel):
-    employee_number: Optional[int] = None
-    title: Optional[str] = None
-    first_name: str
-    middle_initial: Optional[str] = None
-    last_name: str
-    role: Optional[str] = None
-    email: Optional[str] = None
-    department_id: Optional[int] = None
-    office_location_id: Optional[int] = None
-    section: Optional[str] = None
-    secondary_role: Optional[str] = None
-    secondary_department_id: Optional[int] = None
+    employee_number: Optional[int] = Field(default=None, ge=1)
+    title: Optional[str] = Field(default=None, max_length=50)
+    first_name: str = Field(..., min_length=1, max_length=100)
+    middle_initial: Optional[str] = Field(default=None, max_length=6)
+    last_name: str = Field(..., min_length=1, max_length=100)
+    role: Optional[str] = Field(default=None, max_length=150)
+    email: Optional[str] = Field(default=None, max_length=254)
+    department_id: Optional[int] = Field(default=None, ge=1)
+    office_location_id: Optional[int] = Field(default=None, ge=1)
+    section: Optional[str] = Field(default=None, max_length=80)
+    secondary_role: Optional[str] = Field(default=None, max_length=150)
+    secondary_department_id: Optional[int] = Field(default=None, ge=1)
+
+    @field_validator("email")
+    @classmethod
+    def _validate_email(cls, value: Optional[str]) -> Optional[str]:
+        if value is None or not value.strip():
+            return None
+        cleaned = value.strip().lower()
+        if not EMAIL_RE.match(cleaned):
+            raise ValueError("Invalid email address.")
+        return cleaned
 
 
 class StaffUpdate(BaseModel):
-    title: Optional[str] = None
-    first_name: Optional[str] = None
-    middle_initial: Optional[str] = None
-    last_name: Optional[str] = None
-    role: Optional[str] = None
-    email: Optional[str] = None
-    department_id: Optional[int] = None
-    office_location_id: Optional[int] = None
-    section: Optional[str] = None
-    secondary_role: Optional[str] = None
-    secondary_department_id: Optional[int] = None
+    title: Optional[str] = Field(default=None, max_length=50)
+    first_name: Optional[str] = Field(default=None, max_length=100)
+    middle_initial: Optional[str] = Field(default=None, max_length=6)
+    last_name: Optional[str] = Field(default=None, max_length=100)
+    role: Optional[str] = Field(default=None, max_length=150)
+    email: Optional[str] = Field(default=None, max_length=254)
+    department_id: Optional[int] = Field(default=None, ge=1)
+    office_location_id: Optional[int] = Field(default=None, ge=1)
+    section: Optional[str] = Field(default=None, max_length=80)
+    secondary_role: Optional[str] = Field(default=None, max_length=150)
+    secondary_department_id: Optional[int] = Field(default=None, ge=1)
+
+    @field_validator("email")
+    @classmethod
+    def _validate_email(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        cleaned = value.strip().lower()
+        if not cleaned:
+            return None
+        if not EMAIL_RE.match(cleaned):
+            raise ValueError("Invalid email address.")
+        return cleaned
 
 
 # --- Internal Helpers ---
+
 def _clean(value: Optional[str]) -> Optional[str]:
-    """Trims whitespace; returns None for empty strings."""
     if value is None:
         return None
     value = str(value).strip()
@@ -54,7 +95,6 @@ def _clean(value: Optional[str]) -> Optional[str]:
 
 
 def _normalize_middle_initial(value: Optional[str]) -> Optional[str]:
-    """'r' -> 'R.', 'R' -> 'R.', 'M.A.' stays 'M.A.'. Empty -> None."""
     value = _clean(value)
     if not value:
         return None
@@ -66,13 +106,11 @@ def _normalize_middle_initial(value: Optional[str]) -> Optional[str]:
 
 
 def _compose_full_name(title=None, first_name=None, middle_initial=None, last_name=None) -> str:
-    """Display name: '<Status> <First> <M.I.> <Last>' with any empty part skipped."""
     parts = [title, first_name, middle_initial, last_name]
     return " ".join(str(p).strip() for p in parts if p and str(p).strip())
 
 
 def _fetch_department_name(department_id: Optional[int]) -> Optional[str]:
-    """Resolves a department's display name by ID for auto-categorization."""
     if not department_id:
         return None
     try:
@@ -90,7 +128,6 @@ def _fetch_department_name(department_id: Optional[int]) -> Optional[str]:
 
 
 def _resolve_target_section(section: Optional[str], department_id: Optional[int]) -> str:
-    """Uses an explicit valid section if provided; otherwise resolves from department."""
     explicit = normalize_section_id(section)
     if explicit:
         return explicit
@@ -98,96 +135,154 @@ def _resolve_target_section(section: Optional[str], department_id: Optional[int]
     return resolve_section_from_department(dept_name)
 
 
-# --- Public Endpoints ---
-@router.get("")
-def get_all_staff():
+def get_staff_directory_cached(include_admin_fields: bool = False) -> List[dict]:
     """
-    Fetches all staff members joined with departments and locations.
-    Returns the exact format required by the frontend StaffScreen.
+    Shared cached loader used by both GET /api/staff and AI Search.
+    Non-admin callers never receive staff email addresses or internal form fields.
+    """
+    now = time.monotonic()
+    with _staff_cache_lock:
+        if now - _staff_cache["at"] < STAFF_CACHE_TTL_SECONDS and _staff_cache["full"]:
+            return _staff_cache["full"] if include_admin_fields else _staff_cache["public"]
+
+    staff_res = supabase.table("staff_members").select("*, departments(name)").execute()
+    loc_res = supabase.table("location").select("locationid, code").execute()
+    loc_map = {r["locationid"]: r.get("code") for r in (loc_res.data or [])}
+    dept_res = supabase.table("departments").select("departmentid, name").execute()
+    dept_map = {d["departmentid"]: d.get("name") for d in (dept_res.data or [])}
+
+    full_results = []
+    public_results = []
+
+    for row in (staff_res.data or []):
+        meta = row.get("metadata") or {}
+        dept_name = row.get("departments", {}).get("name") if row.get("departments") else "Unknown Office"
+        loc_id = row.get("office_location_id")
+        room_code = loc_map.get(loc_id) if loc_id else None
+        groups = normalize_groups(meta.get("groups"), dept_name)
+
+        sec_dept_id = meta.get("secondary_department_id")
+        sec_dept_name = dept_map.get(sec_dept_id) if sec_dept_id else None
+        sec_role = meta.get("secondary_role") or ""
+
+        base_record = {
+            "id": row["employee_number"],
+            "name": _compose_full_name(
+                row.get("title"), row.get("first_name"), row.get("middle_initial"), row.get("last_name")
+            ) or meta.get("full_name") or "",
+            "position": row.get("role") or "",
+            "secondaryPosition": sec_role,
+            "office": dept_name,
+            "secondaryOffice": sec_dept_name or "",
+            "groups": groups,
+            "section": groups[0],
+            "office_location_id": loc_id,
+            "officeLocationId": loc_id,
+            "room_code": room_code,
+        }
+
+        admin_record = {
+            **base_record,
+            "title": row.get("title") or "",
+            "firstName": row.get("first_name", ""),
+            "middleInitial": row.get("middle_initial") or "",
+            "lastName": row.get("last_name", ""),
+            "email": row.get("email", ""),
+            "departmentId": row.get("department_id"),
+            "secondaryDepartmentId": sec_dept_id,
+        }
+
+        public_results.append(base_record)
+        full_results.append(admin_record)
+
+    public_results.sort(key=lambda x: x["id"])
+    full_results.sort(key=lambda x: x["id"])
+
+    with _staff_cache_lock:
+        _staff_cache["at"] = time.monotonic()
+        _staff_cache["full"] = full_results
+        _staff_cache["public"] = public_results
+
+    return full_results if include_admin_fields else public_results
+
+
+# --- Authenticated Read Endpoints ---
+
+@router.get(
+    "",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="staff_list"))],
+)
+def get_all_staff(
+    response: Response,
+    profile: dict = Depends(get_current_user_profile),
+):
+    """
+    Authenticated endpoint: returns staff directory.
+    Admins receive full editable fields (including email); standard users receive directory fields only.
     """
     try:
-        staff_res = supabase.table("staff_members").select("*, departments(name)").execute()
-
-        loc_res = supabase.table("location").select("locationid, code").execute()
-        loc_map = {r["locationid"]: r.get("code") for r in (loc_res.data or [])}
-
-        dept_res = supabase.table("departments").select("departmentid, name").execute()
-        dept_map = {d["departmentid"]: d.get("name") for d in (dept_res.data or [])}
-
-        results = []
-        for row in (staff_res.data or []):
-            meta = row.get("metadata") or {}
-            dept_name = row.get("departments", {}).get("name") if row.get("departments") else "Unknown Office"
-            loc_id = row.get("office_location_id")
-            room_code = loc_map.get(loc_id) if loc_id else None
-            groups = normalize_groups(meta.get("groups"), dept_name)
-
-            sec_dept_id = meta.get("secondary_department_id")
-            sec_dept_name = dept_map.get(sec_dept_id) if sec_dept_id else None
-            sec_role = meta.get("secondary_role") or ""
-
-            results.append({
-                "id": row["employee_number"],
-                "name": _compose_full_name(
-                    row.get("title"), row.get("first_name"), row.get("middle_initial"), row.get("last_name")
-                ) or meta.get("full_name") or "",
-                "position": row.get("role") or "",
-                "secondaryPosition": sec_role,
-                "office": dept_name,
-                "secondaryOffice": sec_dept_name or "",
-                "groups": groups,
-                "section": groups[0],
-                "office_location_id": loc_id,
-                "officeLocationId": loc_id,
-                "room_code": room_code,
-                # Extra fields required by the Admin Update form
-                "title": row.get("title") or "",
-                "firstName": row.get("first_name", ""),
-                "middleInitial": row.get("middle_initial") or "",
-                "lastName": row.get("last_name", ""),
-                "email": row.get("email", ""),
-                "departmentId": row.get("department_id"),
-                "secondaryDepartmentId": sec_dept_id,
-            })
-
-        results.sort(key=lambda x: x["id"])
-        return {"staff": results}
-
-    except Exception as e:
+        is_admin = profile.get("role") == "admin" and not profile.get("must_change_password")
+        response.headers["Cache-Control"] = "private, no-store"
+        return {"staff": get_staff_directory_cached(include_admin_fields=is_admin)}
+    except Exception as exc:
+        print(f"[LOOKit Staff] Failed to fetch staff directory: {exc}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to fetch staff directory: {str(e)}",
+            detail="Failed to load staff directory.",
         )
 
 
-@router.get("/sections")
-def get_staff_sections():
+@router.get(
+    "/sections",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="staff_sections"))],
+)
+def get_staff_sections(response: Response):
     """Returns canonical sections for Staff Directory groupings."""
+    response.headers["Cache-Control"] = "public, max-age=3600"
     return {"sections": STAFF_SECTIONS}
 
 
-# --- Admin GET Endpoints (Form Dropdowns) ---
-@router.get("/departments")
-def get_departments():
-    """Provides the Department dropdown data for the Admin Staff form."""
-    res = supabase.table("departments").select("departmentid, name").order("name").execute()
-    return {"departments": [{"id": d["departmentid"], "name": d["name"]} for d in (res.data or [])]}
+# --- Protected Admin Dropdown Endpoints ---
+
+@router.get(
+    "/departments",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="staff_admin_meta"))],
+)
+def get_departments(_admin: dict = Depends(require_admin)):
+    """Admin-only: provides the Department dropdown data for the Admin Staff form."""
+    try:
+        res = supabase.table("departments").select("departmentid, name").order("name").execute()
+        return {"departments": [{"id": d["departmentid"], "name": d["name"]} for d in (res.data or [])]}
+    except Exception as exc:
+        print(f"[LOOKit Staff] Failed to load departments: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to load departments.")
 
 
-@router.get("/locations")
-def get_admin_locations():
-    """Provides the Office dropdown (raw DB locations) data for the Admin Staff form."""
-    res = supabase.table("location").select("locationid, name, code, building_code").order("name").limit(5000).execute()
-    return {
-        "locations": [
-            {"id": l["locationid"], "name": l["name"], "code": l.get("code"), "building": l.get("building_code")}
-            for l in (res.data or [])
-        ]
-    }
+@router.get(
+    "/locations",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="staff_admin_meta"))],
+)
+def get_admin_locations(_admin: dict = Depends(require_admin)):
+    """Admin-only: provides the Office dropdown data for the Admin Staff form."""
+    try:
+        res = supabase.table("location").select("locationid, name, code, building_code").order("name").limit(5000).execute()
+        return {
+            "locations": [
+                {"id": l["locationid"], "name": l["name"], "code": l.get("code"), "building": l.get("building_code")}
+                for l in (res.data or [])
+            ]
+        }
+    except Exception as exc:
+        print(f"[LOOKit Staff] Failed to load locations: {exc}")
+        raise HTTPException(status_code=500, detail="Failed to load locations.")
 
 
-# --- Audit helpers ---
-STAFF_AUDIT_FIELDS = ("title", "first_name", "middle_initial", "last_name", "role", "email", "department_id", "office_location_id")
+# --- Audit Helpers ---
+
+STAFF_AUDIT_FIELDS = (
+    "title", "first_name", "middle_initial", "last_name",
+    "role", "email", "department_id", "office_location_id",
+)
 
 
 def _staff_label(row: Optional[dict]) -> Optional[str]:
@@ -199,7 +294,6 @@ def _staff_label(row: Optional[dict]) -> Optional[str]:
 
 
 def _fetch_staff_row(employee_number: int) -> Optional[dict]:
-    """Best-effort read used only for audit context. Never raises."""
     try:
         res = supabase.table("staff_members").select("*").eq("employee_number", employee_number).limit(1).execute()
         return res.data[0] if res.data else None
@@ -209,11 +303,15 @@ def _fetch_staff_row(employee_number: int) -> Optional[dict]:
 
 
 # --- Protected Admin CRUD Endpoints ---
-@router.post("")
+
+@router.post(
+    "",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="staff_write"))],
+)
 def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: Adds a new staff member with automatic/explicit section and optional secondary position."""
+    """Admin-only: adds a new staff member with automatic/explicit section and optional secondary position."""
     ip = get_client_ip(request)
-    data = payload.dict(exclude_none=True)
+    data = payload.model_dump(exclude_none=True)
     requested_section = data.pop("section", None)
     secondary_role = data.pop("secondary_role", None)
     secondary_department_id = data.pop("secondary_department_id", None)
@@ -249,10 +347,12 @@ def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(requ
                   status="failed", error=error_text(exc), ip=ip)
         raise
     except Exception as exc:
+        print(f"[LOOKit Staff] Failed to add staff: {exc}")
         log_audit(admin, "CREATE", "staff", entity_id=data.get("employee_number"), entity_label=_staff_label(data),
                   status="failed", error=error_text(exc), ip=ip)
-        raise
+        raise HTTPException(status_code=400, detail="Could not add staff member. Check for duplicate email or ID.")
 
+    invalidate_staff_cache()
     row = res.data[0]
     log_audit(admin, "CREATE", "staff", entity_id=row.get("employee_number"),
               entity_label=_staff_label(row) or _staff_label(data),
@@ -260,17 +360,22 @@ def add_staff(payload: StaffCreate, request: Request, admin: dict = Depends(requ
     return {"status": "added", "staff": row}
 
 
-@router.put("/{employee_number}")
+@router.put(
+    "/{employee_number}",
+    dependencies=[Depends(rate_limit(limit=30, window_seconds=60, scope="staff_write"))],
+)
 def update_staff(employee_number: int, payload: StaffUpdate, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: Updates an existing staff member and keeps metadata (groups & secondary position) synchronized."""
+    """Admin-only: updates an existing staff member and keeps metadata synchronized."""
     ip = get_client_ip(request)
-    data = payload.dict(exclude_unset=True)
+    data = payload.model_dump(exclude_unset=True)
     before = None
     try:
         if not data:
             raise HTTPException(status_code=400, detail="No fields provided to update.")
 
         before = _fetch_staff_row(employee_number)
+        if not before:
+            raise HTTPException(status_code=404, detail="Staff member not found.")
 
         name_keys = ("title", "first_name", "middle_initial", "last_name")
         name_touched = any(k in data for k in name_keys)
@@ -301,20 +406,16 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
         )
 
         if needs_meta_sync:
-            current_meta = dict((before.get("metadata") or {}) if before else {})
+            current_meta = dict(before.get("metadata") or {})
 
             if name_touched:
-                merged = {k: (data[k] if k in data else (before or {}).get(k)) for k in name_keys}
+                merged = {k: (data[k] if k in data else before.get(k)) for k in name_keys}
                 current_meta["full_name"] = _compose_full_name(
                     merged["title"], merged["first_name"], merged["middle_initial"], merged["last_name"]
                 )
 
             if section_provided or dept_changed:
-                target_dept_id = (
-                    data.get("department_id")
-                    if dept_changed
-                    else (before.get("department_id") if before else None)
-                )
+                target_dept_id = data.get("department_id") if dept_changed else before.get("department_id")
                 resolved_section = _resolve_target_section(requested_section, target_dept_id)
                 current_meta["groups"] = [resolved_section]
 
@@ -341,29 +442,39 @@ def update_staff(employee_number: int, payload: StaffUpdate, request: Request, a
                   status="failed", error=error_text(exc), ip=ip)
         raise
     except Exception as exc:
+        print(f"[LOOKit Staff] Failed to update staff {employee_number}: {exc}")
         log_audit(admin, "UPDATE", "staff", entity_id=employee_number, entity_label=_staff_label(before),
                   status="failed", error=error_text(exc), ip=ip)
-        raise
+        raise HTTPException(status_code=500, detail="Failed to update staff member.")
 
+    invalidate_staff_cache()
     after = res.data[0]
     log_audit(admin, "UPDATE", "staff", entity_id=employee_number,
               entity_label=_staff_label(after) or _staff_label(before),
-              changes=diff(before or {}, data), ip=ip)
+              changes=diff(before, data), ip=ip)
     return {"status": "updated", "staff": after}
 
 
-@router.delete("/{employee_number}")
+@router.delete(
+    "/{employee_number}",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="staff_write"))],
+)
 def delete_staff(employee_number: int, request: Request, admin: dict = Depends(require_admin)):
-    """Admin-only: Deletes a staff member."""
+    """Admin-only: deletes a staff member."""
     ip = get_client_ip(request)
     before = _fetch_staff_row(employee_number)
+    if not before:
+        raise HTTPException(status_code=404, detail="Staff member not found.")
     try:
         res = supabase.table("staff_members").delete().eq("employee_number", employee_number).execute()
     except Exception as exc:
+        print(f"[LOOKit Staff] Failed to delete staff {employee_number}: {exc}")
         log_audit(admin, "DELETE", "staff", entity_id=employee_number, entity_label=_staff_label(before),
                   status="failed", error=error_text(exc), ip=ip)
-        raise
-    label = _staff_label(before) or ("(no matching row)" if not res.data else None)
-    snapshot = {f: {"from": before.get(f), "to": None} for f in STAFF_AUDIT_FIELDS if f in before} if before else None
+        raise HTTPException(status_code=500, detail="Failed to delete staff member.")
+
+    invalidate_staff_cache()
+    label = _staff_label(before)
+    snapshot = {f: {"from": before.get(f), "to": None} for f in STAFF_AUDIT_FIELDS if f in before}
     log_audit(admin, "DELETE", "staff", entity_id=employee_number, entity_label=label, changes=snapshot, ip=ip)
     return {"status": "deleted", "data": res.data}

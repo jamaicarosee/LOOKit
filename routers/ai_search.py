@@ -2,17 +2,16 @@ from typing import Any, Dict, List, Literal, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field, field_validator
-from dependencies import get_current_user
+from dependencies import get_current_user, get_current_user_profile
 from services import ai_search_service as ai
 from services.audit_service import get_client_ip
 
 router = APIRouter(prefix="/api/ai-search", tags=["AI Search"])
 
-# Same public access as the normal location search. A token is optional: it only unlocks staff results.
+# Same public access as normal location search; a valid, active user token unlocks staff results.
 _optional_bearer = HTTPBearer(auto_error=False)
 
 
-# --- Pydantic Models ---
 class AISearchRequest(BaseModel):
     query: str = Field(..., description="Plain-language question, e.g. 'where is the registrar on the 2nd floor'")
     limit: int = Field(default=5, ge=1, le=10)
@@ -35,7 +34,7 @@ class AISearchMatch(BaseModel):
     category: Literal["location", "staff"]
     reason: str = Field(..., max_length=ai.MAX_REASON_CHARS + 1)
     confidence: float = Field(..., ge=0.0, le=1.0)
-    item: Dict[str, Any]  # the full catalog record (same shape as /api/navigation/locations or /api/staff)
+    item: Dict[str, Any]
 
 
 class AISearchResponse(BaseModel):
@@ -47,20 +46,19 @@ class AISearchResponse(BaseModel):
     message: Optional[str] = None
 
 
-# --- Helpers ---
 def get_optional_user(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(_optional_bearer),
 ) -> Optional[dict]:
-    """Returns the signed-in user, or None for guests / invalid tokens (never raises)."""
+    """Returns the active signed-in user profile, or None for guests / invalid / deactivated tokens."""
     if not credentials:
         return None
     try:
-        return get_current_user(credentials)
+        user = get_current_user(credentials)
+        return get_current_user_profile(user)
     except HTTPException:
         return None
 
 
-# --- Public Endpoint ---
 @router.post("", response_model=AISearchResponse)
 async def ai_search(
     payload: AISearchRequest,
@@ -68,7 +66,7 @@ async def ai_search(
     user: Optional[dict] = Depends(get_optional_user),
 ):
     """
-    Natural-language search over campus locations (and staff, for signed-in users).
+    Natural-language search over campus locations (and staff, for active signed-in users).
     Falls back to keyword matching (fallback_used=true) whenever the AI is unavailable.
     """
     client_key = f"user:{user['id']}" if user else f"ip:{get_client_ip(request) or 'unknown'}"

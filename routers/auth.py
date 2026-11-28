@@ -1,11 +1,12 @@
-import time
+import os
 from datetime import datetime, timezone
 from typing import Optional
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from database import supabase
 from dependencies import get_current_user_profile, require_admin
 from services.audit_service import error_text, get_client_ip, log_audit
+from services.rate_limit_service import SlidingWindowLimiter, rate_limit
 from services.supabase_retry import execute_with_retry
 from services.validation_service import (
     validate_email_address,
@@ -14,25 +15,35 @@ from services.validation_service import (
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
-# Rate limit for Forgot Password (5 mins)
-_reset_cooldowns = {}
-_RESET_COOLDOWN_SECONDS = 300
+FRONTEND_URL = (os.getenv("FRONTEND_URL") or "http://localhost:5173").strip().rstrip("/")
+
+# Bounded per-email cooldown for Forgot Password (1 request per 5 minutes)
+_reset_email_limiter = SlidingWindowLimiter(limit=1, window_seconds=300, max_keys=5000)
 
 
 class ForgotPasswordPayload(BaseModel):
-    email: str
-    redirect_to: str
+    email: str = Field(..., min_length=3, max_length=254)
+    # Accepted for backward compatibility with older clients, but ignored server-side
+    redirect_to: Optional[str] = Field(default=None, max_length=500)
 
 
 class AccountAvailabilityPayload(BaseModel):
-    email: Optional[str] = None
-    full_name: Optional[str] = None
+    email: Optional[str] = Field(default=None, max_length=254)
+    full_name: Optional[str] = Field(default=None, max_length=200)
 
 
-def _escape_or_ilike(value: str) -> str:
-    """Escapes PostgREST ILIKE wildcards and quotes for safe use inside .or_()."""
-    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
-    return escaped.replace("%", "\\%").replace("_", "\\_")
+class ChangePassword(BaseModel):
+    new_password: str = Field(..., min_length=8, max_length=72)
+
+    @field_validator("new_password")
+    @classmethod
+    def _password(cls, value: str) -> str:
+        return validate_strong_password(value)
+
+
+def _escape_ilike(value: str) -> str:
+    """Escapes SQL ILIKE wildcards for safe parameterized matching."""
+    return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
 def _normalize_name(name: Optional[str]) -> str:
@@ -45,35 +56,35 @@ def _find_duplicate_user(
     exclude_user_id: Optional[str] = None,
 ) -> Optional[str]:
     """
-    Checks public.users in a single query for a matching email OR full_name
-    (case-insensitive), excluding `exclude_user_id` when provided.
+    Checks public.users using parameterized ILIKE queries (no raw .or_() interpolation)
+    for a matching email or full_name, excluding `exclude_user_id` when provided.
     """
     norm_email = (email or "").strip().lower()
     norm_name = _normalize_name(full_name)
 
-    or_filters = []
     if norm_email:
-        or_filters.append(f'email.ilike."{_escape_or_ilike(norm_email)}"')
+        def _query_email():
+            q = supabase.table("users").select("id").ilike("email", _escape_ilike(norm_email))
+            if exclude_user_id:
+                q = q.neq("id", exclude_user_id)
+            return q.limit(1).execute()
+
+        res = execute_with_retry(_query_email)
+        if res.data:
+            return "email"
+
     if norm_name:
-        or_filters.append(f'full_name.ilike."{_escape_or_ilike(norm_name)}"')
+        def _query_name():
+            q = supabase.table("users").select("id").ilike("full_name", _escape_ilike(norm_name))
+            if exclude_user_id:
+                q = q.neq("id", exclude_user_id)
+            return q.limit(1).execute()
 
-    if not or_filters:
-        return None
+        res = execute_with_retry(_query_name)
+        if res.data:
+            return "full_name"
 
-    def _query():
-        q = supabase.table("users").select("id, email, full_name").or_(",".join(or_filters))
-        if exclude_user_id:
-            q = q.neq("id", exclude_user_id)
-        return q.limit(1).execute()
-
-    res = execute_with_retry(_query)
-    if not res.data:
-        return None
-
-    row = res.data[0]
-    if norm_email and (row.get("email") or "").strip().lower() == norm_email:
-        return "email"
-    return "full_name"
+    return None
 
 
 def _is_newly_created_user(user_obj) -> bool:
@@ -93,7 +104,10 @@ def _is_newly_created_user(user_obj) -> bool:
         return False
 
 
-@router.post("/check-availability")
+@router.post(
+    "/check-availability",
+    dependencies=[Depends(rate_limit(limit=15, window_seconds=60, scope="auth_availability"))],
+)
 def check_account_availability(payload: AccountAvailabilityPayload):
     """
     Public pre-check for manual Sign Up:
@@ -124,7 +138,11 @@ def check_account_availability(payload: AccountAvailabilityPayload):
             detail="Authentication service is temporarily unavailable. Please try again.",
         )
 
-@router.post("/validate-google")
+
+@router.post(
+    "/validate-google",
+    dependencies=[Depends(rate_limit(limit=20, window_seconds=60, scope="auth_validate_google"))],
+)
 def validate_google_account(authorization: Optional[str] = Header(default=None)):
     """
     Validates a Google OAuth sign-in immediately after redirect:
@@ -209,7 +227,10 @@ def validate_google_account(authorization: Optional[str] = Header(default=None))
     return {"status": "ok"}
 
 
-@router.get("/me")
+@router.get(
+    "/me",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="auth_me"))],
+)
 def get_user_profile(profile: dict = Depends(get_current_user_profile)):
     """
     Protected endpoint: returns the authenticated user's profile from public.users.
@@ -217,12 +238,10 @@ def get_user_profile(profile: dict = Depends(get_current_user_profile)):
     return {"user": profile}
 
 
-@router.post("/validate-google")
-def validate_google(profile: dict = Depends(get_current_user_profile)):
-    return {"valid": True, "user_id": profile.get("id")}
-
-
-@router.get("/admin-check")
+@router.get(
+    "/admin-check",
+    dependencies=[Depends(rate_limit(limit=60, window_seconds=60, scope="auth_admin_check"))],
+)
 def verify_admin_status(admin_profile: dict = Depends(require_admin)):
     """
     Protected endpoint: confirms the caller holds valid 'admin' privileges.
@@ -233,16 +252,10 @@ def verify_admin_status(admin_profile: dict = Depends(require_admin)):
     }
 
 
-class ChangePassword(BaseModel):
-    new_password: str
-
-    @field_validator("new_password")
-    @classmethod
-    def _password(cls, value: str) -> str:
-        return validate_strong_password(value)
-
-
-@router.post("/change-password")
+@router.post(
+    "/change-password",
+    dependencies=[Depends(rate_limit(limit=5, window_seconds=60, scope="auth_change_password"))],
+)
 def change_password(
     payload: ChangePassword,
     request: Request,
@@ -261,19 +274,28 @@ def change_password(
     try:
         supabase.auth.admin.update_user_by_id(profile["id"], {"password": payload.new_password})
     except Exception as exc:
-        log_audit(profile, "UPDATE", "user", entity_id=profile["id"], entity_label=label,
-                  changes=changes, status="failed", error=error_text(exc), ip=ip)
-        raise HTTPException(status_code=400, detail=f"Could not change the password: {exc}")
+        print(f"[LOOKit Auth] Password update failed for {profile['id']}: {exc}")
+        log_audit(
+            profile, "UPDATE", "user", entity_id=profile["id"], entity_label=label,
+            changes=changes, status="failed", error=error_text(exc), ip=ip,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Could not change the password. Please try again.",
+        )
 
     if was_forced:
         try:
             supabase.table("users").update({"must_change_password": False}).eq("id", profile["id"]).execute()
         except Exception as exc:
-            log_audit(profile, "UPDATE", "user", entity_id=profile["id"], entity_label=label,
-                      changes=changes, status="failed",
-                      error=f"Password changed, but the flag could not be cleared: {exc}", ip=ip)
+            print(f"[LOOKit Auth] Failed clearing must_change_password for {profile['id']}: {exc}")
+            log_audit(
+                profile, "UPDATE", "user", entity_id=profile["id"], entity_label=label,
+                changes=changes, status="failed",
+                error=f"Password changed, but the flag could not be cleared: {exc}", ip=ip,
+            )
             raise HTTPException(
-                status_code=500,
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Password changed, but your account could not be updated. Please try again.",
             )
 
@@ -281,42 +303,85 @@ def change_password(
     return {"status": "password_changed"}
 
 
-@router.post("/forgot-password")
+@router.post(
+    "/forgot-password",
+    dependencies=[Depends(rate_limit(limit=10, window_seconds=300, scope="auth_forgot_ip"))],
+)
 def forgot_password(payload: ForgotPasswordPayload, request: Request):
     """
-    Email request with 5 minutes cooldown per account.
+    Sends a password reset email with a 5-minute cooldown per email and per-IP rate limiting.
+    Always derives redirect_to from server-side FRONTEND_URL and returns a uniform response
+    to prevent account enumeration.
     """
     ip = get_client_ip(request)
     email = payload.email.strip().lower()
-    now = time.monotonic()
 
-    # 1. Check for 5 mins cooldown
-    last_request = _reset_cooldowns.get(email)
-    if last_request and (now - last_request) < _RESET_COOLDOWN_SECONDS:
+    allowed, retry_after = _reset_email_limiter.hit(email)
+    if not allowed:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Request Timed Out, try again later!."
+            detail="Please wait before requesting another password reset email.",
+            headers={"Retry-After": str(retry_after)},
         )
 
-    # 2. Verify if the email is registered and the user using it is active
-    res = supabase.table("users").select("id, is_active").eq("email", email).execute()
+    try:
+        res = (
+            supabase.table("users")
+            .select("id, is_active")
+            .ilike("email", _escape_ilike(email))
+            .limit(1)
+            .execute()
+        )
+    except Exception as exc:
+        print(f"[LOOKit Auth] Forgot-password lookup failed: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service temporarily unavailable. Please try again.",
+        )
+
     if not res.data:
-        _reset_cooldowns[email] = now
         return {"status": "sent"}
 
     user_row = res.data[0]
     if not user_row.get("is_active"):
-        raise HTTPException(status_code=403, detail="This account has been deactivated.")
+        # Log internally, but return uniform response so deactivated emails cannot be enumerated
+        log_audit(
+            {"id": user_row["id"], "email": email},
+            "PASSWORD_RESET_REQUEST",
+            "auth",
+            entity_id=user_row["id"],
+            entity_label=email,
+            status="failed",
+            error="Reset requested for deactivated account",
+            ip=ip,
+        )
+        return {"status": "sent"}
 
-    # 3. Get reset link via Supabase Auth
     try:
-        supabase.auth.reset_password_email(email, options={"redirect_to": payload.redirect_to})
-        _reset_cooldowns[email] = now
-        log_audit({"id": user_row["id"], "email": email}, "PASSWORD_RESET_REQUEST", "auth",
-                  entity_id=user_row["id"], entity_label=email, ip=ip)
+        supabase.auth.reset_password_email(email, options={"redirect_to": FRONTEND_URL})
+        log_audit(
+            {"id": user_row["id"], "email": email},
+            "PASSWORD_RESET_REQUEST",
+            "auth",
+            entity_id=user_row["id"],
+            entity_label=email,
+            ip=ip,
+        )
     except Exception as exc:
-        log_audit({"id": user_row["id"], "email": email}, "PASSWORD_RESET_REQUEST", "auth",
-                  entity_id=user_row["id"], entity_label=email, status="failed", error=str(exc), ip=ip)
-        raise HTTPException(status_code=500, detail="Failed to send reset email.")
+        print(f"[LOOKit Auth] Failed to send reset email: {exc}")
+        log_audit(
+            {"id": user_row["id"], "email": email},
+            "PASSWORD_RESET_REQUEST",
+            "auth",
+            entity_id=user_row["id"],
+            entity_label=email,
+            status="failed",
+            error=str(exc),
+            ip=ip,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send reset email. Please try again later.",
+        )
 
     return {"status": "sent"}
