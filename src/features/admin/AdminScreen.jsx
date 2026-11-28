@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { useAuth } from '../login/context/AuthContext';
 import { useViewport } from '../dashboard/hooks/useViewport';
 import DesktopTopNav from '../dashboard/components/desktop/DesktopTopNav';
 import MobileTopBar from '../dashboard/components/MobileTopBar';
@@ -13,17 +14,60 @@ import AuditLog from './sections/AuditLog';
 
 const VIEWS = { overview: Overview, map: MapEditor, users: Users, staff: Staff, audit: AuditLog };
 
+class AdminSectionBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
-// Admin dashboard. Same top navigation as the Staff page, then the back button + "Admin" title,
-// then the tab band (Overview, Map, Directory, Users, Audit Log). Phone: top bar, scrollable tabs and the bottom nav.
-// App.jsx only renders this for admins; Supabase policies still decide who can write.
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('[LOOKit Admin] Section render error:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+          <h2 className="text-base font-bold text-[#0B2545]">This section encountered an error</h2>
+          <p className="mt-1 text-sm text-[#61738A]">
+            Try reloading this panel or switching to another admin section.
+          </p>
+          <button
+            type="button"
+            onClick={() => this.setState({ hasError: false })}
+            className="mt-4 rounded-xl bg-[#0B2545] px-4 py-2 text-sm font-bold text-white hover:bg-[#1B3A5E]"
+          >
+            Retry section
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function AdminScreen({ onBackToMap, onProfileClick }) {
+  const { isAdmin, authLoading } = useAuth();
   const { isDesktop } = useViewport(1024);
   const [section, setSection] = useState('overview');
 
+  // Self-guard: redirect away if privileges are revoked or temporary password is still pending
+  useEffect(() => {
+    if (!authLoading && !isAdmin) {
+      onBackToMap();
+    }
+  }, [authLoading, isAdmin, onBackToMap]);
+
+  if (authLoading || !isAdmin) {
+    return null;
+  }
+
   const View = VIEWS[section];
 
-  // Only "map" needs handling here: the Admin button is already on this page
   const handleNav = (id) => {
     if (id === 'map') onBackToMap();
   };
@@ -39,8 +83,6 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
     </button>
   );
 
-  // Same look as the home dashboard's building filters (All / M.A.E / CED ...):
-  // a navy band with pill buttons, light-blue for the active one.
   const renderTabs = (desktop) => (
     <nav
       aria-label="Admin sections"
@@ -89,7 +131,9 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
         <section className="w-full bg-[#0B2545] py-3.5 px-8 shrink-0 select-none z-20">{renderTabs(true)}</section>
         <div className="flex-1 min-h-0 overflow-y-auto">
           <div className="max-w-6xl mx-auto px-8 lg:px-16 py-6">
-            <View isDesktop onNavigate={setSection} />
+            <AdminSectionBoundary key={section}>
+              <View isDesktop onNavigate={setSection} />
+            </AdminSectionBoundary>
           </div>
         </div>
       </div>
@@ -105,7 +149,9 @@ export default function AdminScreen({ onBackToMap, onProfileClick }) {
       </div>
       <div className="bg-[#0B2545] px-4 py-2.5 shrink-0 shadow-sm">{renderTabs(false)}</div>
       <div className="flex-1 min-h-0 overflow-y-auto bg-[#F8F9F9] px-5 py-5">
-        <View isDesktop={false} onNavigate={setSection} />
+        <AdminSectionBoundary key={section}>
+          <View isDesktop={false} onNavigate={setSection} />
+        </AdminSectionBoundary>
       </div>
       <MobileBottomSheet activeNav="admin" onSelectNav={handleNav} />
     </div>

@@ -34,6 +34,23 @@ const OAUTH_QUERY_KEYS = [
 const OAUTH_HASH_PATTERN =
   /(?:access_token|refresh_token|provider_token|token_type|expires_in|error|error_description)=|(?:^#|&)type=signup(?:&|$)/i;
 
+async function purgePrivateBrowserCaches() {
+  if (typeof window === 'undefined' || !('caches' in window)) return;
+  try {
+    await window.caches.delete('lookit-api-read-cache');
+  } catch {
+    // Non-fatal: cache storage may be unavailable in restricted contexts
+  }
+}
+
+function isDeactivationError(error) {
+  const status = error?.response?.status;
+  const msg = String(
+    error?.response?.data?.detail || error?.message || ''
+  ).toLowerCase();
+  return status === 403 && msg.includes('deactivated');
+}
+
 function isEmailConfirmationReturn() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
@@ -117,14 +134,12 @@ function handleEmailConfirmationReturn() {
 
   emailConfirmPromise = (async () => {
     try {
-      // Wait for Supabase's detectSessionInUrl PKCE exchange to finish confirming the account
       await supabase.auth.getSession();
     } catch (err) {
       console.warn('[LOOKit Auth] Email confirmation exchange warning:', err);
     }
 
     try {
-      // Immediately clear the local session so the user stays logged out
       await signOutUser({ skipAudit: true });
     } catch (err) {
       console.warn('[LOOKit Auth] Post-confirmation sign-out warning:', err);
@@ -139,7 +154,6 @@ function handleEmailConfirmationReturn() {
   return emailConfirmPromise;
 }
 
-// Extract basic Google account information
 function getGoogleProfile(user) {
   if (!user) return null;
 
@@ -160,7 +174,6 @@ function getGoogleProfile(user) {
   };
 }
 
-// Combine LOOKit backend profile and Google profile
 function mergeProfiles(user, backendProfile) {
   if (!user) return null;
 
@@ -210,13 +223,43 @@ export function AuthProvider({ children }) {
   const [authNotice, setAuthNotice] = useState('');
   const [loginEventCount, setLoginEventCount] = useState(0);
 
-  // Prevents bootstrapSession and onAuthStateChange from racing during OAuth / sign-up
   const bootstrappedRef = useRef(false);
   const googleValidationRef = useRef(null);
   const isSigningUpRef = useRef(false);
+  const forceSignOutInFlightRef = useRef(false);
 
   const clearAuthError = useCallback(() => setAuthError(''), []);
   const clearAuthNotice = useCallback(() => setAuthNotice(''), []);
+
+  const forceDeactivatedSignOut = useCallback(async (message) => {
+    if (forceSignOutInFlightRef.current) return;
+    forceSignOutInFlightRef.current = true;
+    try {
+      emailConfirmPromise = null;
+      googleValidationRef.current = null;
+      await signOutUser({ skipAudit: true }).catch(() => {});
+      await purgePrivateBrowserCaches();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setVerifyingGoogle(false);
+      setAuthError(message || 'This account has been deactivated.');
+      setAuthLoading(false);
+    } finally {
+      forceSignOutInFlightRef.current = false;
+    }
+  }, []);
+
+  // Listen for global 403 account-deactivation events dispatched by apiClient
+  useEffect(() => {
+    const handleDeactivated = (event) => {
+      forceDeactivatedSignOut(event?.detail?.message);
+    };
+    window.addEventListener('lookit:account-deactivated', handleDeactivated);
+    return () => {
+      window.removeEventListener('lookit:account-deactivated', handleDeactivated);
+    };
+  }, [forceDeactivatedSignOut]);
 
   useEffect(() => {
     let isMounted = true;
@@ -304,6 +347,11 @@ export function AuthProvider({ children }) {
           activeSession.access_token
         );
 
+        if (backendProfile && backendProfile.is_active === false) {
+          await forceDeactivatedSignOut('This account has been deactivated.');
+          return;
+        }
+
         if (isMounted && currentRequest === requestId) {
           setProfile((previous) =>
             mergeProfiles(
@@ -313,6 +361,10 @@ export function AuthProvider({ children }) {
           );
         }
       } catch (error) {
+        if (isDeactivationError(error)) {
+          await forceDeactivatedSignOut(error?.response?.data?.detail);
+          return;
+        }
         console.error('[LOOKit Auth] Profile fetch failed:', error);
       } finally {
         if (isMounted && currentRequest === requestId) {
@@ -342,6 +394,11 @@ export function AuthProvider({ children }) {
 
         if (!isMounted) return;
 
+        if (initialData?.profile?.is_active === false) {
+          await forceDeactivatedSignOut('This account has been deactivated.');
+          return;
+        }
+
         if (initialData?.session?.user) {
           cleanOAuthUrl();
 
@@ -364,11 +421,19 @@ export function AuthProvider({ children }) {
           if (wasGoogleLogin) {
             verifyAndFetchProfile(initialSession.access_token)
               .then((backendProfile) => {
+                if (backendProfile?.is_active === false) {
+                  forceDeactivatedSignOut('This account has been deactivated.');
+                  return;
+                }
                 if (isMounted && backendProfile) {
                   setProfile(mergeProfiles(initialSession.user, backendProfile));
                 }
               })
               .catch((err) => {
+                if (isDeactivationError(err)) {
+                  forceDeactivatedSignOut(err?.response?.data?.detail);
+                  return;
+                }
                 console.error(
                   '[LOOKit Auth] Post-Google profile fetch failed:',
                   err
@@ -385,6 +450,10 @@ export function AuthProvider({ children }) {
           setProfile(null);
         }
       } catch (error) {
+        if (isDeactivationError(error)) {
+          await forceDeactivatedSignOut(error?.response?.data?.detail);
+          return;
+        }
         console.error('[LOOKit Auth] Failed to initialize session:', error);
         if (isMounted) setVerifyingGoogle(false);
       } finally {
@@ -402,7 +471,6 @@ export function AuthProvider({ children }) {
     } = supabase.auth.onAuthStateChange((event, currentSession) => {
       if (!isMounted) return;
 
-      // Suppress transient SIGNED_IN events during sign-up or email confirmation cleanup
       if (emailConfirmPromise || isSigningUpRef.current) {
         return;
       }
@@ -448,7 +516,7 @@ export function AuthProvider({ children }) {
       requestId++;
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [forceDeactivatedSignOut]);
 
   const login = useCallback(async ({ email, password, keepSignedIn }) => {
     emailConfirmPromise = null;
@@ -468,7 +536,6 @@ export function AuthProvider({ children }) {
     return result;
   }, []);
 
-  // Manual registration (never logs the user in automatically)
   const register = useCallback(
     async ({ fullName, email, password }) => {
       emailConfirmPromise = null;
@@ -493,6 +560,7 @@ export function AuthProvider({ children }) {
     googleValidationRef.current = null;
     setVerifyingGoogle(false);
     await signOutUser();
+    await purgePrivateBrowserCaches();
 
     setUser(null);
     setSession(null);
@@ -522,12 +590,14 @@ export function AuthProvider({ children }) {
     clearAuthNotice,
     loginEventCount,
 
-    isAuthenticated: Boolean(user && session),
+    isAuthenticated: Boolean(user && session) && profile?.is_active !== false,
 
     isAdmin:
       !authLoading &&
       Boolean(user && session) &&
-      profile?.role === 'admin',
+      profile?.role === 'admin' &&
+      profile?.is_active !== false &&
+      !profile?.must_change_password,
 
     mustChangePassword: Boolean(profile?.must_change_password),
 
